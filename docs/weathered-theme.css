@@ -1,0 +1,149 @@
+/* Optional surface wear. All overlay layers pass pointer input through. */
+.weathered-glass-overlay,
+.weathered-chassis-frame {
+  display: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+body.broadcast-console[data-theme="weathered"] {
+  background: radial-gradient(ellipse at 45% 15%, #39382c, #171b15 75%);
+  color: #d6b872;
+}
+
+/* Main Chassis & Rust/Grime */
+[data-theme="weathered"] .retro-app.broadcast-chassis {
+  isolation: isolate;
+  border-color: #74664a;
+  background:
+    radial-gradient(ellipse at 1% 0%, #884b29a8, transparent 13%),
+    radial-gradient(ellipse at 99% 100%, #8748278c, transparent 14%),
+    repeating-linear-gradient(3deg, #c2b69a09 0 1px, transparent 1px 4px),
+    linear-gradient(125deg, #34382a, #20261b 65%, #38372a);
+  box-shadow: inset 0 1px #c3b79555, inset 0 -3px 5px #090c07, 0 12px 30px #000b;
+}
+
+/* =========================================================
+   1. WEATHERED SIDE RACK HANDLES (Tarnished Bronze/Rust Tint, No Box)
+   ========================================================= */
+[data-theme="weathered"] :is(.rack-handle, .chassis-handle, .side-handle, .handle-left, .handle-right, [class*="handle"]) {
+  filter: sepia(0.48) saturate(1.15) contrast(1.08) brightness(0.76) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.75));
+}
+
+/* Outer Frame Rust & Scuffs */
+[data-theme="weathered"] .weathered-chassis-frame {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border: 3px solid #675b45;
+  border-radius: 8px 4px 12px 3px;
+  box-shadow: inset 0 0 0 1px #b9ad8966, inset 0 0 9px #24140ba8;
+  background:
+    radial-gradient(ellipse at 0% 0%, #9c573cca, transparent 12%),
+    radial-gradient(ellipse at 98% 3%, #885033a8, transparent 13%),
+    radial-gradient(ellipse at 99% 100%, #653720cf, transparent 12%),
+    radial-gradient(ellipse at 2% 98%, #955537ba, transparent 12%);
+  mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000);
+  mask-origin: border-box, content-box;
+  mask-clip: border-box, content-box;
+  mask-composite: exclude;
+  padding: 9px;
+}
+
+[data-theme="weathered"] :is(.crt-module, .receiver-panel, .radio-tuning-window) {
+  position: relative;
+  border-color: #72684e;
+  box-shadow: inset 0 1px #d1bf8a35, inset 0 0 8px #060904a3, 0 2px 4px #0009;
+}
+
+/* =========================================================
+   2. GLASS CRACKS, TOUCH FINGERPRINTS & SURFACE SCRATCHES
+   ========================================================= */
+[data-theme="weathered"] .weathered-glass-overlay {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  border-radius: inherit;
+  opacity: 0.85;
+  background-image:
+    /* Layer A: Spiderweb Corner Crack + Hairline Fracture (Inline SVG) */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 450' preserveAspectRatio='none'><g fill='none' stroke-linecap='round'><path d='M595 8 L542 48 L510 56 L472 95 L445 102 L412 142' stroke='rgba(255,252,240,0.48)' stroke-width='1.3'/><path d='M542 48 L556 88 L544 125 M510 56 L482 32 M472 95 L488 134 L478 162 M568 26 L532 22' stroke='rgba(255,252,240,0.32)' stroke-width='0.85'/><path d='M596 9 L543 49 L511 57 L473 96 L446 103 L413 143' stroke='rgba(10,12,8,0.55)' stroke-width='1.1'/><path d='M18 442 L58 398 L72 372 L105 348' stroke='rgba(255,252,240,0.26)' stroke-width='0.8'/></g></svg>"),
+    /* Layer B: Fine Micro-Scratches & Scuff Arcs (Inline SVG) */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 400' preserveAspectRatio='none'><g fill='none' stroke='rgba(245,238,215,0.18)' stroke-width='0.7'><path d='M85 110 Q145 128 210 105'/><path d='M310 265 L385 242'/><path d='M140 310 Q190 295 235 322'/><path d='M260 75 L295 92'/><path d='M410 185 Q435 220 420 260'/><path d='M55 215 L110 228'/></g></svg>"),
+    /* Layer C: Oily Touch Fingerprints & Thumb Smudges */
+    radial-gradient(ellipse 36px 52px at 78% 68%, rgba(225, 218, 192, 0.14) 0%, rgba(210, 200, 170, 0.06) 48%, transparent 72%),
+    radial-gradient(ellipse 30px 44px at 83% 64%, rgba(225, 218, 192, 0.11) 0%, rgba(210, 200, 170, 0.04) 50%, transparent 75%),
+    radial-gradient(ellipse 42px 28px at 26% 74%, rgba(225, 218, 192, 0.12) 0%, rgba(210, 200, 170, 0.05) 52%, transparent 76%),
+    radial-gradient(ellipse 26px 38px at 62% 28%, rgba(225, 218, 192, 0.09) 0%, transparent 70%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background-position: center, center, center, center, center, center;
+}
+
+/* Right Receiver Panel Glass: Different Crack Angle + Knob-Area Finger Smudges */
+[data-theme="weathered"] .receiver-panel > .weathered-glass-overlay {
+  opacity: 0.78;
+  background-image:
+    /* Hairline crack near bottom-left of receiver glass */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 450' preserveAspectRatio='none'><g fill='none' stroke-linecap='round'><path d='M12 442 L68 386 L102 378 L145 335' stroke='rgba(255,252,240,0.42)' stroke-width='1.2'/><path d='M68 386 L92 415 M102 378 L112 345' stroke='rgba(255,252,240,0.26)' stroke-width='0.8'/><path d='M13 443 L69 387 L103 379 L146 336' stroke='rgba(10,12,8,0.5)' stroke-width='1'/></g></svg>"),
+    /* Scratches around the tuning dial area */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 400' preserveAspectRatio='none'><g fill='none' stroke='rgba(245,238,215,0.16)' stroke-width='0.7'><path d='M190 155 Q250 120 315 160'/><path d='M175 245 Q245 285 320 240'/><path d='M360 110 L420 135'/></g></svg>"),
+    /* Heavy finger smudges around the center TUNE dial & skip buttons */
+    radial-gradient(ellipse 46px 60px at 52% 54%, rgba(225, 218, 192, 0.14) 0%, rgba(210, 200, 170, 0.05) 55%, transparent 78%),
+    radial-gradient(ellipse 34px 48px at 31% 50%, rgba(225, 218, 192, 0.11) 0%, transparent 72%),
+    radial-gradient(ellipse 34px 48px at 73% 50%, rgba(225, 218, 192, 0.11) 0%, transparent 72%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+  background-position: center, center, center, center, center;
+}
+
+/* Also apply light glass wear to the top tuning dial window if it has an overlay */
+[data-theme="weathered"] .radio-tuning-window > .weathered-glass-overlay {
+  opacity: 0.65;
+  background-position: center;
+}
+
+[data-theme="weathered"] :is(.receiver-matrix, .remote-shortcuts, .radio-tuning-window) {
+  border-color: #6d664b;
+  background-color: #242a1c;
+  box-shadow: inset 0 0 9px #0b100ab0, inset 0 1px #b9ad6d33;
+}
+
+[data-theme="weathered"] :is(.station-knob-cap, .station-knob-skirt, .tuner-step, .volume-knob-face) {
+  filter: sepia(0.22) saturate(0.7);
+}
+
+[data-theme="weathered"] .station-knob-cap {
+  box-shadow: inset 0 2px 3px #d9d1ad99, inset 0 -3px 5px #382e18b3, 0 1px 3px #000;
+}
+
+[data-theme="weathered"] .hardware-filter-bar .hardware-filter {
+  color: #272b21;
+  background:
+    repeating-linear-gradient(172deg, transparent 0 15px, #70644755 16px, transparent 17px 32px),
+    linear-gradient(#c9c6aa, #999f8b 30%, #c0bca0 65%, #696f5b);
+  border-color: #77765f;
+}
+
+[data-theme="weathered"] .hardware-filter-bar .hardware-filter[aria-pressed="true"] {
+  background: linear-gradient(#777963, #a9a389);
+  box-shadow: inset 0 3px 6px #252a1a9e, inset 0 -1px #d3c9a35c;
+}
+
+[data-theme="weathered"] :is(.bottom-nav .nav-item, .theme-toggle) {
+  border-color: #756c49;
+  color: #e0c787;
+  background: linear-gradient(140deg, #4c4c30, #303720);
+  box-shadow: inset 0 1px #c6b77c44, inset 0 -2px #171d12;
+}
+
+[data-theme="weathered"] .bottom-nav .nav-item.active {
+  background: linear-gradient(#65603b, #414329);
+}
+
+@media (max-width: 900px) {
+  [data-theme="weathered"] .weathered-glass-overlay { opacity: 0.62; }
+  [data-theme="weathered"] .receiver-panel > .weathered-glass-overlay { opacity: 0.55; }
+  [data-theme="weathered"] .weathered-chassis-frame { border-width: 2px; padding: 5px; }
+}
