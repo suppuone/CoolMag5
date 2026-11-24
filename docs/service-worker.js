@@ -1,11 +1,12 @@
 const CACHE_PREFIX = 'retroradtv-v4-';
-const CACHE_NAME = CACHE_PREFIX + '4.1.81';
+const CACHE_NAME = CACHE_PREFIX + '4.1.94';
 // Only the core shell is precached. Artwork and optional modules cache on demand.
 const APP_FILES = [
-  './receiver-responsive.css?v=4.1.72', './index.html', './styles.css?v=4.1.7', './app.js?v=4.1.81',
+  './receiver-responsive.css?v=4.1.72', './index.html', './styles.css?v=4.1.7', './app.js?v=4.1.85',
   './stream-recovery.js?v=4.1.4', './volume-knob.js?v=4.1.9',
-  './tone-controls.js?v=4.1.2', './station-category.js?v=2', './preset-defaults.js?v=4.1.70',
-  './shattered-theme.css?v=1', './manifest.webmanifest', './icon.svg'
+  './tone-controls.js?v=4.1.2', './station-category.js?v=2', './preset-defaults.js?v=4.1.71',
+  './shattered-theme.css?v=1', './manifest.webmanifest', './icon.svg',
+  './assets/station-logos/radio_badge.png', './assets/station-logos/tv_badge.png'
 ];
 self.addEventListener('install', event => {
   const freshFiles = APP_FILES.map(url => new Request(url, {cache: 'reload'}));

@@ -85,8 +85,8 @@
   const DEFAULT_RADIO_KEY='https://stream.zeno.fm/rc7dnetgrwzuv';
   let radioStartupPending=true;
   const DEFAULT_TV_CHANNEL=Object.values(window.COOLRADTV_DEFAULTS.tv)[0];
-  let visualizerPattern='mesh'; // Fresh openings always start with Flowing Mesh.
-  if(!['wave','halo','mesh','mix','off'].includes(visualizerPattern))visualizerPattern='mesh';
+  let visualizerPattern='wave'; // Fresh openings start with Colour Waves.
+  if(!['wave','halo','mesh','mix','off'].includes(visualizerPattern))visualizerPattern='wave';
   let visualizerMixBag=[],visualizerMixCurrent='',visualizerMixSince=0;
   function nextMixedVisualizer(){if(!visualizerMixBag.length){visualizerMixBag=['wave','halo','mesh'].sort(()=>Math.random()-.5);if(visualizerMixBag[0]===visualizerMixCurrent)visualizerMixBag.push(visualizerMixBag.shift());}visualizerMixCurrent=visualizerMixBag.shift();}
   let meterAudio=null,meterContext=null,meterAnalyser=null,meterGain=null,meterSource=null,meterBins=null,meterFrame=0,meterLevel=0,meterLastPaint=0;
@@ -264,10 +264,11 @@
     if(returning)splash.classList.add('tuning-returning');
     let finished=false,readyTimer=0;const splashStarted=performance.now();const previousFocus=document.activeElement;
     const clip=splash.querySelector('.ux-splash-video');
-    const finish=()=>{if(finished)return;finished=true;clearTimeout(timer);clearTimeout(readyTimer);document.removeEventListener('keydown',keys);clip?.pause();splash.classList.add('leaving');startOpenedPlayer();try{localStorage.setItem('coolradtv.tuning-seen','true');}catch{}setTimeout(()=>{splash.remove();if(previousFocus&&previousFocus!==document.body&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});else $('radio-play')?.focus({preventScroll:true});},reduced?0:360);};
+    const finish=()=>{if(finished)return;finished=true;clearTimeout(timer);clearTimeout(readyTimer);document.removeEventListener('keydown',keys);clip?.pause();splash.classList.add('leaving');startOpenedPlayer();try{localStorage.setItem('coolradtv.tuning-seen','true');}catch{}setTimeout(()=>{splash.remove();if(previousFocus&&previousFocus!==document.body&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});else ($('ux-play')||$('radio-play'))?.focus({preventScroll:true});},reduced?0:360);};
     const keys=event=>{if(event.key==='Escape'){event.preventDefault();finish();}if(event.key==='Tab'){event.preventDefault();enter.focus({preventScroll:true});}};
     let timer=setTimeout(finish,clip?30000:returning?2000:4000);
     closeSplash=immediate=>{if(clip||immediate!==true||finished)return;clearTimeout(readyTimer);readyTimer=setTimeout(finish,Math.max(0,1600-(performance.now()-splashStarted)));};
+    $('splash-install')?.addEventListener('click',()=> $('install-app')?.click());
     enter.addEventListener('click',finish);document.addEventListener('keydown',keys);enter.focus({preventScroll:true});
     if(clip){
       let plays=1;
@@ -278,9 +279,9 @@
       // Sound is attempted first. If the browser blocks it, wait for the first tap or key press, then play with sound.
       clip.muted=false;
       clip.play().catch(()=>{
-        const hint=document.createElement('div');hint.className='ux-splash-sound';hint.textContent='TAP TO START';splash.append(hint);
+        // The splash keeps its Install shortcut and Skip actions visible.
         const events=['pointerdown','keydown','touchstart'];
-        const start=()=>{for(const name of events)document.removeEventListener(name,start,true);hint.remove();clip.muted=false;clip.play().catch(finish);};
+        const start=()=>{for(const name of events)document.removeEventListener(name,start,true);clip.muted=false;clip.play().catch(finish);};
         for(const name of events)document.addEventListener(name,start,true);
       });
     }
@@ -392,6 +393,14 @@
     if(kind==='radio')renderRadioShortcuts();else renderRemotePresets();
   };
   window.retroPresetRows=kind=>listFor(kind);
+  // Compact UI delegates to the same playback and favorite controllers.
+  const findNamedStation=(kind,name)=>(kind==='tv'?tvs:radios).concat(listFor(kind)).find(station=>station.name?.trim().toLowerCase()===name.trim().toLowerCase());
+  window.retroPlayer={
+    tune:(kind,station)=>{if(kind==='tv'){stopRadio();return playTV(station);}stopTV();return playRadio(station);},
+    isPlaying:kind=>kind==='tv'?(youtubePlayer?.getPlayerState?youtubePlayer.getPlayerState()===1:!video.paused&&!video.ended&&!video.error):!audio.paused&&!audio.ended&&!audio.error,
+    isFavorite:(kind,name)=>{const station=findNamedStation(kind,name);return !!station&&Object.hasOwn(kind==='tv'?tvPresets:radioPresets,presetKey(kind,station));},
+    toggleFavorite:(kind,name)=>{const station=findNamedStation(kind,name);if(!station)return false;togglePreset(kind,station);return true;}
+  };
   function listFor(kind){return kind==='tv'?Object.values(tvPresets):Object.values(radioPresets);}
   function presetKey(kind,station){return kind==='tv'?station?.url:stationKey(station||{});}
   function selectedCountry(kind){return $(kind==='tv'?'tv-country':'radio-country')?.value||'all';}
@@ -973,6 +982,7 @@
     });
   }
   function renderPresets(){
+    window.dispatchEvent(new Event('retro-favorites-changed'));
     cancelPresetDrag?.();
     updatePresetCounts();
     const target=$('preset-grid'),kind=presetMode,recent=kind==='recent';
@@ -1521,18 +1531,39 @@
   video.volume=0.20;updateTVNumbers();
   // Each launch starts at 30%; controls remain adjustable during the session.
   setRadioVolume(20);
-  let pendingInstallPrompt=null;const installButton=$('install-app'),installedModes=['standalone','minimal-ui','fullscreen','window-controls-overlay'].map(mode=>window.matchMedia(`(display-mode: ${mode})`));
+  let pendingInstallPrompt=window.retroDeferredInstallPrompt||null,installBusy=false;const installButton=$('install-app'),installedModes=['standalone','minimal-ui','fullscreen','window-controls-overlay'].map(mode=>window.matchMedia(`(display-mode: ${mode})`));
   const installedBefore=()=>{try{return localStorage.getItem('retrotvra.installed.v1')==='true';}catch{return false;}};
   const isInstalledApp=()=>Boolean(navigator.standalone)||installedModes.some(query=>query.matches)||installedBefore();
   const updateInstallButton=()=>{if(isInstalledApp()){installButton.hidden=true;pendingInstallPrompt=null;}else installButton.hidden=false;};
   updateInstallButton();installedModes.forEach(query=>query.addEventListener?.('change',updateInstallButton));
-  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();try{localStorage.removeItem('retrotvra.installed.v1');}catch{}pendingInstallPrompt=event;if(!installedModes.some(query=>query.matches)&&!navigator.standalone){installButton.hidden=false;installButton.classList.add('install-ready');}});
-  window.addEventListener('appinstalled',()=>{pendingInstallPrompt=null;installButton.classList.remove('install-ready');installButton.hidden=true;try{localStorage.setItem('retrotvra.installed.v1','true');}catch{}notify('COOLmagRaTv added to your home screen.');});
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();const splashInstall=$('splash-install');if(splashInstall)splashInstall.textContent='INSTALL shortcut';try{localStorage.removeItem('retrotvra.installed.v1');}catch{}pendingInstallPrompt=event;if(!installedModes.some(query=>query.matches)&&!navigator.standalone){installButton.hidden=false;installButton.classList.add('install-ready');}});
+  window.addEventListener('appinstalled',()=>{window.retroDeferredInstallPrompt=null;const splashInstall=$('splash-install');if(splashInstall){splashInstall.textContent='Installed';splashInstall.disabled=true;}pendingInstallPrompt=null;installButton.classList.remove('install-ready');installButton.hidden=true;try{localStorage.setItem('retrotvra.installed.v1','true');}catch{}notify('COOLmagRaTv added to your home screen.');});
   installButton.addEventListener('click',async()=>{
-    if(pendingInstallPrompt){pendingInstallPrompt.prompt();const choice=await pendingInstallPrompt.userChoice;pendingInstallPrompt=null;if(choice.outcome==='accepted')installButton.classList.remove('install-ready');return;}
-    if(window.matchMedia('(display-mode:standalone)').matches||navigator.standalone){notify('COOLmagRaTv is already installed.');return;}
+    if(installBusy)return;
+    if(installedModes.some(query=>query.matches)||navigator.standalone){notify('COOLmagRaTv is already installed.');return;}
+    const prompt=pendingInstallPrompt||window.retroDeferredInstallPrompt;
+    if(prompt){
+      installBusy=true;pendingInstallPrompt=null;window.retroDeferredInstallPrompt=null;
+      try{
+        await prompt.prompt();
+        const choice=await prompt.userChoice;
+        installButton.classList.remove('install-ready');
+        if(choice.outcome==='accepted'){
+          const splashInstall=$('splash-install');if(splashInstall)splashInstall.textContent='Installing?';
+        }
+      }catch{notify('The install prompt could not open. Please try again.');}
+      finally{installBusy=false;}
+      return;
+    }
+    if(location.protocol==='file:'||!window.isSecureContext){notify('Open the app using its HTTPS website or localhost to install it.');return;}
     if(/iphone|ipad|ipod/i.test(navigator.userAgent)){notify('In Safari, tap Share, then Add to Home Screen.');return;}
-    notify('Open the browser menu and choose Install app or Add to Home Screen.');
+    if('onbeforeinstallprompt' in window){
+      const splashInstall=$('splash-install');
+      if(splashInstall){splashInstall.textContent='Preparing install?';setTimeout(()=>{if(splashInstall.isConnected&&splashInstall.textContent==='Preparing install?')splashInstall.textContent='INSTALL shortcut';},2500);}
+      notify('The browser has not made installation available yet. If this app is already installed, open its shortcut; otherwise try Install again shortly.');
+      return;
+    }
+    notify('This browser does not offer an in-page install prompt. Use its Add to Home Screen option.');
   });
   if('serviceWorker' in navigator&&window.isSecureContext){
     const localTest=['localhost','127.0.0.1','[::1]'].includes(location.hostname);

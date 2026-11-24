@@ -25,6 +25,11 @@ The new interface, icons, splash and slider are embedded below. -->
   <link rel="stylesheet" href="weathered-theme.css?v=1">
   <link rel="stylesheet" href="shattered-theme.css?v=1">
   <script>
+  // Capture install eligibility before deferred player modules initialize.
+  window.retroDeferredInstallPrompt=null;
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault();window.retroDeferredInstallPrompt=event;
+  });
   // Disable the retired mesh engine before app.js initializes.
   try{localStorage.setItem('retrotvra.visualizer-pattern.v5','off');}catch{}
   </script>
@@ -37,8 +42,8 @@ The new interface, icons, splash and slider are embedded below. -->
   <script defer src="audio-meter.js?v=4.1.13"></script>
   <script defer src="hardware-feedback.js?v=1.0.9"></script>
   <script src="station-category.js?v=2"></script>
-  <script defer src="preset-defaults.js?v=4.1.70"></script>
-  <script defer src="app.js?v=4.1.81"></script>
+  <script defer src="preset-defaults.js?v=4.1.71"></script>
+  <script defer src="app.js?v=4.1.85"></script>
 <style id="compact-receiver-design">
 :root{--ux-metal: #b8a397; --ux-ink: #383631; --ux-green: #8bee87; --ux-dark: #171b18; --ux-edge: #75665c;}
 html{min-height: 100%; color-scheme: light; background: rgb(48, 32, 25) !important;}
@@ -105,7 +110,10 @@ body.broadcast-console main.retro-app > #presets-screen.active,body.broadcast-co
 .ux-splash-sound{position: absolute; left: 50%; bottom: max(48px, env(safe-area-inset-bottom)); z-index: 2; transform: translateX(-50%); padding: 12px 26px; border: 1px solid rgba(255, 255, 255, 0.55); border-radius: 26px; background: rgba(0, 0, 0, 0.42); color: rgb(255, 255, 255); font: 700 12px Arial; letter-spacing: 3px; white-space: nowrap; pointer-events: none; animation: ux-splash-pulse 1.6s ease-in-out infinite;}
 @keyframes ux-splash-pulse{50%{opacity: 0.45;}}
 @media (prefers-reduced-motion: reduce){.ux-splash-sound{animation: none;}}
-#welcome-splash-v2.ux-splash #tuning-enter{position: absolute !important; top: max(14px, env(safe-area-inset-top)) !important; right: max(14px, env(safe-area-inset-right)) !important; z-index: 2 !important; min-width: 0 !important; min-height: 34px !important; margin: 0px !important; padding: 8px 16px !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; border-radius: 17px !important; background: rgba(0, 0, 0, 0.38) !important; color: rgba(255, 255, 255, 0.85) !important; font: 700 10px Arial !important; letter-spacing: 2px !important; box-shadow: none !important; transform: none !important;}
+#welcome-splash-v2 .ux-splash-actions{position:absolute;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;}
+#welcome-splash-v2 .ux-splash-actions .ux-splash-sound{position:static;transform:none;pointer-events:auto;animation:none;letter-spacing:1px;cursor:pointer;}
+#welcome-splash-v2.ux-splash #tuning-enter{position:static!important;min-height:34px!important;margin:0!important;padding:8px 22px!important;border:1px solid rgba(255,255,255,.35)!important;border-radius:17px!important;background:rgba(0,0,0,.38)!important;color:rgba(255,255,255,.85)!important;font:700 10px Arial!important;letter-spacing:2px!important;box-shadow:none!important;transform:none!important;}
+
 .ux-splash button:hover{filter: brightness(1.12);}
 .ux-channel-dialog{width: min(92vw, 400px); padding: 24px; border: 1px solid rgb(121, 103, 86); border-radius: 20px; background: rgb(199, 179, 165); color: rgb(61, 52, 46); font: 14px Arial; box-shadow: rgba(0, 0, 0, 0.333) 0px 25px 70px;}
 .ux-channel-dialog::backdrop{background: rgba(32, 24, 16, 0.6); backdrop-filter: blur(5px);}
@@ -1049,100 +1057,7 @@ body.broadcast-console #ux-receiver.ux-receiver{
   pointer-events:none;
   background:#090b0d;
 }
-.ux-native-visualizer{
-  position:absolute;
-  inset:0 0 72px;
-  z-index:3;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  color:#e8b86b;
-  background:radial-gradient(circle at 50% 48%,rgba(42,79,81,.22),transparent 46%);
-}
-#ux-radio-stage .ux-native-visualizer{display:none!important}
-.ux-native-waves{
-  position:absolute;
-  width:78%;
-  height:52%;
-  border:1px solid rgba(103,145,149,.28);
-  border-radius:50%;
-  transform:scaleY(.72);
-  box-shadow:0 0 0 18px rgba(76,118,122,.045),0 0 0 40px rgba(76,118,122,.035);
-}
-.ux-native-record{
-  position:relative;
-  width:min(68%,300px);
-  aspect-ratio:1;
-  border:2px solid #26383d;
-  border-radius:50%;
-  background:
-    repeating-radial-gradient(circle,transparent 0 3px,rgba(102,130,134,.13) 4px 5px),
-    radial-gradient(circle,#e4ad60 0 3%,#6d4d2e 3.5% 15%,#111a1d 16% 48%,#070d0f 49% 100%);
-  box-shadow:0 18px 35px rgba(0,0,0,.48),inset 0 0 25px rgba(0,0,0,.75);
-}
-.ux-native-record:before{
-  content:"R R / T V";
-  position:absolute;
-  inset:31%;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  color:#172326;
-  background:linear-gradient(145deg,#efbf72,#b57d3d);
-  font:700 9px/1 "Courier New",monospace;
-  letter-spacing:1px;
-}
-.ux-native-record:after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:8px;
-  height:8px;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:#0a1012;
-  box-shadow:0 0 0 2px rgba(246,204,127,.22);
-}
-.ux-native-cassette{
-  display:none;
-  position:relative;
-  width:min(82%,360px);
-  aspect-ratio:1.65;
-  padding:18px;
-  border:2px solid #526c70;
-  border-radius:15px;
-  background:linear-gradient(145deg,#24363a,#101a1d);
-  box-shadow:0 18px 35px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.08);
-}
-.ux-native-cassette:before{
-  content:"";
-  position:absolute;
-  left:20px;
-  right:20px;
-  top:27px;
-  height:42%;
-  border:2px solid #b88647;
-  border-radius:10px;
-  background:
-    radial-gradient(circle at 27% 50%,#121a1c 0 12%,#d4a45e 13% 17%,#293b3f 18% 31%,transparent 32%),
-    radial-gradient(circle at 73% 50%,#121a1c 0 12%,#d4a45e 13% 17%,#293b3f 18% 31%,transparent 32%),
-    #d8b06b;
-}
-.ux-native-cassette:after{
-  content:"COOL RETRO RADIO";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:13px;
-  color:#dcb16b;
-  font:700 10px/1 "Courier New",monospace;
-  letter-spacing:1.5px;
-  text-align:center;
-}
-.ux-native-visualizer[data-kind="cassette"] .ux-native-record{display:none}
-.ux-native-visualizer[data-kind="cassette"] .ux-native-cassette{display:block}
-#ux-receiver.ux-on .ux-native-record{animation:ux-record-spin 7s linear infinite}
+
 @keyframes ux-record-spin{to{transform:rotate(360deg)}}
 
 /* Bottom controls match the reference hardware layout. */
@@ -2930,6 +2845,437 @@ body.broadcast-console main.retro-app{
   }
 }
 </style>
+<style id="ux-polish">
+/* Theme palettes: the receiver reads these variables, Settings switches data-ux-theme on <html>. */
+:root,html[data-ux-theme="steel"]{
+  --uxp-bg1:#26353e;--uxp-bg2:#131b20;--uxp-c1:#526773;--uxp-c2:#394b57;--uxp-c3:#30414c;--uxp-edge:#657985;
+  --uxp-ring1:#5f7c8d;--uxp-ring2:#4b6575;--uxp-key1:#7396aa;--uxp-key2:#54768a;--uxp-keyedge:#1e3744;
+  --uxp-ink:#f2fbfd;--uxp-accent:#9fe3f5;
+}
+html[data-ux-theme="ocean"]{--uxp-bg1:#1d2b45;--uxp-bg2:#0c1220;--uxp-c1:#46649a;--uxp-c2:#324a76;--uxp-c3:#28395c;--uxp-edge:#6c88bd;--uxp-ring1:#5878b0;--uxp-ring2:#44609a;--uxp-key1:#7ba0dc;--uxp-key2:#5a7fbd;--uxp-keyedge:#172a4a;--uxp-accent:#a8d0ff}
+html[data-ux-theme="forest"]{--uxp-bg1:#1f3327;--uxp-bg2:#0c1510;--uxp-c1:#4f7059;--uxp-c2:#3a5443;--uxp-c3:#2e4235;--uxp-edge:#6e9378;--uxp-ring1:#5f8a6b;--uxp-ring2:#4a6f55;--uxp-key1:#7fb08f;--uxp-key2:#5a8b6a;--uxp-keyedge:#17301f;--uxp-accent:#a8f0bd}
+html[data-ux-theme="wine"]{--uxp-bg1:#3a2029;--uxp-bg2:#150b10;--uxp-c1:#7d4756;--uxp-c2:#5d3340;--uxp-c3:#4a2832;--uxp-edge:#a06a79;--uxp-ring1:#94566a;--uxp-ring2:#754255;--uxp-key1:#bd7a8b;--uxp-key2:#96566a;--uxp-keyedge:#3a1520;--uxp-accent:#ffbccb}
+html[data-ux-theme="amber"]{--uxp-bg1:#3a2c1b;--uxp-bg2:#150f08;--uxp-c1:#8c6c46;--uxp-c2:#69502f;--uxp-c3:#523d24;--uxp-edge:#b38d5f;--uxp-ring1:#a07c50;--uxp-ring2:#826139;--uxp-key1:#cfa468;--uxp-key2:#a87f45;--uxp-keyedge:#3d2a12;--uxp-accent:#ffd695}
+html[data-ux-theme="graphite"]{--uxp-bg1:#30353b;--uxp-bg2:#101214;--uxp-c1:#5b6168;--uxp-c2:#41464c;--uxp-c3:#33373c;--uxp-edge:#7d848c;--uxp-ring1:#6d737b;--uxp-ring2:#565b62;--uxp-key1:#8f969f;--uxp-key2:#6c737c;--uxp-keyedge:#1f2327;--uxp-accent:#e3e9f0}
+
+body.broadcast-console{background:radial-gradient(circle at 50% 8%,var(--uxp-bg1) 0,var(--uxp-bg2) 46%,#080c0f 100%)!important}
+body.broadcast-console #ux-receiver#ux-receiver{
+  background:
+    linear-gradient(112deg,rgba(255,255,255,.11),transparent 27%),
+    radial-gradient(circle at 18% 12%,rgba(255,255,255,.1),transparent 34%),
+    linear-gradient(155deg,var(--uxp-c1),var(--uxp-c2) 57%,var(--uxp-c3))!important;
+  border-color:var(--uxp-edge)!important;
+}
+
+/* Slightly raised textured panel; layout and texture placement stay unchanged. */
+body.broadcast-console #ux-receiver#ux-receiver>.ux-hardware-deck:before{
+  box-shadow:
+    inset 1px 1px 1px rgba(218,237,247,.7),
+    inset -1px -1px 1px rgba(2,10,16,.8),
+    0 2px 0 rgba(5,16,24,.9),
+    1px 5px 7px rgba(2,9,15,.85);
+}
+
+/* Lift the badge visually without changing control layout. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 -12px}
+
+/* Larger white page headings; card text remains untouched. */
+body.broadcast-console #presets-screen>.screen-heading .screen-title,
+body.broadcast-console #explore-screen>.screen-heading .screen-title{
+  color:#fff!important;
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif!important;
+  font-size:clamp(28px,calc(24px + .65vw),34px)!important;
+  font-weight:500!important;
+  line-height:1.15!important;
+  letter-spacing:.3px!important;
+  text-shadow:none!important;
+}
+body.broadcast-console #explore-screen>.screen-heading .explore-mode-label{
+  color:#fff!important;
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif!important;
+  font-size:clamp(22px,calc(19px + .5vw),28px)!important;
+  font-weight:500!important;
+  line-height:1.15!important;
+  height:auto!important;
+  letter-spacing:.3px!important;
+}
+body.broadcast-console #explore-screen>.screen-heading .explore-mode-label .ux-sr-only{
+  position:static!important;
+  width:auto!important;height:auto!important;
+  padding:0!important;margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;clip-path:none!important;
+  white-space:normal!important;
+}
+/* Readable top-page controls only; station/result card typography is untouched. */
+body.broadcast-console #presets-screen>.ux-browser-close,
+body.broadcast-console #presets-screen>.preset-tabs>button,
+body.broadcast-console #explore-screen>.ux-browser-close,
+body.broadcast-console #explore-screen>.browser-source>button,
+body.broadcast-console #explore-screen>.explore-search-row>.discover-button,
+body.broadcast-console #explore-screen>.explore-filters>summary{
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif!important;
+  font-size:clamp(14px,calc(12px + .4vw),17px)!important;
+  font-weight:500!important;
+  line-height:1.3!important;
+  letter-spacing:.2px!important;
+  text-shadow:none!important;
+  min-height:42px!important;
+}
+body.broadcast-console #presets-screen>.preset-tabs>button>b,
+body.broadcast-console #explore-screen>.explore-search-row>.discover-button>span{
+  font:inherit!important;
+  letter-spacing:inherit!important;
+}
+/* Directional colour follows the PNG silhouette over a dark backing shadow. */
+#ux-receiver.ux-on .ux-control-badge{
+  animation:badge-edge-light 4s linear infinite;
+}
+#ux-receiver:not(.ux-on) .ux-control-badge{
+  animation:none;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.8))!important;
+}
+@keyframes badge-edge-light{
+  0%,100%{filter:drop-shadow(0 2px 3px #000) drop-shadow(0 0 3px rgba(0,0,0,.9)) drop-shadow(1px 0 1px #63efff) drop-shadow(-1px 0 1px #ff8cc9)}
+  25%{filter:drop-shadow(0 2px 3px #000) drop-shadow(0 0 3px rgba(0,0,0,.9)) drop-shadow(0 1px 1px #9b86ff) drop-shadow(0 -1px 1px #ffcf7e)}
+  50%{filter:drop-shadow(0 2px 3px #000) drop-shadow(0 0 3px rgba(0,0,0,.9)) drop-shadow(-1px 0 1px #ff8cc9) drop-shadow(1px 0 1px #63efff)}
+  75%{filter:drop-shadow(0 2px 3px #000) drop-shadow(0 0 3px rgba(0,0,0,.9)) drop-shadow(0 -1px 1px #ffcf7e) drop-shadow(0 1px 1px #9b86ff)}
+}
+@media(prefers-reduced-motion:reduce){
+  #ux-receiver.ux-on .ux-control-badge{
+    animation:none;
+    filter:drop-shadow(0 2px 3px #000) drop-shadow(0 0 1px #63efff);
+  }
+}
+/* Reference hardware finish: matte circular rocker and softly bevelled square keys.
+   Surface styling only; dimensions, icon styling and button layout remain intact. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad{
+  border:2px solid #182932!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(ellipse at 24% 20%,rgba(2,9,15,.21),transparent 70%),
+    radial-gradient(ellipse at 66% 82%,rgba(215,235,245,.09),transparent 72%),
+    linear-gradient(145deg,var(--uxp-ring2),var(--uxp-ring1))!important;
+  box-shadow:
+    inset 1px 2px 2px rgba(215,235,245,.35),
+    inset -1px -2px 2px rgba(4,13,20,.45),
+    0 0 0 1px rgba(3,11,17,.7),
+    0 3px 0 #182932,
+    0 5px 0 rgba(10,20,27,.85),
+    1px 7px 8px rgba(2,9,15,.55),
+    -1px -1px 1px rgba(208,231,243,.16)!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad:after{
+  inset:3px!important;
+  border:1px solid transparent!important;
+  border-top-color:rgba(208,231,243,.28)!important;
+  border-left-color:rgba(208,231,243,.16)!important;
+  border-right-color:rgba(2,9,15,.25)!important;
+  border-bottom-color:rgba(2,9,15,.4)!important;
+  background:radial-gradient(ellipse at 65% 78%,rgba(215,235,245,.035),transparent 70%)!important;
+  box-shadow:
+    inset 2px 3px 7px rgba(2,9,15,.22),
+    inset -1px -2px 5px rgba(208,231,243,.1)!important;
+}
+/* Raised centre key with a fine engraved circular outline. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play{
+  border:1px solid rgba(7,19,27,.72)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(ellipse at 72% 85%,rgba(215,235,245,.1),transparent 65%),
+    linear-gradient(145deg,var(--uxp-ring2),var(--uxp-ring1))!important;
+  box-shadow:
+    inset 0 1px 1px rgba(208,231,243,.2),
+    inset 0 -1px 1px rgba(3,12,19,.3),
+    0 2px 0 rgba(10,22,30,.7),
+    0 3px 4px rgba(2,9,15,.28)!important;
+  outline:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play:before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:3px!important;
+  border:1px solid rgba(6,18,26,.3)!important;
+  border-radius:50%!important;
+  background:none!important;
+  box-shadow:0 1px 0 rgba(208,231,243,.14)!important;
+  pointer-events:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play:after{
+  content:none!important;
+  display:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play:active{
+  box-shadow:
+    inset 0 1px 3px rgba(2,9,15,.35),
+    0 1px 0 rgba(10,22,30,.6)!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play:focus-visible{
+  outline:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad #ux-play:focus-visible>.ux-icon{
+  filter:drop-shadow(0 0 3px var(--uxp-accent))!important;
+}
+/* The gauge shares the rocker's coordinate system from its first paint. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-dpad>.ux-volume-indicator{
+  position:absolute!important;
+  inset:-4px!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  transform:none!important;
+  pointer-events:none!important;
+}
+/* Softly moulded keys: matching rocker colour, shallow dish, lower-right reflection. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key{
+  border:2px solid #182932!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(ellipse at 76% 88%,rgba(215,235,245,.17),transparent 56%),
+    radial-gradient(ellipse at 50% 43%,rgba(2,9,15,.2),transparent 72%),
+    linear-gradient(145deg,var(--uxp-ring2),var(--uxp-ring1))!important;
+  box-shadow:
+    inset 1px 2px 4px rgba(3,12,19,.24),
+    inset -1px -1px 3px rgba(3,12,19,.16),
+    0 -2px 0 #243b49,
+    0 -3px 0 rgba(8,20,29,.8),
+    0 -4px 1px rgba(205,225,236,.14),
+    1px 3px 5px rgba(3,11,17,.42),
+    1px 1px 2px rgba(205,225,236,.2)!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key:before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  border:0!important;
+  background:
+    radial-gradient(circle at 6% 6%,rgba(2,9,15,.13),transparent 24%),
+    radial-gradient(circle at 94% 7%,rgba(2,9,15,.17),transparent 25%),
+    radial-gradient(circle at 94% 94%,rgba(2,9,15,.12),transparent 24%),
+    radial-gradient(ellipse at 87% 90%,rgba(215,235,245,.1),transparent 37%)!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key:after{
+  background:none!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key:hover:not(:active){
+  box-shadow:
+    inset 1px 2px 4px rgba(3,12,19,.24),
+    inset -1px -1px 3px rgba(3,12,19,.16),
+    0 -2px 0 #243b49,
+    0 -3px 0 rgba(8,20,29,.8),
+    0 -4px 1px rgba(205,225,236,.14),
+    1px 3px 5px rgba(3,11,17,.42),
+    1px 1px 2px rgba(205,225,236,.2)!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key:active{
+  background:
+    radial-gradient(ellipse at 76% 88%,rgba(215,235,245,.12),transparent 56%),
+    radial-gradient(ellipse at 50% 43%,rgba(2,9,15,.28),transparent 72%),
+    linear-gradient(145deg,var(--uxp-ring2),var(--uxp-ring1))!important;
+  box-shadow:
+    inset 2px 3px 5px rgba(3,12,19,.4),
+    inset -1px -1px 2px rgba(205,225,236,.1),
+    1px 1px 1px rgba(205,225,236,.12)!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-action-key svg{
+  stroke:var(--uxp-ink)!important;
+  filter:drop-shadow(0 1px 1px rgba(6,16,22,.4));
+}
+#ux-receiver .ux-dpad #ux-play .ux-icon{fill:var(--uxp-ink)!important;color:var(--uxp-ink)!important;filter:drop-shadow(0 1px 2px rgba(6,16,22,.45))}
+#ux-receiver .ux-dpad .left:before,
+#ux-receiver .ux-dpad .right:before{border-bottom-color:var(--uxp-ink)!important;filter:drop-shadow(0 1px 1px rgba(6,16,22,.45))}
+
+/* Volume: plus on top, minus below, sized to match the prev/next triangles */
+#ux-receiver .ux-dpad .up:before,
+#ux-receiver .ux-dpad .down:before{
+  content:""!important;
+  width:15px!important;height:3px!important;
+  border:0!important;border-radius:2px!important;
+  background:var(--uxp-ink)!important;
+  box-shadow:0 1px 1px rgba(6,16,22,.45)!important;
+  transform:translate(-50%,-50%)!important;
+}
+#ux-receiver .ux-dpad .up:after{
+  content:""!important;display:block!important;
+  position:absolute!important;left:50%!important;top:50%!important;
+  width:3px!important;height:15px!important;
+  border-radius:2px!important;
+  background:var(--uxp-ink)!important;
+  box-shadow:0 1px 1px rgba(6,16,22,.45)!important;
+  transform:translate(-50%,-50%)!important;
+}
+#ux-receiver .ux-dpad .down:after{content:none!important;display:none!important}
+#ux-receiver .ux-dpad .up:active:before,#ux-receiver .ux-dpad .up:active:after,
+#ux-receiver .ux-dpad .down:active:before{background:var(--uxp-accent)!important}
+
+/* Neon volume arc: the mask belongs to the inner stroke so its glow can spread. */
+#ux-receiver .ux-volume-indicator{
+  transform:none!important;
+  background:none!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  filter:
+    drop-shadow(0 0 2px var(--uxp-accent))
+    drop-shadow(0 0 5px var(--uxp-accent))
+    drop-shadow(0 0 9px rgba(110,225,255,.5))!important;
+}
+#ux-receiver .ux-volume-indicator:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:conic-gradient(from -135deg,var(--uxp-accent) 0deg calc(var(--volume-angle,0deg) * .75),rgba(180,220,235,.09) calc(var(--volume-angle,0deg) * .75) 270deg,transparent 270deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--volume-stroke,1px)),#000 calc(100% - var(--volume-stroke,1px) + .5px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - var(--volume-stroke,1px)),#000 calc(100% - var(--volume-stroke,1px) + .5px));
+  pointer-events:none;
+}
+
+/* Channel name: thin white lettering */
+body.broadcast-console #ux-receiver#ux-receiver .ux-channel-title{
+  color:#fff!important;
+  font-family:"Segoe UI","Helvetica Neue",Roboto,Arial,sans-serif!important;
+  font-weight:300!important;
+  letter-spacing:1.6px!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+
+/* Bottom utility row */
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls{
+  bottom:-46px!important;
+  width:min(100%,362px)!important;
+  padding:0 2px!important;
+  gap:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(11,minmax(0,1fr))!important;
+  align-items:center!important;
+}
+/* A leading half-step puts the fifth (heart) button on the badge centreline. */
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls:before{
+  content:"";grid-column:1;grid-row:1;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button{
+  justify-self:center!important;
+  position:relative!important;
+  flex:1 1 0!important;
+  width:auto!important;max-width:34px!important;min-width:24px!important;
+  height:34px!important;min-height:34px!important;
+  padding:0!important;
+  border-radius:50%!important;
+  color:rgba(238,248,251,.9)!important;
+  -webkit-tap-highlight-color:transparent;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls svg{
+  width:20px!important;height:20px!important;stroke-width:1.8!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button:hover{color:#fff!important;background:rgba(255,255,255,.1)!important}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button:active{background:rgba(255,255,255,.18)!important}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button:focus-visible{outline:2px solid var(--uxp-accent)!important;outline-offset:1px}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls .ux-secondary-play svg{width:20px!important;height:20px!important;fill:currentColor!important}
+body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is-active{color:var(--uxp-accent)!important}
+.ux-secondary-controls .ux-sec-favourite.is-active svg{fill:currentColor!important}
+.ux-secondary-controls .ux-sec-mute .silent,
+.ux-secondary-controls .ux-sec-mute.is-active .sound{display:none!important}
+.ux-secondary-controls .ux-sec-mute.is-active .silent{display:block!important}
+.ux-secondary-controls .ux-sec-settings.sleep-armed:after{
+  content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;
+  background:var(--uxp-accent);box-shadow:0 0 5px var(--uxp-accent);
+}
+@media(max-width:900px) and (orientation:landscape) and (max-height:600px){
+  body.broadcast-console #ux-receiver#ux-receiver>.ux-hardware-deck{
+    height:auto!important;min-height:0!important;
+    align-self:stretch!important;align-content:center!important;
+    grid-template-rows:auto auto auto!important;
+    row-gap:8px!important;
+  }
+  /* Textured panel runs the full height of the column, down behind the serial strip */
+  body.broadcast-console #ux-receiver#ux-receiver>.ux-hardware-deck:before{
+    inset:0 -8px -23px!important;
+  }
+  body.broadcast-console #ux-receiver#ux-receiver .ux-bottom-trim{position:relative;z-index:1}
+  /* Badge joins the layout above the controls, larger */
+  body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{
+    position:relative!important;left:auto!important;top:auto!important;transform:none!important;
+    grid-column:1 / -1!important;grid-row:1!important;justify-self:center!important;
+    width:auto!important;max-width:100%!important;height:64px!important;margin:0!important;
+  }
+  body.broadcast-console #ux-receiver#ux-receiver .ux-dpad{grid-row:2!important;grid-column:1!important}
+  body.broadcast-console #ux-receiver#ux-receiver .ux-hardware-right{grid-row:2!important;grid-column:2!important}
+  body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls{
+    position:relative!important;left:auto!important;bottom:auto!important;
+    transform:none!important;
+    grid-column:1 / -1!important;grid-row:3!important;
+    width:100%!important;margin:4px 0 0!important;padding:0 4px!important;
+    z-index:3;
+  }
+  body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button{max-width:36px!important;height:34px!important;min-height:34px!important}
+}
+
+/* Settings dialog */
+.ux-settings-dialog{
+  width:min(92vw,420px);max-height:88dvh;padding:0;overflow:auto;
+  border:2px solid var(--uxp-edge);border-radius:22px;
+  background:linear-gradient(160deg,var(--uxp-c1),var(--uxp-c3));
+  color:var(--uxp-ink);font:14px "Segoe UI","Helvetica Neue",Roboto,Arial,sans-serif;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+}
+.ux-settings-dialog::backdrop{background:rgba(4,10,14,.72);backdrop-filter:blur(4px)}
+.ux-settings-dialog form{padding:18px 18px 14px}
+.ux-settings-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ux-settings-head h2{margin:0;font-size:22px;font-weight:300;letter-spacing:1.5px}
+.ux-settings-close{width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:var(--uxp-ink);font-size:24px;line-height:1;cursor:pointer}
+.ux-settings-block{padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
+.ux-settings-block h3{margin:0 0 10px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(242,251,253,.72)}
+.ux-swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ux-swatches button{display:flex;align-items:center;gap:9px;padding:8px 10px;border:2px solid transparent;border-radius:12px;background:rgba(0,0,0,.2);color:var(--uxp-ink);font:inherit;cursor:pointer}
+.ux-swatches i{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.ux-swatches [data-ux-theme="steel"] i{background:linear-gradient(145deg,#7396aa,#30414c)}
+.ux-swatches [data-ux-theme="ocean"] i{background:linear-gradient(145deg,#7ba0dc,#28395c)}
+.ux-swatches [data-ux-theme="forest"] i{background:linear-gradient(145deg,#7fb08f,#2e4235)}
+.ux-swatches [data-ux-theme="wine"] i{background:linear-gradient(145deg,#bd7a8b,#4a2832)}
+.ux-swatches [data-ux-theme="amber"] i{background:linear-gradient(145deg,#cfa468,#523d24)}
+.ux-swatches [data-ux-theme="graphite"] i{background:linear-gradient(145deg,#8f969f,#33373c)}
+.ux-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ux-chips button{min-height:40px;padding:8px 14px;border:2px solid transparent;border-radius:20px;background:rgba(0,0,0,.2);color:var(--uxp-ink);font:inherit;cursor:pointer}
+.ux-swatches button[aria-checked="true"],.ux-chips button[aria-checked="true"]{border-color:var(--uxp-accent);background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 12px rgba(255,255,255,.12)}
+.ux-settings-dialog button:focus-visible{outline:2px solid var(--uxp-accent);outline-offset:2px}
+.ux-settings-note{margin:10px 0 0;font-size:12px;color:rgba(242,251,253,.7)}
+@media(max-width:560px){
+  .ux-settings-dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:22px 22px 0 0}
+}
+.ux-secondary-controls .ux-sec-favourite.is-active{color:#ff7d96!important}
+
+/* TV fullscreen: translucent control card so the picture stays visible */
+body>#tv-fullscreen-shell.ux-mobile-cinema #tv-video{
+  inset:0!important;width:100%!important;height:100%!important;
+  object-fit:contain!important;background:#000!important;border-radius:0!important;
+}
+body>#tv-fullscreen-shell.ux-mobile-cinema #tv-video::-webkit-media-controls{display:none!important}
+body>#tv-fullscreen-shell.ux-mobile-cinema .module-legend,
+body>#tv-fullscreen-shell.ux-mobile-cinema .tv-actions{display:none!important}
+body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls,
+#tv-fullscreen-shell:fullscreen .fullscreen-side-controls.ux-movable-controls{
+  background:rgba(14,22,28,.32)!important;
+  border-color:rgba(255,255,255,.16)!important;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:0 6px 22px rgba(0,0,0,.25)!important;
+  opacity:.9;transition:opacity .2s ease,background-color .2s ease;
+}
+body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:hover,
+body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:focus-within,
+body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:active{opacity:1;background:rgba(14,22,28,.55)!important}
+body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls button,
+#tv-fullscreen-shell:fullscreen .fullscreen-side-controls.ux-movable-controls button{
+  background:rgba(255,255,255,.1)!important;
+  border-color:rgba(255,255,255,.22)!important;
+  color:#fff!important;
+}
+</style>
 <script>
 /* Use saved favorites and the existing player, including its HLS/YouTube handling. */
 (()=>{
@@ -3125,7 +3471,7 @@ body.broadcast-console main.retro-app{
 <body class="broadcast-console">
 <section class="ux-splash" id="welcome-splash-v2" role="dialog" aria-modal="true" aria-label="RetroRADtv intro">
 <video class="ux-splash-video" src="assets/splash.mp4#t=0.1" playsinline preload="auto" aria-hidden="true"></video>
-<button id="tuning-enter" type="button" aria-label="Skip intro">SKIP</button></section><section class="ux-receiver ux-show-player" id="ux-receiver" data-mode="radio" aria-label="Retro radio and television receiver">
+<div class="ux-splash-actions"><button class="ux-splash-sound" id="splash-install" type="button">INSTALL shortcut</button><button id="tuning-enter" type="button" aria-label="Skip intro">SKIP</button></div></section><section class="ux-receiver ux-show-player" id="ux-receiver" data-mode="radio" aria-label="Retro radio and television receiver">
 <div class="ux-screen">
   <div id="ux-radio-stage" class="ux-radio-stage" aria-label="Radio visualizer"></div>
   <div class="ux-telemetry"><span><i class="ux-led"></i><span id="ux-live">READY</span></span><span class="ux-battery" aria-hidden="true"></span></div>
@@ -3167,9 +3513,47 @@ body.broadcast-console main.retro-app{
 <nav class="ux-nav" aria-label="Player navigation"><button class="ux-pill" id="ux-tuner" aria-pressed="true">NOW PLAYING</button></nav>
 <div class="ux-controls"><div class="ux-modes" role="group" aria-label="Playback mode"><button id="ux-tv" aria-pressed="false">TV</button><button id="ux-radio" aria-pressed="true">RADIO</button></div><div class="ux-utility"><button class="ux-round" id="ux-add" aria-label="Add direct stream" title="Add direct stream">+</button><button class="ux-round" id="ux-expand" aria-label="Toggle fullscreen" title="Fullscreen">□</button></div></div>
 <div class="ux-volume"><button class="ux-volume-speaker" type="button" aria-hidden="true"></button><input id="ux-volume" aria-label="Volume" type="range" min="0" max="100" step="1" value="20"><output id="ux-volume-number" for="ux-volume">20%</output></div>
-<div class="ux-bottom-trim"><span class="ux-microvents" aria-hidden="true"></span><span>RR-TV / S/N 2607 0418</span><span class="ux-audio-jack" title="3.5mm audio jack"></span></div>
+<div class="ux-bottom-trim"><span class="ux-microvents" aria-hidden="true"></span><span>andamansikkim.blogspot.com</span><span class="ux-audio-jack" title="3.5mm audio jack"></span></div>
 </section><p class="ux-message" id="ux-message" role="status" aria-live="polite">Choose a station. Make yourself at home.</p>
 <dialog class="ux-channel-dialog" id="ux-stream-dialog" aria-labelledby="ux-stream-title"><form id="ux-stream-form" method="dialog"><h2 id="ux-stream-title">Tune something new.</h2><p>Add a direct audio or video stream URL. Webpage links such as YouTube watch pages cannot be played here.</p><label for="ux-stream-kind">SOURCE</label><select id="ux-stream-kind"><option value="radio">Radio</option><option value="tv">Television</option></select><label for="ux-stream-name">STATION NAME</label><input id="ux-stream-name" placeholder="My station" maxlength="100"><label for="ux-stream-url">STREAM URL</label><input id="ux-stream-url" type="url" placeholder="https://example.com/live.mp3" required=""><div class="ux-dialog-actions"><button class="ux-pill" value="cancel" formnovalidate="">Cancel</button><button class="ux-pill" value="play">Tune in ↗</button></div></form></dialog>
+<dialog class="ux-settings-dialog" id="ux-settings" aria-labelledby="ux-settings-title">
+  <form method="dialog">
+    <header class="ux-settings-head"><h2 id="ux-settings-title">Settings</h2><button class="ux-settings-close" value="close" aria-label="Close settings">&#215;</button></header>
+    <section class="ux-settings-block" aria-labelledby="ux-theme-label">
+      <h3 id="ux-theme-label">Theme colour</h3>
+      <div class="ux-swatches" id="ux-theme-group" role="radiogroup" aria-label="Theme colour">
+        <button type="button" role="radio" data-ux-theme="steel" aria-label="Steel"><i></i><span>Steel</span></button>
+        <button type="button" role="radio" data-ux-theme="ocean" aria-label="Ocean"><i></i><span>Ocean</span></button>
+        <button type="button" role="radio" data-ux-theme="forest" aria-label="Forest"><i></i><span>Forest</span></button>
+        <button type="button" role="radio" data-ux-theme="wine" aria-label="Wine"><i></i><span>Wine</span></button>
+        <button type="button" role="radio" data-ux-theme="amber" aria-label="Amber"><i></i><span>Amber</span></button>
+        <button type="button" role="radio" data-ux-theme="graphite" aria-label="Graphite"><i></i><span>Graphite</span></button>
+      </div>
+    </section>
+    <section class="ux-settings-block" aria-labelledby="ux-sleep-label">
+      <h3 id="ux-sleep-label">Sleep timer</h3>
+      <div class="ux-chips" id="ux-sleep-group" role="radiogroup" aria-label="Sleep timer">
+        <button type="button" role="radio" data-ux-sleep="15">15 min</button>
+        <button type="button" role="radio" data-ux-sleep="30">30 min</button>
+        <button type="button" role="radio" data-ux-sleep="60">60 min</button>
+        <button type="button" role="radio" data-ux-sleep="0">Off</button>
+      </div>
+      <p class="ux-settings-note" id="ux-sleep-status" role="status">Sleep timer is off.</p>
+    </section>
+    <section class="ux-settings-block" aria-labelledby="ux-vis-label">
+      <h3 id="ux-vis-label">Radio visualiser</h3>
+      <div class="ux-chips" id="ux-vis-group" role="radiogroup" aria-label="Radio visualiser">
+        <button type="button" role="radio" data-ux-visualizer="dots">Classic dots</button>
+        <button type="button" role="radio" data-ux-visualizer="mesh">Flowing mesh</button>
+        <button type="button" role="radio" data-ux-visualizer="wave">Colour waves</button>
+        <button type="button" role="radio" data-ux-visualizer="halo">Particle halo</button>
+        <button type="button" role="radio" data-ux-visualizer="mix">Mix</button>
+        <button type="button" role="radio" data-ux-visualizer="off">Off</button>
+      </div>
+    </section>
+    <p class="ux-settings-note">Your choices are saved on this device.</p>
+  </form>
+</dialog>
   <main class="retro-app broadcast-chassis">
     <div class="rack-handle rack-handle-left" aria-hidden="true"><i></i><i></i><span></span></div>
     <div class="rack-handle rack-handle-right" aria-hidden="true"><i></i><i></i><span></span></div>
@@ -3512,6 +3896,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(buttons.some(button=>button.closest('.listener-dialog')))return;
     if(matchMedia('(max-width:900px)').matches){
       const drawer=$(tvVisible()?'tv-screen':'radio-screen').querySelector('.module-options');
+      if(!drawer)return;
       if(utilityDock.parentElement!==drawer)drawer.append(utilityDock);
       for(const button of buttons)if(button.parentElement!==utilityDock)utilityDock.append(button);
     }else for(const button of buttons)if(button.parentElement!==utilityHome)utilityHome.append(button);
@@ -3988,10 +4373,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   function setTVStyle(node,key,value){if(node.style.getPropertyValue(key)!==value||node.style.getPropertyPriority(key)!=='important')node.style.setProperty(key,value,'important');}
   function fillTVPicture(){
     if(!liveTVPicture)return;
-    for(const [key,value] of Object.entries({width:'100%',height:'100%','object-fit':'cover',inset:'0px',transform:'none'}))setTVStyle(video,key,value);
+    const fit='contain';
+    for(const [key,value] of Object.entries({width:'100%',height:'100%','object-fit':fit,inset:'0px',transform:'none'}))setTVStyle(video,key,value);
     const w=liveTVPicture.clientWidth,h=liveTVPicture.clientHeight;if(!w||!h)return;
     for(const frame of liveTVPicture.querySelectorAll('iframe')){
-      const width=Math.max(w,h*16/9),height=Math.max(h,w*9/16);
+      const width=Math.min(w,h*16/9),height=Math.min(h,w*9/16);
       for(const [key,value] of Object.entries({position:'absolute',width:width+'px',height:height+'px',left:'50%',top:'50%',right:'auto',bottom:'auto',transform:'translate(-50%, -50%)'}))setTVStyle(frame,key,value);
     }
   }
@@ -4003,13 +4389,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   const pictureObserver=new MutationObserver(mountTVPicture);
   pictureObserver.observe($('tv-fullscreen-shell'),{childList:true,subtree:true});
   new MutationObserver(fillTVPicture).observe(video,{attributes:true,attributeFilter:['style']});
+  new MutationObserver(fillTVPicture).observe($('tv-fullscreen-shell'),{attributes:true,attributeFilter:['class']});
   if(window.ResizeObserver)new ResizeObserver(fillTVPicture).observe(liveTVPicture);
   window.addEventListener('resize',fillTVPicture);document.addEventListener('fullscreenchange',fillTVPicture);
   for(const event of ['loadstart','loadedmetadata','loadeddata','play','playing','resize'])video.addEventListener(event,mountTVPicture);
   // Retain the original #tv-video parent, placeholder, iframe host and fullscreen controls.
   // In particular, never detach #tv-video from .tv-picture.
-  function dismiss(){splash.classList.add('ux-dismissed');splash.setAttribute('aria-hidden','true');splash.inert=true;$('ux-play').focus({preventScroll:true});setTimeout(()=>splash.remove(),400);}
-  $('tuning-enter').addEventListener('click',dismiss);
   // The original player starts the first radio preset after its library loads.
   function media(){return mode==='radio'?audio:video;}
   function originalClick(selector){const el=document.querySelector(selector);if(el){el.click();return true;}return false;}
@@ -4033,6 +4418,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const modeObserver=new MutationObserver(()=>{followOriginalMode();sync();});
   for(const node of [radioScreen,tvScreen,$('presets-screen'),$('explore-screen')])modeObserver.observe(node,{attributes:true,attributeFilter:['class']});
   video.addEventListener('play',()=>{paintMode('tv');sync();});
+  new MutationObserver(sync).observe($('tv-toggle'),{attributes:true,attributeFilter:['aria-label']});
   function setMode(value){
     if(mode!==value){media()?.pause();mode=value;}
     paintMode(mode);
@@ -4081,23 +4467,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       const input=$(id);if(input){input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));}
     }
     slider.style.setProperty('--ux-vol',value+'%');$('ux-volume-number').textContent=value+'%';
-    try{localStorage.setItem('retrorad.compact.volume',String(value));}catch{}
     sync();
   }
   slider.oninput=()=>changeVolume(slider.value);
   volumeUp.onclick=()=>changeVolume(Number(slider.value)+5);
   $('ux-mute').onclick=()=>{const m=media();if(m){m.muted=!m.muted;sync();}};
-  $('ux-play').onclick=async()=>{
-    const m=media();if(!m)return;
-    if(!m.paused){m.pause();return;}
-    const selector=mode==='radio'?'#radio-play':'#tv-toggle';
-    if(m.currentSrc||m.getAttribute('src')){
-      try{await m.play();}catch{showMessage('This stream could not start. Choose another station in Explore.');}
-    }else{
-      originalClick(selector);
-      if(!ready())showMessage('Choose a station in Favorites or Search, or add a stream with +.');
-    }
-  };
+  $('ux-play').onclick=()=>originalClick(mode==='radio'?'#radio-play':'#tv-toggle');
   $('ux-prev').onclick=()=>originalClick(mode==='radio'?'#radio-prev':'#tv-prev');
   $('ux-next').onclick=()=>originalClick(mode==='radio'?'#radio-next':'#tv-next');
   async function fullscreen(){
@@ -4145,7 +4520,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(window.ResizeObserver)new ResizeObserver(clampPosition).observe(toolbar);
   }
   function sync(){
-    const m=media(),playing=m&&!m.paused&&!m.ended;
+    const m=media(),playing=window.retroPlayer?.isPlaying(mode)??Boolean(m&&!m.paused&&!m.ended);
     shell.classList.toggle('ux-on',!!playing);
     $('ux-live').textContent=playing?'LIVE':m?.error?'OFFLINE':'READY';
     $('ux-play').setAttribute('aria-label',playing?'Pause':'Play');$('ux-play').setAttribute('aria-pressed',String(!!playing));
@@ -4154,7 +4529,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const volume=m?.muted?0:Math.round((m?.volume??.2)*100);slider.value=volume;slider.style.setProperty('--ux-vol',volume+'%');$('ux-volume-number').textContent=volume+'%';
     if(playing)showMessage(mode==='radio'?'Your world. On a different frequency.':'Live television · select fullscreen to expand.');
   }
-  for(const m of [audio,video])if(m){m.volume=.2;for(const event of ['play','pause','ended','volumechange','loadedmetadata','emptied'])m.addEventListener(event,sync);m.addEventListener('error',()=>{sync();showMessage('Stream unavailable. Choose another channel or try again.');});m.addEventListener('waiting',()=>showMessage('Connecting to the broadcast…'));m.addEventListener('playing',sync);}
+  for(const m of [audio,video])if(m){for(const event of ['play','pause','ended','volumechange','loadedmetadata','emptied'])m.addEventListener(event,sync);m.addEventListener('error',()=>{sync();showMessage('Stream unavailable. Choose another channel or try again.');});m.addEventListener('waiting',()=>showMessage('Connecting to the broadcast…'));m.addEventListener('playing',sync);}
   const radioTitle=document.querySelector('.radio-monitor-title b');
   for(const name of ['presets','explore']){
     const section=$(name+'-screen');if(!section)continue;
@@ -4166,16 +4541,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(event.submitter?.value==='cancel')return;
     event.preventDefault();const name=$('ux-stream-name').value.trim(),raw=$('ux-stream-url').value.trim();let url;
     try{url=new URL(raw);if(!['https:','http:'].includes(url.protocol))throw Error();}catch{$('ux-stream-url').setCustomValidity('Enter a valid HTTP or HTTPS stream URL.');$('ux-stream-url').reportValidity();return;}
-    const next=$('ux-stream-kind').value;setMode(next);const m=media();m.pause();
-    if(next==='tv'&&/\.m3u8(?:\?|$)/i.test(raw)&&window.Hls?.isSupported()){
-      if(window.uxHls)window.uxHls.destroy();window.uxHls=new Hls();window.uxHls.loadSource(raw);window.uxHls.attachMedia(video);window.uxHls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>showMessage('Press Play to start this channel.')));
-    }else{if(window.uxHls){window.uxHls.destroy();window.uxHls=null;}m.src=url.href;m.load();m.play().catch(()=>showMessage('Press Play to start, or check the stream URL.'));}
-    $(next==='radio'?'v4-radio-station':'v4-tv-station').textContent=name||'Custom stream';
-    if(next==='radio'&&radioTitle)radioTitle.textContent=name||'Custom stream';if(next==='tv')$('tv-title').textContent=name||'Custom stream';
+    const next=$('ux-stream-kind').value;
+    if(!window.retroPlayer){showMessage('Player is not ready. Please try again.');return;}
+    window.uxPresetGenres?.cancel();setMode(next);
+    window.retroPlayer.tune(next,{name:name||'Custom stream',url:url.href,url_resolved:url.href,stationuuid:url.href});
     dialog.close();sync();
   });$('ux-stream-url').oninput=()=>$('ux-stream-url').setCustomValidity('');
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&view!=='tuner')showView('tuner');});
-  try{const saved=localStorage.getItem('retrorad.compact.volume');if(saved!==null){audio.volume=video.volume=Math.max(0,Math.min(100,Number(saved)||0))/100;}}catch{}
   followOriginalMode();sync();
   // Make absent companion files explicit instead of presenting a fake loaded library.
   setTimeout(()=>{
@@ -4254,7 +4626,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  function update(){
   if(shell.dataset.mode!=='radio')return;
   if(details.parentElement!==stage)stage.append(details);
-  const title=identity.querySelector('.ux-channel-title')?.textContent?.trim()||art.querySelector('.radio-center-title')?.textContent?.trim()||'Choose a station';
+  const title=identity.querySelector('.ux-channel-title')?.title||art.querySelector('.radio-center-title')?.textContent?.trim()||'Choose a station';
   const rows=[];try{rows.push(...Object.values(JSON.parse(localStorage.getItem('retrotvra.radio-presets.v3')||'{}')));}catch{}try{rows.push(...(window.retroPresetRows?.('radio')||[]));}catch{}
   const station=rows.find(s=>normalize(s.name)===normalize(title))||{};
   let category;try{category=window.getStationCategory?.({...station,name:title});}catch{}
@@ -4283,10 +4655,11 @@ document.addEventListener('DOMContentLoaded',()=>{
  const frame=document.createElement('iframe');frame.id='ux-unified-radio-frame';frame.title='Radio visualization';frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
  frame.style.cssText='display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;border:0!important;background:#FAF6EC!important;z-index:4!important;pointer-events:none!important;';
  let ready=false,raf=0,lastSend=0;
- function visible(){return !document.hidden&&shell.dataset.mode==='radio'&&stage.getClientRects().length>0;}
+ function visible(){return !document.hidden&&shell.dataset.mode==='radio'&&shell.closest('main')?.dataset.view==='tuner'&&stage.getClientRects().length>0;}
  function send(){
   if(!ready)return;
-  const active=visible(),category=$('radio-station-strip')?.querySelector('.active[data-station-category]')?.dataset.stationCategory||art.dataset.stationCategory||$('ux-radio-details')?.dataset.stationCategory;
+  if(!mirrorFrame&&visible()&&!audio.paused)copyOriginal();
+   const active=visible(),category=$('radio-station-strip')?.querySelector('.active[data-station-category]')?.dataset.stationCategory||art.dataset.stationCategory||$('ux-radio-details')?.dataset.stationCategory;
   const details=$('ux-radio-details'),logo=details?.querySelector('.ux-radio-detail-logo');
   const data=active?window.uxRadioAnalysis?.read():null;
   frame.contentWindow.postMessage({type:'retrotv:unified-state',visible:active,
@@ -4300,57 +4673,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  function pump(now){raf=0;if(now-lastSend>=1000/30){lastSend=now;send();}if(visible()&&!audio.paused&&!audio.ended&&!audio.error)raf=requestAnimationFrame(pump);}
  function wake(){send();if(!raf&&ready&&visible()&&!audio.paused)raf=requestAnimationFrame(pump);if(!visible()&&raf){cancelAnimationFrame(raf);raf=0;}}
  addEventListener('message',event=>{if(event.source===frame.contentWindow&&event.data?.type==='retrotv:unified-ready'){ready=true;frame.classList.add('ux-visualizer-ready');wake();}});
- frame.srcdoc="\u003c!doctype html>\u003chtml>\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003cstyle>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#FAF6EC}canvas{display:block;width:100%;height:100%}\u003c/style>\u003c/head>\u003cbody>\u003ccanvas id=\"visualizerCanvas\" aria-label=\"Radio visualization\">\u003c/canvas>\u003cscript>(()=>{\n/* Only the canvas renderer runs here; audio and app controls stay in 12index. */\nconst canvas=document.getElementById('visualizerCanvas'),ctx=canvas.getContext('2d',{alpha:false});\nlet width=1,height=1,raf=0,lastPaint=0,coastUntil=0,visible=false,metrics=null,topInset=24,bottomInset=76;\nconst reduced=matchMedia('(prefers-reduced-motion:reduce)');\nconst labelPalettes=[{light:'#F57D61',base:'#F27154',shadow:'#E05E41',ink:'#FAF6EC'},{light:'#7895AC',base:'#506D88',shadow:'#344C64',ink:'#FAF6EC'},{light:'#84976A',base:'#657D4F',shadow:'#485C39',ink:'#FAF6EC'},{light:'#B7974E',base:'#8E702C',shadow:'#6D531F',ink:'#FAF6EC'}];\nfunction randomLabelPalette(previous){const options=previous?labelPalettes.filter(palette=>palette!==previous):labelPalettes;return options[Math.floor(Math.random()*options.length)];}\nconst state={mode:'stream',visualEffect:'vinyl',visualTransition:1,isPlaying:false,dancerPlaying:false,\n vinylAngle:0,vinylVelocity:0,targetVinylVelocity:.0225,\n leftReelAngle:.4,rightReelAngle:1.15,tapeVelocity:0,targetTapeVelocity:.065,\n tapeProgress:.35,tapeDirection:1,cassetteTilt:-.10,vinylPalette:randomLabelPalette(),cassettePalette:randomLabelPalette(),\n bass:0,mid:0,treble:0,overall:0,beatPulse:0,lastBeatTime:0,tuningSurge:0,phase:0,notePhase:0,lastTimestamp:0,\n stationName:'Radio',logo:null};\nconst broadcastRings=[];let ringSpawnAccum=0,logoSource='',logoGeneration=0;\nfunction updateAudioMetrics(timestamp){\n const bands=state.dancerPlaying&&metrics?.available?metrics:null,t=timestamp*.001,fallback={bass:.12+.2*(.5+.5*Math.sin(t*2.1)),mid:.1+.18*(.5+.5*Math.sin(t*3.1+1)),treble:.08+.18*Math.abs(Math.sin(t*4.4)),overall:0},previous=state.bass;\n fallback.overall=fallback.bass*.48+fallback.mid*.34+fallback.treble*.18;\n for(const key of ['bass','mid','treble','overall']){const target=bands?bands[key]||0:fallback[key];state[key]+=(target-state[key])*(target>state[key]?.52:.16); }\n if(bands&&state.bass>previous+.055&&timestamp-state.lastBeatTime>220){state.beatPulse=Math.min(1,state.bass*1.8);state.lastBeatTime=timestamp;if(state.visualEffect==='radio')spawnBroadcastRing(true);}\n state.beatPulse*=.86;state.tuningSurge*=.93;\n}\nfunction sampleWave(x){const samples=metrics?.available?metrics.samples:null;if(!samples?.length)return Math.sin(x*18-state.phase*2.4)*state.bass*.35+Math.cos(x*31+state.phase*3.1)*state.treble*.22;const p=Math.max(0,Math.min(samples.length-1,x*(samples.length-1))),a=Math.floor(p),b=Math.min(a+1,samples.length-1);return samples[a]+(samples[b]-samples[a])*(p-a);}\nfunction paintLabel(x,y,w,h){\n ctx.save();ctx.translate(x,y);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#FAF6EC';\n const logo=state.logo,size=Math.max(7,Math.min(11,h*.55)),icon=logo?h*.9:0;\n let font=size;ctx.font='600 '+font+'px Arial,sans-serif';\n if(logo){const scale=Math.min(icon/logo.naturalWidth,icon/logo.naturalHeight);ctx.drawImage(logo,-w*.5,-icon*.5,logo.naturalWidth*scale,logo.naturalHeight*scale);}\n const available=w-(icon?icon+4:0);let label=state.stationName;\n while(font>7&&ctx.measureText(label).width>available){font-=.5;ctx.font='600 '+font+'px Arial,sans-serif';}\n while(label.length>1&&ctx.measureText(label).width>available)label=label.slice(0,-2)+'…';\n ctx.fillText(label,icon*.5,0,available);ctx.restore();\n}\nfunction paintVinylLabel(cx,cy,radius){\n const labelR=radius*.385,textR=labelR*.78;let fontSize=Math.max(3,Math.min(8,labelR*.16));\n ctx.save();ctx.translate(cx,cy);ctx.rotate(state.vinylAngle);ctx.font='600 '+fontSize+'px Arial,sans-serif';ctx.fillStyle=state.vinylPalette.ink;ctx.textAlign='center';ctx.textBaseline='middle';\n ctx.save();ctx.strokeStyle='rgba(250,246,236,0.42)';ctx.lineWidth=Math.max(.55,labelR*.01);ctx.beginPath();ctx.arc(0,0,labelR*.96,0,Math.PI*2);ctx.arc(0,0,labelR*.65,0,Math.PI*2);ctx.stroke();ctx.lineWidth=Math.max(.5,labelR*.008);ctx.beginPath();for(let i=0;i<40;i++){const a=i*Math.PI/20,r1=labelR*(i%5===0?.875:.9),r2=labelR*.935;ctx.moveTo(Math.cos(a)*r1,Math.sin(a)*r1);ctx.lineTo(Math.cos(a)*r2,Math.sin(a)*r2);}ctx.stroke();ctx.restore();\n let chars=Array.from((state.stationName||'Radio').trim().toUpperCase()),available=Math.PI*2*textR*.94;\n const textWidth=()=>ctx.measureText(chars.join('')).width+chars.length*fontSize*.05;\n while(fontSize>2&&textWidth()>available){fontSize=Math.max(2,fontSize*.9);ctx.font='600 '+fontSize+'px Arial,sans-serif';}\n const widths=chars.map(ch=>ctx.measureText(ch).width+fontSize*.05),total=widths.reduce((sum,w)=>sum+w,0);\n let angle=-Math.PI*.5-total/(2*textR);\n for(let i=0;i<chars.length;i++){const advance=widths[i]/textR;angle+=advance*.5;const normalized=(angle%(Math.PI*2)+Math.PI*2)%(Math.PI*2);ctx.save();ctx.rotate(angle+Math.PI*.5);ctx.translate(0,-textR);ctx.rotate(!(normalized<=0||normalized>=Math.PI)?Math.PI:0);ctx.fillText(chars[i],0,0);ctx.restore();angle+=advance*.5;}\n   const logoX=-labelR*.48,logoY=labelR*.04,iconSize=labelR*.44;\n if(state.logo&&state.logo.complete&&state.logo.naturalWidth){const scale=Math.min(iconSize/state.logo.naturalWidth,iconSize/state.logo.naturalHeight),w=state.logo.naturalWidth*scale,h=state.logo.naturalHeight*scale;ctx.drawImage(state.logo,logoX-w*.5,logoY-h*.5,w,h);}\n else{const initials=(state.stationName||'FM').split(/\s+/).filter(Boolean).slice(0,2).map(word=>Array.from(word)[0]).join('').toUpperCase()||'FM';ctx.save();ctx.fillStyle=state.vinylPalette.ink;ctx.font='700 '+Math.max(4,iconSize*.85)+'px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(initials,logoX,logoY,iconSize*2.4);ctx.restore();}\n const spindleR=radius*.044;ctx.beginPath();ctx.arc(0,0,spindleR,0,Math.PI*2);ctx.fillStyle='#141315';ctx.fill();ctx.restore();\n}\nfunction paintCassetteLabel(cx,cy,w){\n const h=w*.635,y=-h*.5+h*.105+(h*.58)*.105,labelH=h*.58*.16;\n ctx.save();ctx.translate(cx,cy);ctx.rotate(state.cassetteTilt+Math.sin(state.phase*.5)*.008);\n paintLabel(-w*.07,y,w*.36,labelH);ctx.restore();\n}\nfunction requestPaint(){if(!raf&&visible)raf=requestAnimationFrame(paint);}\nfunction paint(time){\n raf=0;if(!visible||document.hidden)return;\n const interval=state.dancerPlaying?1000/30:1000/15;\n if(lastPaint&&time-lastPaint\u003cinterval){requestPaint();return;}lastPaint=time;\n const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),pw=Math.round(w*dpr),ph=Math.round(h*dpr);\n if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}\n width=w;height=Math.max(40,h-topInset-bottomInset);\n ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#FAF6EC';ctx.fillRect(0,0,w,h);\n canvas.dataset.visualizer=state.visualEffect;canvas.dataset.playing=String(state.isPlaying);canvas.dataset.analysis=metrics?.mode||'unavailable';\n ctx.save();ctx.translate(0,topInset);animate(time);ctx.restore();\n requestPaint();\n}\nwindow.addEventListener('message',event=>{\n if(event.source!==parent||event.data?.type!=='retrotv:unified-state')return;\n const packet=event.data,wasPlaying=state.isPlaying,stationName=packet.name||'Radio';visible=!!packet.visible;\n if(stationName!==state.stationName){state.vinylPalette=randomLabelPalette(state.vinylPalette);state.cassettePalette=randomLabelPalette(state.cassettePalette);}\n state.dancerPlaying=!!packet.playing;state.isPlaying=state.dancerPlaying&&!reduced.matches;metrics=packet.metrics||null;state.stationName=stationName;\n if(packet.kind!==state.visualEffect&&['vinyl','cassette','radio'].includes(packet.kind)){state.visualEffect=packet.kind;state.visualTransition=0;broadcastRings.length=0;}\n topInset=packet.top||24;bottomInset=packet.bottom||76;\n if(wasPlaying&&!state.isPlaying)coastUntil=performance.now()+1800;\n if(!wasPlaying&&state.isPlaying)state.lastTimestamp=0;\n if(packet.logo!==undefined){const src=packet.logo||'';if(src!==logoSource){logoSource=src;state.logo=null;const generation=++logoGeneration;if(src){const image=new Image();image.onload=()=>{if(generation===logoGeneration){state.logo=image;lastPaint=0;requestPaint();}};image.src=src;}}}\n if(!visible&&raf){cancelAnimationFrame(raf);raf=0;}\n lastPaint=0;requestPaint();\n});\naddEventListener('resize',()=>{lastPaint=0;requestPaint();});\nparent.postMessage({type:'retrotv:unified-ready'},'*');\n\nfunction drawLeftStaffLines(cx, cy, halfCenterW) {\nconst staffLeft = 0;\nconst staffRight = cx - halfCenterW * 0.72;\nif (staffRight \u003c= 10) return;\nconst lineSpacing = Math.max(7, Math.min(11, height * 0.014));\nconst baseOffsetY = halfCenterW * 0.16;\nctx.save();\nctx.lineWidth = 1.1;\nfor (let i = 0; i \u003c 5; i++) {\nconst yStart = cy + baseOffsetY + i * lineSpacing;\nconst grad = ctx.createLinearGradient(staffLeft, yStart, staffRight, yStart);\ngrad.addColorStop(0, 'rgba(201, 162, 85, 0.34)');\ngrad.addColorStop(0.75, 'rgba(201, 162, 85, 0.22)');\ngrad.addColorStop(1, 'rgba(201, 162, 85, 0.0)');\nctx.strokeStyle = grad;\nctx.beginPath();\nctx.moveTo(staffLeft, yStart + 6);\nctx.quadraticCurveTo(\nstaffRight * 0.5,\nyStart + 2 - Math.sin(state.phase * 0.4 + i * 0.3) * 2,\nstaffRight,\nyStart - 10\n);\nctx.stroke();\n}\nctx.restore();\n}\nfunction drawWaveformRibbon(cx, cy, centerSpan, layerMode) {\nconst numStrands = layerMode === 'back' ? 28 : 24;\nconst stepX = Math.max(4, Math.floor(width / 180));\nconst baseAmp = Math.min(height * 0.13, 92);\nconst sensitivity = .6;\nconst amp = baseAmp * (.025 + state.overall*1.25 + state.bass*.8 + state.mid*.55 + state.beatPulse*.2) * sensitivity;\nctx.save();\nif (layerMode === 'back') {\nfor (let s = 0; s \u003c numStrands; s++) {\nconst norm = (s / (numStrands - 1)) * 2 - 1;\nconst strandPhase = norm * 0.65;\nconst spread = norm * (.7 + (state.overall*22 + state.mid*26) * sensitivity);\nconst alpha = (1 - Math.abs(norm) * 0.62) * 0.42;\nconst grad = ctx.createLinearGradient(0, cy - amp, width, cy + amp);\ngrad.addColorStop(0, `rgba(242, 113, 84, ${alpha})`);\ngrad.addColorStop(0.35, `rgba(244, 138, 102, ${alpha * 1.15})`);\ngrad.addColorStop(0.65, `rgba(246, 168, 122, ${alpha * 1.1})`);\ngrad.addColorStop(1, `rgba(242, 113, 84, ${alpha})`);\nctx.strokeStyle = grad;\nctx.lineWidth = 1.25;\nctx.beginPath();\nfor (let x = 0; x \u003c= width + stepX; x += stepX) {\nconst nx = x / width;\nconst distFromCenter = Math.abs(x - cx) / Math.max(40, centerSpan * 0.5);\nconst centerPinch = x > cx\n? Math.min(1, 0.32 + distFromCenter * 0.55)\n: 1.0;\nconst w1 = Math.sin(nx * 7.2 - state.phase * 1.35 + strandPhase) * (0.62 + state.bass * 0.5);\nconst w2 = Math.sin(nx * 13.5 + state.phase * 0.9 - strandPhase * 1.4) * (0.28 + state.mid * 0.45);\nconst w3 = Math.cos(nx * 21.0 - state.phase * 2.1 + norm) * (0.10 + state.treble * 0.35);\nconst envelope = Math.sin(nx * Math.PI * 2.5 + 0.6) * 0.35 + 0.78;\nconst yOffset = (w1 + w2 + w3 + sampleWave(nx)*.9) * amp * envelope * centerPinch + spread * Math.cos(nx * 5.0 - state.phase * 0.7);\nif (x === 0) {\nctx.moveTo(x, cy + yOffset);\n} else {\nctx.lineTo(x, cy + yOffset);\n}\n}\nctx.stroke();\n}\n} else {\nconst pinchX = cx;\nconst pinchY = state.visualEffect === 'cassette' ? cy - centerSpan * 0.045 : cy;\nfor (let s = 0; s \u003c numStrands; s++) {\nconst norm = (s / (numStrands - 1)) * 2 - 1;\nconst strandPhase = norm * 0.85;\nconst alpha = (1 - Math.abs(norm) * 0.55) * 0.48;\nconst grad = ctx.createLinearGradient(0, cy, pinchX, pinchY);\ngrad.addColorStop(0, `rgba(246, 168, 122, ${alpha * 0.85})`);\ngrad.addColorStop(0.55, `rgba(242, 113, 84, ${alpha * 1.2})`);\ngrad.addColorStop(0.92, `rgba(242, 113, 84, ${alpha * 1.35})`);\ngrad.addColorStop(1, `rgba(242, 113, 84, 0.0)`);\nctx.strokeStyle = grad;\nctx.lineWidth = 1.2;\nctx.beginPath();\nfor (let x = 0; x \u003c= pinchX; x += stepX) {\nconst t = x / pinchX;\nconst taper = Math.pow(Math.max(0, 1 - t), 1.45);\nconst baselineY = cy + (pinchY - cy) * Math.pow(t, 1.5);\nconst w1 = Math.sin(t * 5.4 - state.phase * 1.45 + strandPhase) * (0.68 + state.bass * 0.55);\nconst w2 = Math.cos(t * 9.8 + state.phase * 1.1 - strandPhase * 1.2) * (0.32 + state.mid * 0.45);\nconst spread = norm * (.7 + (state.overall*28 + state.mid*24) * sensitivity) * Math.sin(t * Math.PI * 0.85 + 0.25);\nconst yOffset = ((w1 + w2 + sampleWave(t)*.9) * amp * 0.82 + spread) * taper;\nif (x === 0) {\nctx.moveTo(x, baselineY + yOffset);\n} else {\nctx.lineTo(x, baselineY + yOffset);\n}\n}\nctx.lineTo(pinchX, pinchY);\nctx.stroke();\n}\n}\nctx.restore();\n}\nfunction spawnBroadcastRing(isBeat = false) {\nbroadcastRings.push({\nradius: 6,\nmaxRadius: Math.min(width, height) * (isBeat ? 0.44 : 0.36),\nspeed: isBeat ? 1.85 : 1.35,\nalpha: isBeat ? 0.78 : 0.55,\nlineWidth: isBeat ? 2.4 : 1.5,\nisCoral: isBeat || Math.random() \u003c 0.65,\nwobbleFreq: 6 + Math.floor(Math.random() * 6),\n});\n}\nfunction updateAndDrawBroadcastWaves(cx, beaconY, dt) {\nconst spawnRate = state.isPlaying ? (0.045 + state.overall * 0.09) : 0.015;\nringSpawnAccum += spawnRate * dt;\nif (ringSpawnAccum >= 1) {\nringSpawnAccum = 0;\nspawnBroadcastRing(false);\n}\nctx.save();\nfor (let i = broadcastRings.length - 1; i >= 0; i--) {\nconst ring = broadcastRings[i];\nconst speedBoost = state.isPlaying ? (1 + state.bass * 0.85) : 0.45;\nring.radius += ring.speed * speedBoost * dt;\nconst progress = ring.radius / ring.maxRadius;\nif (progress >= 1) {\nbroadcastRings.splice(i, 1);\ncontinue;\n}\nconst fadeAlpha = ring.alpha * Math.pow(1 - progress, 1.35);\nctx.strokeStyle = ring.isCoral\n? `rgba(242, 113, 84, ${fadeAlpha})`\n: `rgba(201, 162, 85, ${fadeAlpha * 0.9})`;\nctx.lineWidth = ring.lineWidth * (1 - progress * 0.35);\n[-1, 1].forEach((dir) => {\nconst startAngle = dir === 1 ? -Math.PI * 0.36 : Math.PI * 0.64;\nconst endAngle = dir === 1 ? Math.PI * 0.36 : Math.PI * 1.36;\nctx.beginPath();\nconst steps = 28;\nfor (let s = 0; s \u003c= steps; s++) {\nconst a = startAngle + ((endAngle - startAngle) * s) / steps;\nconst ripple = Math.sin(a * ring.wobbleFreq + state.phase * 2.2) * (state.mid * 4.5 * progress);\nconst r = ring.radius + ripple;\nconst px = cx + Math.cos(a) * r;\nconst py = beaconY + Math.sin(a) * r;\nif (s === 0) ctx.moveTo(px, py);\nelse ctx.lineTo(px, py);\n}\nctx.stroke();\n});\n}\nctx.restore();\n}\nfunction drawVinylRecord(cx, cy, radius) {\nctx.save();\nctx.translate(cx, cy);\nctx.save();\nctx.beginPath();\nctx.arc(0, 8, radius * 1.01, 0, Math.PI * 2);\nctx.fillStyle = 'rgba(35, 31, 30, 0.16)';\nctx.filter = 'blur(14px)';\nctx.fill();\nctx.restore();\nctx.save();\nctx.rotate(state.vinylAngle);\nconst discGrad = ctx.createRadialGradient(0, 0, radius * 0.25, 0, 0, radius);\ndiscGrad.addColorStop(0, '#2A2729');\ndiscGrad.addColorStop(0.55, '#1D1B1E');\ndiscGrad.addColorStop(0.92, '#252226');\ndiscGrad.addColorStop(1, '#141315');\nctx.beginPath();\nctx.arc(0, 0, radius, 0, Math.PI * 2);\nctx.fillStyle = discGrad;\nctx.fill();\nctx.lineWidth = 2;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.35)';\nctx.stroke();\nconst labelR = radius * 0.385;\nconst grooveStart = labelR + radius * 0.045;\nconst grooveEnd = radius * 0.945;\nconst grooveCount = 26;\nfor (let g = 0; g \u003c grooveCount; g++) {\nconst r = grooveStart + ((grooveEnd - grooveStart) * g) / (grooveCount - 1);\nctx.beginPath();\nctx.arc(0, 0, r, 0, Math.PI * 2);\nctx.lineWidth = g % 6 === 0 ? 1.15 : 0.65;\nctx.strokeStyle = g % 6 === 0\n? 'rgba(255, 255, 255, 0.085)'\n: 'rgba(255, 255, 255, 0.038)';\nctx.stroke();\n}\nctx.beginPath();\nctx.arc(0, 0, labelR + radius * 0.024, 0, Math.PI * 2);\nctx.lineWidth = 1.4;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.24)';\nctx.stroke();\nconst labelGrad = ctx.createRadialGradient(-labelR * 0.2, -labelR * 0.2, 2, 0, 0, labelR);\nlabelGrad.addColorStop(0, state.vinylPalette.light);\nlabelGrad.addColorStop(0.65, state.vinylPalette.base);\nlabelGrad.addColorStop(1, state.vinylPalette.shadow);\nctx.beginPath();\nctx.arc(0, 0, labelR, 0, Math.PI * 2);\nctx.fillStyle = labelGrad;\nctx.fill();\nconst spindleR = radius * 0.044;\nctx.beginPath();\nctx.arc(0, 0, spindleR, 0, Math.PI * 2);\nctx.fillStyle = '#141315';\nctx.fill();\nctx.lineWidth = 1.2;\nctx.strokeStyle = '#FAF6EC';\nctx.stroke();\nctx.restore(); // End rotating disc\nctx.save();\nctx.beginPath();\nctx.arc(0, 0, radius * 0.99, 0, Math.PI * 2);\nctx.clip();\nctx.rotate(-Math.PI * 0.24);\nconst sheenGrad = ctx.createLinearGradient(-radius, 0, radius, 0);\nsheenGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.36, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.47, 'rgba(255, 252, 245, 0.08)');\nsheenGrad.addColorStop(0.50, 'rgba(255, 252, 245, 0.14)');\nsheenGrad.addColorStop(0.53, 'rgba(255, 252, 245, 0.08)');\nsheenGrad.addColorStop(0.64, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');\nctx.fillStyle = sheenGrad;\nctx.fillRect(-radius, -radius, radius * 2, radius * 2);\nctx.restore();\nctx.restore();\n}\nfunction roundRectPath(ctx, x, y, w, h, r) {\nconst radius = Math.min(r, w * 0.5, h * 0.5);\nctx.beginPath();\nctx.moveTo(x + radius, y);\nctx.lineTo(x + w - radius, y);\nctx.quadraticCurveTo(x + w, y, x + w, y + radius);\nctx.lineTo(x + w, y + h - radius);\nctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);\nctx.lineTo(x + radius, y + h);\nctx.quadraticCurveTo(x, y + h, x, y + h - radius);\nctx.lineTo(x, y + radius);\nctx.quadraticCurveTo(x, y, x + radius, y);\nctx.closePath();\n}\nfunction drawCassetteReel(ctx, rx, ry, hubRadius, tapePackRadius, angle) {\nctx.save();\nctx.translate(rx, ry);\nconst packGrad = ctx.createRadialGradient(0, 0, hubRadius * 0.9, 0, 0, tapePackRadius);\npackGrad.addColorStop(0, '#2C221E');\npackGrad.addColorStop(0.55, '#3A2C26');\npackGrad.addColorStop(0.92, '#241C19');\npackGrad.addColorStop(1, '#4A3931');\nctx.beginPath();\nctx.arc(0, 0, tapePackRadius, 0, Math.PI * 2);\nctx.fillStyle = packGrad;\nctx.fill();\nctx.strokeStyle = 'rgba(250, 246, 236, 0.06)';\nctx.lineWidth = 0.7;\nfor (let r = hubRadius + 3; r \u003c tapePackRadius - 1.5; r += 3.2) {\nctx.beginPath();\nctx.arc(0, 0, r, 0, Math.PI * 2);\nctx.stroke();\n}\nctx.rotate(angle);\nctx.beginPath();\nctx.arc(0, 0, hubRadius, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.lineWidth = 1.2;\nctx.strokeStyle = '#D4B475';\nctx.stroke();\nconst innerHoleR = hubRadius * 0.56;\nctx.beginPath();\nctx.arc(0, 0, innerHoleR, 0, Math.PI * 2);\nctx.fillStyle = '#18171A';\nctx.fill();\nctx.fillStyle = '#FAF6EC';\nfor (let t = 0; t \u003c 6; t++) {\nconst theta = (t / 6) * Math.PI * 2;\nctx.save();\nctx.rotate(theta);\nctx.beginPath();\nctx.rect(innerHoleR * 0.64, -hubRadius * 0.085, innerHoleR * 0.42, hubRadius * 0.17);\nctx.fill();\nctx.restore();\n}\nctx.beginPath();\nctx.arc(hubRadius * 0.78, 0, Math.max(1.4, hubRadius * 0.08), 0, Math.PI * 2);\nctx.fillStyle = '#F27154';\nctx.fill();\nctx.restore();\n}\nfunction drawCassetteTape(cx, cy, cassetteW) {\nconst cassetteH = cassetteW * 0.635;\nconst halfW = cassetteW * 0.5;\nconst halfH = cassetteH * 0.5;\nconst cornerR = cassetteW * 0.042;\nctx.save();\nctx.translate(cx, cy);\nconst dynamicTilt = state.cassetteTilt + Math.sin(state.phase * 0.5) * 0.008;\nctx.rotate(dynamicTilt);\nctx.save();\nroundRectPath(ctx, -halfW, -halfH + 10, cassetteW, cassetteH, cornerR);\nctx.fillStyle = 'rgba(35, 31, 30, 0.16)';\nctx.filter = 'blur(14px)';\nctx.fill();\nctx.restore();\nconst shellGrad = ctx.createLinearGradient(-halfW, -halfH, halfW, halfH);\nshellGrad.addColorStop(0, '#272528');\nshellGrad.addColorStop(0.5, '#1D1B1E');\nshellGrad.addColorStop(1, '#151416');\nroundRectPath(ctx, -halfW, -halfH, cassetteW, cassetteH, cornerR);\nctx.fillStyle = shellGrad;\nctx.fill();\nctx.lineWidth = 1.6;\nctx.strokeStyle = 'rgba(255, 255, 255, 0.11)';\nctx.stroke();\nconst labelX = -halfW + cassetteW * 0.085;\nconst labelY = -halfH + cassetteH * 0.105;\nconst labelW = cassetteW * 0.83;\nconst labelH = cassetteH * 0.58;\nconst labelR = cassetteW * 0.022;\nroundRectPath(ctx, labelX, labelY, labelW, labelH, labelR);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nconst pad = cassetteW * 0.011;\nconst coralGrad = ctx.createLinearGradient(labelX, labelY, labelX + labelW, labelY + labelH);\ncoralGrad.addColorStop(0, state.cassettePalette.light);\ncoralGrad.addColorStop(0.6, state.cassettePalette.base);\ncoralGrad.addColorStop(1, state.cassettePalette.shadow);\nroundRectPath(ctx, labelX + pad, labelY + pad, labelW - pad * 2, labelH - pad * 2, labelR * 0.7);\nctx.fillStyle = coralGrad;\nctx.fill();\nconst topStripY = labelY + labelH * 0.21;\nctx.strokeStyle = 'rgba(250, 246, 236, 0.78)';\nctx.lineWidth = Math.max(1, cassetteW * 0.0032);\nctx.beginPath();\nctx.moveTo(labelX + cassetteW * 0.04, topStripY);\nctx.lineTo(labelX + labelW - cassetteW * 0.04, topStripY);\nctx.stroke();\nctx.fillStyle = state.cassettePalette.ink;\nctx.font = `600 ${Math.max(9, Math.round(cassetteW * 0.032))}px -apple-system, sans-serif`;\nctx.textBaseline = 'middle';\nctx.fillText('A', labelX + cassetteW * 0.045, labelY + labelH * 0.115);\nctx.font = `500 ${Math.max(7, Math.round(cassetteW * 0.021))}px -apple-system, sans-serif`;\nctx.fillStyle = 'rgba(250, 246, 236, 0.88)';\nctx.textAlign = 'right';\nctx.fillText('TYPE II • CrO₂ 90', labelX + labelW - cassetteW * 0.045, labelY + labelH * 0.115);\nctx.textAlign = 'left';\nconst winW = cassetteW * 0.56;\nconst winH = cassetteH * 0.265;\nconst winX = -winW * 0.5;\nconst winY = labelY + labelH * 0.34;\nconst winR = winH * 0.22;\nroundRectPath(ctx, winX - 3, winY - 3, winW + 6, winH + 6, winR + 2);\nctx.fillStyle = '#171619';\nctx.fill();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.fillStyle = '#121114';\nctx.fill();\nctx.save();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.clip();\nconst windowGlow = ctx.createRadialGradient(0, winY + winH * 0.5, 4, 0, winY + winH * 0.5, winW * 0.6);\nwindowGlow.addColorStop(0, `rgba(242, 113, 84, ${0.10 + state.mid * 0.14})`);\nwindowGlow.addColorStop(1, 'rgba(18, 17, 20, 0)');\nctx.fillStyle = windowGlow;\nctx.fillRect(winX, winY, winW, winH);\nconst reelCenterY = winY + winH * 0.5;\nconst leftReelX = -winW * 0.275;\nconst rightReelX = winW * 0.275;\nconst hubRadius = winH * 0.34;\nconst minPackR = hubRadius * 1.16;\nconst maxPackR = hubRadius * 2.18;\nconst leftPackRadius = minPackR + (maxPackR - minPackR) * state.tapeProgress;\nconst rightPackRadius = minPackR + (maxPackR - minPackR) * (1 - state.tapeProgress);\nctx.strokeStyle = '#4E3A30';\nctx.lineWidth = 2;\nctx.beginPath();\nctx.moveTo(leftReelX, reelCenterY + leftPackRadius * 0.78);\nctx.lineTo(rightReelX, reelCenterY + rightPackRadius * 0.78);\nctx.stroke();\ndrawCassetteReel(ctx, leftReelX, reelCenterY, hubRadius, leftPackRadius, state.leftReelAngle);\ndrawCassetteReel(ctx, rightReelX, reelCenterY, hubRadius, rightPackRadius, state.rightReelAngle);\nctx.strokeStyle = 'rgba(250, 246, 236, 0.24)';\nctx.lineWidth = 1;\nfor (let m = -2; m \u003c= 2; m++) {\nconst tickX = m * (winW * 0.032);\nconst tickH = m === 0 ? 7 : 4;\nctx.beginPath();\nctx.moveTo(tickX, winY + winH * 0.5 - tickH * 0.5);\nctx.lineTo(tickX, winY + winH * 0.5 + tickH * 0.5);\nctx.stroke();\n}\nctx.restore();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.lineWidth = 1.1;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.35)';\nctx.stroke();\nconst bridgeTopW = cassetteW * 0.54;\nconst bridgeBotW = cassetteW * 0.64;\nconst bridgeH = cassetteH * 0.23;\nconst bridgeTopY = halfH - bridgeH;\nctx.beginPath();\nctx.moveTo(-bridgeBotW * 0.5, halfH);\nctx.lineTo(-bridgeTopW * 0.5, bridgeTopY);\nctx.lineTo(bridgeTopW * 0.5, bridgeTopY);\nctx.lineTo(bridgeBotW * 0.5, halfH);\nctx.closePath();\nctx.fillStyle = '#252327';\nctx.fill();\nctx.lineWidth = 1.1;\nctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';\nctx.stroke();\nconst tapeY = halfH - bridgeH * 0.26;\nctx.strokeStyle = '#5C4336';\nctx.lineWidth = Math.max(2.2, cassetteW * 0.01);\nctx.beginPath();\nctx.moveTo(-bridgeBotW * 0.38, tapeY);\nctx.lineTo(bridgeBotW * 0.38, tapeY);\nctx.stroke();\nconst holePositions = [\n{ x: -bridgeTopW * 0.32, y: bridgeTopY + bridgeH * 0.46, r: cassetteW * 0.018 },\n{ x: bridgeTopW * 0.32, y: bridgeTopY + bridgeH * 0.46, r: cassetteW * 0.018 },\n{ x: -bridgeTopW * 0.14, y: bridgeTopY + bridgeH * 0.52, r: cassetteW * 0.012 },\n{ x: bridgeTopW * 0.14, y: bridgeTopY + bridgeH * 0.52, r: cassetteW * 0.012 },\n];\nholePositions.forEach((h) => {\nctx.beginPath();\nctx.arc(h.x, h.y, h.r, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.lineWidth = 1;\nctx.strokeStyle = '#141315';\nctx.stroke();\n});\nctx.fillStyle = '#C9A255';\nctx.fillRect(-cassetteW * 0.025, tapeY - cassetteW * 0.012, cassetteW * 0.05, cassetteW * 0.016);\nconst screwOffsetX = halfW - cassetteW * 0.046;\nconst screwOffsetY = halfH - cassetteH * 0.068;\nconst screwR = Math.max(3, cassetteW * 0.014);\n[\n[-screwOffsetX, -screwOffsetY],\n[screwOffsetX, -screwOffsetY],\n[-screwOffsetX, screwOffsetY],\n[screwOffsetX, screwOffsetY],\n].forEach(([sx, sy]) => {\nctx.beginPath();\nctx.arc(sx, sy, screwR, 0, Math.PI * 2);\nctx.fillStyle = '#141315';\nctx.fill();\nctx.beginPath();\nctx.arc(sx, sy, screwR * 0.72, 0, Math.PI * 2);\nctx.fillStyle = '#3B383D';\nctx.fill();\nctx.strokeStyle = '#181719';\nctx.lineWidth = 1;\nctx.beginPath();\nctx.moveTo(sx - screwR * 0.45, sy);\nctx.lineTo(sx + screwR * 0.45, sy);\nctx.moveTo(sx, sy - screwR * 0.45);\nctx.lineTo(sx, sy + screwR * 0.45);\nctx.stroke();\n});\nctx.save();\nroundRectPath(ctx, -halfW, -halfH, cassetteW, cassetteH, cornerR);\nctx.clip();\nctx.rotate(-Math.PI * 0.22);\nconst sheenGrad = ctx.createLinearGradient(-cassetteW * 0.7, 0, cassetteW * 0.7, 0);\nsheenGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.36, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.47, 'rgba(255, 252, 245, 0.075)');\nsheenGrad.addColorStop(0.50, 'rgba(255, 252, 245, 0.12)');\nsheenGrad.addColorStop(0.53, 'rgba(255, 252, 245, 0.075)');\nsheenGrad.addColorStop(0.64, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');\nctx.fillStyle = sheenGrad;\nctx.fillRect(-cassetteW, -cassetteW, cassetteW * 2, cassetteW * 2);\nctx.restore();\nctx.restore();\n}\n\nfunction drawRadioTower(cx, baseY, towerH, timestamp) {\nconst topY = baseY - towerH;\nconst spireH = towerH * 0.16;\nconst latticeTopY = topY + spireH;\nconst latticeH = towerH - spireH;\nconst baseHalfW = towerH * 0.165;\nconst topHalfW = towerH * 0.026;\nctx.save();\nctx.save();\nctx.beginPath();\nctx.ellipse(cx, baseY + 5, baseHalfW * 1.65, towerH * 0.025, 0, 0, Math.PI * 2);\nctx.fillStyle = 'rgba(35, 31, 30, 0.12)';\nctx.filter = 'blur(6px)';\nctx.fill();\nctx.restore();\nconst guyLevels = [0.28, 0.62];\nconst anchorSpan = baseHalfW * 2.55;\nguyLevels.forEach((lvl, idx) => {\nconst attachY = latticeTopY + latticeH * lvl;\nconst legXAtLvl = topHalfW + (baseHalfW - topHalfW) * lvl;\nconst groundX = anchorSpan * (idx === 0 ? 0.82 : 1.05);\n[-1, 1].forEach((dir) => {\nconst startX = cx + dir * legXAtLvl;\nconst endX = cx + dir * groundX;\nctx.strokeStyle = 'rgba(29, 27, 30, 0.34)';\nctx.lineWidth = 1.05;\nctx.beginPath();\nctx.moveTo(startX, attachY);\nctx.lineTo(endX, baseY);\nctx.stroke();\n[0.32, 0.68].forEach((t) => {\nconst ix = startX + (endX - startX) * t;\nconst iy = attachY + (baseY - attachY) * t;\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(ix, iy, 2.3, 0, Math.PI * 2);\nctx.fill();\n});\nctx.fillStyle = '#1D1B1E';\nctx.beginPath();\nctx.arc(endX, baseY, 2.5, 0, Math.PI * 2);\nctx.fill();\n});\n});\nconst numBays = 7;\nctx.strokeStyle = '#1D1B1E';\nctx.lineCap = 'round';\nctx.lineJoin = 'round';\nctx.lineWidth = Math.max(2.4, towerH * 0.011);\nctx.beginPath();\nctx.moveTo(cx - topHalfW, latticeTopY);\nctx.lineTo(cx - baseHalfW, baseY);\nctx.moveTo(cx + topHalfW, latticeTopY);\nctx.lineTo(cx + baseHalfW, baseY);\nctx.stroke();\nfor (let b = 0; b \u003c numBays; b++) {\nconst t0 = b / numBays;\nconst t1 = (b + 1) / numBays;\nconst y0 = latticeTopY + latticeH * t0;\nconst y1 = latticeTopY + latticeH * t1;\nconst w0 = topHalfW + (baseHalfW - topHalfW) * t0;\nconst w1 = topHalfW + (baseHalfW - topHalfW) * t1;\nctx.lineWidth = Math.max(1.5, towerH * 0.0065);\nctx.beginPath();\nctx.moveTo(cx - w0, y0);\nctx.lineTo(cx + w0, y0);\nctx.stroke();\nctx.lineWidth = Math.max(1.1, towerH * 0.0045);\nctx.strokeStyle = 'rgba(29, 27, 30, 0.85)';\nctx.beginPath();\nctx.moveTo(cx - w0, y0);\nctx.lineTo(cx + w1, y1);\nctx.moveTo(cx + w0, y0);\nctx.lineTo(cx - w1, y1);\nctx.stroke();\nctx.strokeStyle = '#1D1B1E';\n}\nconst galleryY = latticeTopY + latticeH * 0.14;\nconst galleryW = (topHalfW + (baseHalfW - topHalfW) * 0.14) * 1.65;\nctx.fillStyle = '#1D1B1E';\nctx.fillRect(cx - galleryW, galleryY - 2, galleryW * 2, 4);\nctx.lineWidth = 1.1;\nctx.beginPath();\nctx.moveTo(cx - galleryW, galleryY - 7);\nctx.lineTo(cx + galleryW, galleryY - 7);\nctx.moveTo(cx - galleryW, galleryY - 7);\nctx.lineTo(cx - galleryW, galleryY);\nctx.moveTo(cx + galleryW, galleryY - 7);\nctx.lineTo(cx + galleryW, galleryY);\nctx.stroke();\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(cx + galleryW * 0.65, galleryY - 5, Math.max(3, towerH * 0.015), 0, Math.PI * 2);\nctx.fill();\nctx.strokeStyle = '#1D1B1E';\nctx.lineWidth = 1.2;\nctx.stroke();\nconst platW = baseHalfW * 2.5;\nconst platH = Math.max(5, towerH * 0.02);\nctx.fillStyle = '#1D1B1E';\nctx.fillRect(cx - platW * 0.5, baseY - platH * 0.5, platW, platH);\nconst shackW = baseHalfW * 0.92;\nconst shackH = towerH * 0.095;\nconst shackX = cx - shackW * 0.5;\nconst shackY = baseY - platH * 0.5 - shackH;\nctx.fillStyle = '#262326';\nctx.fillRect(shackX, shackY, shackW, shackH);\nctx.strokeStyle = '#C9A255';\nctx.lineWidth = 1.1;\nctx.strokeRect(shackX, shackY, shackW, shackH);\nconst winW = shackW * 0.36;\nconst winH = shackH * 0.42;\nctx.fillStyle = state.isPlaying ? '#F27154' : '#C9A255';\nctx.fillRect(cx - winW * 0.5, shackY + shackH * 0.24, winW, winH);\n\nctx.strokeStyle = '#1D1B1E';\nctx.lineWidth = Math.max(2.6, towerH * 0.01);\nctx.beginPath();\nctx.moveTo(cx, latticeTopY);\nctx.lineTo(cx, topY);\nctx.stroke();\nconst dipoleOffsets = [0.35, 0.68];\ndipoleOffsets.forEach((d) => {\nconst dy = topY + spireH * d;\nconst dw = towerH * 0.032;\nctx.lineWidth = 1.6;\nctx.beginPath();\nctx.moveTo(cx - dw, dy);\nctx.lineTo(cx + dw, dy);\nctx.stroke();\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(cx - dw, dy, 1.8, 0, Math.PI * 2);\nctx.arc(cx + dw, dy, 1.8, 0, Math.PI * 2);\nctx.fill();\n});\nconst pulseIntensity = state.isPlaying\n? (0.55 + state.bass * 0.45 + state.beatPulse * 0.45 + state.tuningSurge * 0.4)\n: 0.35;\nconst glowRadius = Math.max(22, towerH * 0.14) * (0.85 + pulseIntensity * 0.45);\nconst beaconGlow = ctx.createRadialGradient(cx, topY, 2, cx, topY, glowRadius);\nbeaconGlow.addColorStop(0, `rgba(242, 113, 84, ${Math.min(0.95, 0.55 + pulseIntensity * 0.4)})`);\nbeaconGlow.addColorStop(0.35, `rgba(246, 168, 122, ${0.28 + pulseIntensity * 0.22})`);\nbeaconGlow.addColorStop(1, 'rgba(242, 113, 84, 0)');\nctx.fillStyle = beaconGlow;\nctx.beginPath();\nctx.arc(cx, topY, glowRadius, 0, Math.PI * 2);\nctx.fill();\nconst bulbR = Math.max(4.5, towerH * 0.022) * (1 + state.beatPulse * 0.16);\nctx.beginPath();\nctx.arc(cx, topY, bulbR, 0, Math.PI * 2);\nctx.fillStyle = '#F27154';\nctx.fill();\nctx.lineWidth = 1.5;\nctx.strokeStyle = '#FAF6EC';\nctx.stroke();\nctx.beginPath();\nctx.arc(cx, topY, bulbR * 0.45, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.restore();\nreturn topY; // Return exact Y coordinate of the top beacon bulb\n}\nconst ambientNotes=[{x:.12,y:.24,phase:.2,type:0},{x:.22,y:.76,phase:1.1,type:1},{x:.79,y:.28,phase:2.2,type:2},{x:.9,y:.68,phase:3.1,type:3},{x:.08,y:.53,phase:4.2,type:1},{x:.88,y:.45,phase:5.1,type:0}];\nfunction drawAmbientNotes(cx,cy,span){\n const exclusion=Math.max(26,span*.36),size=Math.max(13,Math.min(24,Math.min(width,height)*.06));\n for(const note of ambientNotes){\n  const x=width*note.x+Math.sin(state.notePhase*.55+note.phase)*6;\n  const y=height*note.y+Math.sin(state.notePhase*.8+note.phase)*4;\n  if(Math.abs(x-cx)<=exclusion&&Math.abs(y-cy)<=exclusion*.75)continue;\n  ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(state.notePhase+note.phase)*.08);ctx.scale(size/24,size/24);\n  ctx.fillStyle='rgba(201,162,85,'+(.56+.12*Math.sin(state.notePhase+note.phase))+')';ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=2.4;ctx.lineCap='round';ctx.lineJoin='round';\n  if(note.type===0){\n   ctx.beginPath();ctx.ellipse(-7,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(7,5,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,7.5);ctx.lineTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,4.5);ctx.stroke();\n   ctx.beginPath();ctx.moveTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,-9.2);ctx.lineTo(-3.2,-6.2);ctx.closePath();ctx.fill();\n  }else if(note.type===1){\n   ctx.beginPath();ctx.ellipse(-1,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(3,7);ctx.lineTo(3,-13);ctx.quadraticCurveTo(16,-11,7,-3);ctx.stroke();\n  }else if(note.type===2){\n   ctx.beginPath();ctx.ellipse(-1,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(3,7);ctx.lineTo(3,-13);ctx.stroke();\n  }else{\n   ctx.beginPath();ctx.ellipse(-7,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(7,5,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,7.5);ctx.lineTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,4.5);ctx.stroke();\n   ctx.beginPath();ctx.moveTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,-11);ctx.lineTo(-3.2,-8);ctx.closePath();ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,-6);ctx.lineTo(10.8,-9);ctx.lineTo(10.8,-7);ctx.lineTo(-3.2,-4);ctx.closePath();ctx.fill();\n  }\n  ctx.restore();\n }\n}\nfunction animate(timestamp) {\nif (!state.lastTimestamp) state.lastTimestamp = timestamp;\nconst frameDt = Math.min((timestamp - state.lastTimestamp) / 16.666, 2.5);\nconst dt = reduced.matches ? 0 : frameDt;\nconst mediaDt = state.dancerPlaying ? frameDt : 0;\nstate.lastTimestamp = timestamp;\nupdateAudioMetrics(timestamp);\nstate.visualTransition = Math.min(1, state.visualTransition + 0.07 * dt);\nconst easeScale = 0.94 + 0.06 * (1 - Math.pow(1 - state.visualTransition, 3));\nconst targetVinylVel = state.targetVinylVelocity;\nstate.vinylVelocity += (targetVinylVel - state.vinylVelocity) * 0.06 * mediaDt;\nstate.vinylAngle = (state.vinylAngle + state.vinylVelocity * mediaDt) % (Math.PI * 2);\nconst targetTapeVel = state.targetTapeVelocity;\nstate.tapeVelocity += (targetTapeVel - state.tapeVelocity) * 0.06 * mediaDt;\nconst leftSpeedFactor = 1.35 - state.tapeProgress * 0.55;\nconst rightSpeedFactor = 0.80 + state.tapeProgress * 0.55;\nstate.leftReelAngle = (state.leftReelAngle + state.tapeVelocity * leftSpeedFactor * mediaDt) % (Math.PI * 2);\nstate.rightReelAngle = (state.rightReelAngle + state.tapeVelocity * rightSpeedFactor * mediaDt) % (Math.PI * 2);\nstate.tapeProgress += state.tapeVelocity * 0.0045 * state.tapeDirection * mediaDt;\nif (state.tapeProgress >= 0.92) {\nstate.tapeProgress = 0.92;\nstate.tapeDirection = -1;\n} else if (state.tapeProgress \u003c= 0.08) {\nstate.tapeProgress = 0.08;\nstate.tapeDirection = 1;\n}\nconst phaseSpeed = state.isPlaying\n? (0.024 + state.overall * 0.032)\n: 0.008;\nstate.phase += phaseSpeed * dt; state.notePhase += (state.dancerPlaying ? 0.024 + state.overall * 0.032 : 0.008) * frameDt;\nctx.fillStyle = '#FAF6EC';\nctx.fillRect(0, 0, width, height);\nconst cx = width * 0.5;\nconst minDim = Math.min(width, height);\nif (state.visualEffect === 'vinyl') {\nconst cy = height * 0.48;\nconst vinylRadius = Math.min(width*.33,height*.32,225) * (1 + state.bass * 0.02) * easeScale;\ndrawLeftStaffLines(cx, cy, vinylRadius * 0.85);\ndrawWaveformRibbon(cx, cy, vinylRadius * 2, 'back');\ndrawVinylRecord(cx, cy, vinylRadius);paintVinylLabel(cx,cy,vinylRadius);\ndrawWaveformRibbon(cx, cy, vinylRadius * 2, 'frontPinch');\ndrawAmbientNotes(cx,cy,vinylRadius*2);\n} else if (state.visualEffect === 'cassette') {\nconst cy = height * 0.48;\nconst cassetteW = Math.min(width*.74,height*.95,430) * (1 + state.bass * 0.015) * easeScale;\ndrawLeftStaffLines(cx, cy, cassetteW * 0.5);\ndrawWaveformRibbon(cx, cy, cassetteW, 'back');\ndrawCassetteTape(cx, cy, cassetteW);paintCassetteLabel(cx,cy,cassetteW);\ndrawWaveformRibbon(cx, cy, cassetteW, 'frontPinch');\ndrawAmbientNotes(cx,cy,cassetteW);\n} else {\nconst baseY = height * 0.85;\nconst towerH = Math.min(height*.58,width*.55,360) * easeScale;\nconst beaconY = baseY - towerH;\ndrawLeftStaffLines(cx, beaconY + towerH * 0.35, towerH * 0.25);\ndrawWaveformRibbon(cx, beaconY, towerH, 'back');\nupdateAndDrawBroadcastWaves(cx, beaconY, dt);\ndrawRadioTower(cx, baseY, towerH, timestamp);\ndrawWaveformRibbon(cx, beaconY, towerH, 'frontPinch');\ndrawAmbientNotes(cx,beaconY+towerH*.5,towerH);\n}\n}\n})();\u003c/script>\u003c/body>\u003c/html>";stage.prepend(frame);
- frame.srcdoc=frame.srcdoc.replace('background:#FAF6EC','background:#d9e2e4').replace("ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#FAF6EC';ctx.fillRect(0,0,w,h);","ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#d9e2e4';ctx.fillRect(0,0,w,h);").replace("ctx.fillStyle = '#FAF6EC';\nctx.fillRect(0, 0, width, height);","ctx.fillStyle = '#d9e2e4';\nctx.fillRect(0, 0, width, height);");
- frame.srcdoc=frame.srcdoc
-  .replace('Math.min(width*.33,height*.32,225)','Math.min(width*.64,height*.64,410)')
-  .replace('const cy = height * 0.48;\nconst vinylRadius =','const vinylCx = width * 0.72;\nconst cy = height * 0.34;\nconst vinylRadius =')
-  .replace('drawVinylRecord(cx, cy, vinylRadius);paintVinylLabel(cx,cy,vinylRadius);','drawVinylRecord(vinylCx, cy, vinylRadius);paintVinylLabel(vinylCx,cy,vinylRadius);')
-  .replace('drawAmbientNotes(cx,cy,vinylRadius*2);','drawAmbientNotes(vinylCx,cy,vinylRadius*2);')
-  .replace('Math.min(width*.74,height*.95,430)','Math.min(width*.86,height*.98,500)')
-  .replace('Math.min(height*.58,width*.55,360)','Math.min(height*.72,width*.66,430)')
-  .replace('const logoX=-labelR*.48,logoY=labelR*.04,iconSize=labelR*.44;','const logoX=0,logoY=labelR*.46,iconSize=labelR*.28;')
-  .replace('let fontSize=Math.max(3,Math.min(8,labelR*.16));','let fontSize=Math.max(5,Math.min(13,labelR*.16));')
-  .replace('const logoX=0,logoY=labelR*.46,iconSize=labelR*.28;','const logoX=0,logoY=labelR*.39,iconSize=labelR*.42;')
-  .replace('rgba(242, 113, 84, ${alpha})','rgba(35, 255, 190, ${Math.min(.9,alpha*1.65)})')
-  .replace('rgba(244, 138, 102, ${alpha * 1.15})','rgba(40, 210, 255, ${Math.min(1,alpha*1.85)})')
-  .replace('rgba(246, 168, 122, ${alpha * 1.1})','rgba(42, 255, 224, ${Math.min(.95,alpha*1.75)})')
-  .replace('rgba(246, 168, 122, ${alpha * 0.85})','rgba(34, 246, 208, ${Math.min(.92,alpha*1.55)})')
-  .replace('rgba(242, 113, 84, ${alpha * 1.2})','rgba(24, 216, 255, ${Math.min(1,alpha*1.9)})')
-  .replace('rgba(242, 113, 84, ${alpha * 1.35})','rgba(51, 255, 184, ${Math.min(1,alpha*2.05)})')
-  .replace('rgba(242, 113, 84, 0.0)','rgba(24, 216, 255, 0.0)')
-  .replace("ctx.strokeStyle = grad;\\nctx.lineWidth = 1.25;","ctx.strokeStyle = grad;\\nctx.shadowColor = 'rgba(35,255,210,.75)';\\nctx.shadowBlur = 7;\\nctx.lineWidth = 1.25;")
-  .replace("ctx.strokeStyle = grad;\\nctx.lineWidth = 1.2;","ctx.strokeStyle = grad;\\nctx.shadowColor = 'rgba(30,220,255,.85)';\\nctx.shadowBlur = 9;\\nctx.lineWidth = 1.2;");
- frame.srcdoc=frame.srcdoc
-  .replaceAll('rgba(242, 113, 84, ${alpha})','rgba(22, 255, 174, ${Math.min(1,alpha*2.8)})')
-  .replaceAll('rgba(244, 138, 102, ${alpha * 1.15})','rgba(20, 223, 255, ${Math.min(1,alpha*3)})')
-  .replaceAll('rgba(246, 168, 122, ${alpha * 1.1})','rgba(31, 255, 219, ${Math.min(1,alpha*2.9)})')
-  .replaceAll('rgba(246, 168, 122, ${alpha * 0.85})','rgba(28, 255, 184, ${Math.min(1,alpha*2.7)})')
-  .replaceAll('rgba(242, 113, 84, ${alpha * 1.2})','rgba(18, 219, 255, ${Math.min(1,alpha*3.1)})')
-  .replaceAll('rgba(242, 113, 84, ${alpha * 1.35})','rgba(45, 255, 196, ${Math.min(1,alpha*3.2)})')
-  .replaceAll('ctx.lineWidth = 1.25;','ctx.lineWidth = .72;ctx.globalCompositeOperation="screen";ctx.shadowColor="#22ffc5";ctx.shadowBlur=12;')
-  .replaceAll('ctx.lineWidth = 1.2;','ctx.lineWidth = .62;ctx.globalCompositeOperation="screen";ctx.shadowColor="#18dfff";ctx.shadowBlur=14;');
- frame.srcdoc=frame.srcdoc
-  .replaceAll("ctx.globalCompositeOperation=\"screen\";ctx.shadowColor=\"#22ffc5\";ctx.shadowBlur=12;","ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,92,115,.72)\";ctx.shadowBlur=5;")
-  .replaceAll("ctx.globalCompositeOperation=\"screen\";ctx.shadowColor=\"#18dfff\";ctx.shadowBlur=14;","ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,83,108,.78)\";ctx.shadowBlur=6;")
-  .replaceAll('rgba(22, 255, 174, ${Math.min(1,alpha*2.8)})','rgba(0, 135, 128, ${Math.min(1,alpha*3.1)})')
-  .replaceAll('rgba(20, 223, 255, ${Math.min(1,alpha*3)})','rgba(0, 111, 158, ${Math.min(1,alpha*3.2)})')
-  .replaceAll('rgba(18, 219, 255, ${Math.min(1,alpha*3.1)})','rgba(0, 105, 154, ${Math.min(1,alpha*3.3)})')
-  .replaceAll('rgba(28, 255, 184, ${Math.min(1,alpha*2.7)})','rgba(0, 144, 126, ${Math.min(1,alpha*3.1)})')
-  .replaceAll('rgba(45, 255, 196, ${Math.min(1,alpha*3.2)})','rgba(0, 146, 130, ${Math.min(1,alpha*3.35)})')
-  .replaceAll('rgba(31, 255, 219, ${Math.min(1,alpha*2.9)})','rgba(0, 158, 151, ${Math.min(1,alpha*3.15)})')
-  .replaceAll("drawWaveformRibbon(cx, cy, vinylRadius * 2, 'back');","")
-  .replaceAll("drawWaveformRibbon(cx, cy, vinylRadius * 2, 'frontPinch');","")
-  .replaceAll("drawWaveformRibbon(cx, cy, cassetteW, 'back');","")
-  .replaceAll("drawWaveformRibbon(cx, cy, cassetteW, 'frontPinch');","")
-  .replaceAll("drawWaveformRibbon(cx, beaconY, towerH, 'back');","")
-  .replaceAll("drawWaveformRibbon(cx, beaconY, towerH, 'frontPinch');","");
- frame.srcdoc=frame.srcdoc
-  .replaceAll('const grad = ctx.createLinearGradient(0, cy - amp, width, cy + amp);','const grad = ctx.createLinearGradient(0, cy - amp, width, cy + amp);const warm = s % 11 === 0;const warmGold = s % 13 === 0;')
-  .replaceAll('grad.addColorStop(0, `rgba(0, 135, 128, ${Math.min(1,alpha*3.1)})`);','grad.addColorStop(0, warmGold ? `rgba(238, 188, 52, ${Math.min(.9,alpha*2.7)})` : warm ? `rgba(219, 66, 74, ${Math.min(.88,alpha*2.5)})` : `rgba(0, 135, 128, ${Math.min(1,alpha*3.1)})`);')
-  .replaceAll('grad.addColorStop(0.35, `rgba(0, 111, 158, ${Math.min(1,alpha*3.2)})`);','grad.addColorStop(0.35, warmGold ? `rgba(242, 194, 63, ${Math.min(.92,alpha*2.8)})` : warm ? `rgba(226, 76, 83, ${Math.min(.9,alpha*2.65)})` : `rgba(0, 111, 158, ${Math.min(1,alpha*3.2)})`);')
-  .replaceAll('grad.addColorStop(0.55, `rgba(0, 105, 154, ${Math.min(1,alpha*3.3)})`);','grad.addColorStop(0.55, warmGold ? `rgba(229, 179, 40, ${Math.min(.88,alpha*2.6)})` : warm ? `rgba(217, 55, 64, ${Math.min(.86,alpha*2.5)})` : `rgba(0, 105, 154, ${Math.min(1,alpha*3.3)})`);')
-  .replaceAll('ctx.strokeStyle = grad;','if(typeof warm !== "undefined" && warmGold)grad.addColorStop(.5,`rgba(238,188,52,${Math.min(.95,alpha*3.4)})`);else if(typeof warm !== "undefined" && warm)grad.addColorStop(.5,`rgba(219,66,74,${Math.min(.92,alpha*3.2)})`);ctx.strokeStyle = grad;');
+ frame.srcdoc="\u003c!doctype html>\u003chtml>\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003cstyle>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#d9e2e4}canvas{display:block;width:100%;height:100%}\u003c/style>\u003c/head>\u003cbody>\u003ccanvas id=\"visualizerCanvas\" aria-label=\"Radio visualization\">\u003c/canvas>\u003cscript>(()=>{\n/* Only the canvas renderer runs here; audio and app controls stay in 12index. */\nconst canvas=document.getElementById('visualizerCanvas'),ctx=canvas.getContext('2d',{alpha:false});\nlet width=1,height=1,raf=0,lastPaint=0,coastUntil=0,visible=false,metrics=null,topInset=24,bottomInset=76;\nconst reduced=matchMedia('(prefers-reduced-motion:reduce)');\nconst labelPalettes=[{light:'#F57D61',base:'#F27154',shadow:'#E05E41',ink:'#FAF6EC'},{light:'#7895AC',base:'#506D88',shadow:'#344C64',ink:'#FAF6EC'},{light:'#84976A',base:'#657D4F',shadow:'#485C39',ink:'#FAF6EC'},{light:'#B7974E',base:'#8E702C',shadow:'#6D531F',ink:'#FAF6EC'}];\nfunction randomLabelPalette(previous){const options=previous?labelPalettes.filter(palette=>palette!==previous):labelPalettes;return options[Math.floor(Math.random()*options.length)];}\nconst state={mode:'stream',visualEffect:'vinyl',visualTransition:1,isPlaying:false,dancerPlaying:false,\n vinylAngle:0,vinylVelocity:0,targetVinylVelocity:.0225,\n leftReelAngle:.4,rightReelAngle:1.15,tapeVelocity:0,targetTapeVelocity:.065,\n tapeProgress:.35,tapeDirection:1,cassetteTilt:-.10,vinylPalette:randomLabelPalette(),cassettePalette:randomLabelPalette(),\n bass:0,mid:0,treble:0,overall:0,beatPulse:0,lastBeatTime:0,tuningSurge:0,phase:0,notePhase:0,lastTimestamp:0,\n stationName:'Radio',logo:null};\nconst broadcastRings=[];let ringSpawnAccum=0,logoSource='',logoGeneration=0;\nfunction updateAudioMetrics(timestamp){\n const bands=state.dancerPlaying&&metrics?.available?metrics:null,t=timestamp*.001,fallback={bass:.12+.2*(.5+.5*Math.sin(t*2.1)),mid:.1+.18*(.5+.5*Math.sin(t*3.1+1)),treble:.08+.18*Math.abs(Math.sin(t*4.4)),overall:0},previous=state.bass;\n fallback.overall=fallback.bass*.48+fallback.mid*.34+fallback.treble*.18;\n for(const key of ['bass','mid','treble','overall']){const target=bands?bands[key]||0:fallback[key];state[key]+=(target-state[key])*(target>state[key]?.52:.16); }\n if(bands&&state.bass>previous+.055&&timestamp-state.lastBeatTime>220){state.beatPulse=Math.min(1,state.bass*1.8);state.lastBeatTime=timestamp;if(state.visualEffect==='radio')spawnBroadcastRing(true);}\n state.beatPulse*=.86;state.tuningSurge*=.93;\n}\nfunction sampleWave(x){const samples=metrics?.available?metrics.samples:null;if(!samples?.length)return Math.sin(x*18-state.phase*2.4)*state.bass*.35+Math.cos(x*31+state.phase*3.1)*state.treble*.22;const p=Math.max(0,Math.min(samples.length-1,x*(samples.length-1))),a=Math.floor(p),b=Math.min(a+1,samples.length-1);return samples[a]+(samples[b]-samples[a])*(p-a);}\nfunction paintLabel(x,y,w,h){\n ctx.save();ctx.translate(x,y);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#FAF6EC';\n const logo=state.logo,size=Math.max(7,Math.min(11,h*.55)),icon=logo?h*.9:0;\n let font=size;ctx.font='600 '+font+'px Arial,sans-serif';\n if(logo){const scale=Math.min(icon/logo.naturalWidth,icon/logo.naturalHeight);ctx.drawImage(logo,-w*.5,-icon*.5,logo.naturalWidth*scale,logo.naturalHeight*scale);}\n const available=w-(icon?icon+4:0);let label=state.stationName;\n while(font>7&&ctx.measureText(label).width>available){font-=.5;ctx.font='600 '+font+'px Arial,sans-serif';}\n while(label.length>1&&ctx.measureText(label).width>available)label=label.slice(0,-2)+'…';\n ctx.fillText(label,icon*.5,0,available);ctx.restore();\n}\nfunction paintVinylLabel(cx,cy,radius){\n const labelR=radius*.385,textR=labelR*.78;let fontSize=Math.max(5,Math.min(13,labelR*.16));\n ctx.save();ctx.translate(cx,cy);ctx.rotate(state.vinylAngle);ctx.font='600 '+fontSize+'px Arial,sans-serif';ctx.fillStyle=state.vinylPalette.ink;ctx.textAlign='center';ctx.textBaseline='middle';\n ctx.save();ctx.strokeStyle='rgba(250,246,236,0.42)';ctx.lineWidth=Math.max(.55,labelR*.01);ctx.beginPath();ctx.arc(0,0,labelR*.96,0,Math.PI*2);ctx.arc(0,0,labelR*.65,0,Math.PI*2);ctx.stroke();ctx.lineWidth=Math.max(.5,labelR*.008);ctx.beginPath();for(let i=0;i\u003c40;i++){const a=i*Math.PI/20,r1=labelR*(i%5===0?.875:.9),r2=labelR*.935;ctx.moveTo(Math.cos(a)*r1,Math.sin(a)*r1);ctx.lineTo(Math.cos(a)*r2,Math.sin(a)*r2);}ctx.stroke();ctx.restore();\n let chars=Array.from((state.stationName||'Radio').trim().toUpperCase()),available=Math.PI*2*textR*.94;\n const textWidth=()=>ctx.measureText(chars.join('')).width+chars.length*fontSize*.05;\n while(fontSize>2&&textWidth()>available){fontSize=Math.max(2,fontSize*.9);ctx.font='600 '+fontSize+'px Arial,sans-serif';}\n const widths=chars.map(ch=>ctx.measureText(ch).width+fontSize*.05),total=widths.reduce((sum,w)=>sum+w,0);\n let angle=-Math.PI*.5-total/(2*textR);\n for(let i=0;i\u003cchars.length;i++){const advance=widths[i]/textR;angle+=advance*.5;const normalized=(angle%(Math.PI*2)+Math.PI*2)%(Math.PI*2);ctx.save();ctx.rotate(angle+Math.PI*.5);ctx.translate(0,-textR);ctx.rotate(!(normalized\u003c=0||normalized>=Math.PI)?Math.PI:0);ctx.fillText(chars[i],0,0);ctx.restore();angle+=advance*.5;}\n   const logoX=0,logoY=labelR*.39,iconSize=labelR*.42;\n if(state.logo&&state.logo.complete&&state.logo.naturalWidth){const scale=Math.min(iconSize/state.logo.naturalWidth,iconSize/state.logo.naturalHeight),w=state.logo.naturalWidth*scale,h=state.logo.naturalHeight*scale;ctx.drawImage(state.logo,logoX-w*.5,logoY-h*.5,w,h);}\n else{const initials=(state.stationName||'FM').split(/s+/).filter(Boolean).slice(0,2).map(word=>Array.from(word)[0]).join('').toUpperCase()||'FM';ctx.save();ctx.fillStyle=state.vinylPalette.ink;ctx.font='700 '+Math.max(4,iconSize*.85)+'px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(initials,logoX,logoY,iconSize*2.4);ctx.restore();}\n const spindleR=radius*.044;ctx.beginPath();ctx.arc(0,0,spindleR,0,Math.PI*2);ctx.fillStyle='#141315';ctx.fill();ctx.restore();\n}\nfunction paintCassetteLabel(cx,cy,w){\n const h=w*.635,y=-h*.5+h*.105+(h*.58)*.105,labelH=h*.58*.16;\n ctx.save();ctx.translate(cx,cy);ctx.rotate(state.cassetteTilt+Math.sin(state.phase*.5)*.008);\n paintLabel(-w*.07,y,w*.36,labelH);ctx.restore();\n}\nfunction requestPaint(){if(!raf&&visible)raf=requestAnimationFrame(paint);}\nfunction paint(time){\n raf=0;if(!visible||document.hidden)return;\n const interval=state.dancerPlaying?1000/30:1000/15;\n if(lastPaint&&time-lastPaint\u003cinterval){requestPaint();return;}lastPaint=time;\n const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),pw=Math.round(w*dpr),ph=Math.round(h*dpr);\n if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}\n width=w;height=Math.max(40,h-topInset-bottomInset);\n ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#d9e2e4';ctx.fillRect(0,0,w,h);\n canvas.dataset.visualizer=state.visualEffect;canvas.dataset.playing=String(state.isPlaying);canvas.dataset.analysis=metrics?.mode||'unavailable';\n ctx.save();ctx.translate(0,topInset);animate(time);ctx.restore();\n requestPaint();\n}\nwindow.addEventListener('message',event=>{\n if(event.source!==parent||event.data?.type!=='retrotv:unified-state')return;\n const packet=event.data,wasPlaying=state.isPlaying,stationName=packet.name||'Radio';visible=!!packet.visible;\n if(stationName!==state.stationName){state.vinylPalette=randomLabelPalette(state.vinylPalette);state.cassettePalette=randomLabelPalette(state.cassettePalette);}\n state.dancerPlaying=!!packet.playing;state.isPlaying=state.dancerPlaying&&!reduced.matches;metrics=packet.metrics||null;state.stationName=stationName;\n if(packet.kind!==state.visualEffect&&['vinyl','cassette','radio'].includes(packet.kind)){state.visualEffect=packet.kind;state.visualTransition=0;broadcastRings.length=0;}\n topInset=packet.top||24;bottomInset=packet.bottom||76;\n if(wasPlaying&&!state.isPlaying)coastUntil=performance.now()+1800;\n if(!wasPlaying&&state.isPlaying)state.lastTimestamp=0;\n if(packet.logo!==undefined){const src=packet.logo||'';if(src!==logoSource){logoSource=src;state.logo=null;const generation=++logoGeneration;if(src){const image=new Image();image.onload=()=>{if(generation===logoGeneration){state.logo=image;lastPaint=0;requestPaint();}};image.src=src;}}}\n if(!visible&&raf){cancelAnimationFrame(raf);raf=0;}\n lastPaint=0;requestPaint();\n});\naddEventListener('resize',()=>{lastPaint=0;requestPaint();});\nparent.postMessage({type:'retrotv:unified-ready'},'*');\n\nfunction drawLeftStaffLines(cx, cy, halfCenterW) {\nconst staffLeft = 0;\nconst staffRight = cx - halfCenterW * 0.72;\nif (staffRight \u003c= 10) return;\nconst lineSpacing = Math.max(7, Math.min(11, height * 0.014));\nconst baseOffsetY = halfCenterW * 0.16;\nctx.save();\nctx.lineWidth = 1.1;\nfor (let i = 0; i \u003c 5; i++) {\nconst yStart = cy + baseOffsetY + i * lineSpacing;\nconst grad = ctx.createLinearGradient(staffLeft, yStart, staffRight, yStart);\ngrad.addColorStop(0, 'rgba(201, 162, 85, 0.34)');\ngrad.addColorStop(0.75, 'rgba(201, 162, 85, 0.22)');\ngrad.addColorStop(1, 'rgba(201, 162, 85, 0.0)');\nif(typeof warm !== \"undefined\" && warmGold)grad.addColorStop(.5,`rgba(238,188,52,${Math.min(.95,alpha*3.4)})`);else if(typeof warm !== \"undefined\" && warm)grad.addColorStop(.5,`rgba(219,66,74,${Math.min(.92,alpha*3.2)})`);ctx.strokeStyle = grad;\nctx.beginPath();\nctx.moveTo(staffLeft, yStart + 6);\nctx.quadraticCurveTo(\nstaffRight * 0.5,\nyStart + 2 - Math.sin(state.phase * 0.4 + i * 0.3) * 2,\nstaffRight,\nyStart - 10\n);\nctx.stroke();\n}\nctx.restore();\n}\nfunction drawWaveformRibbon(cx, cy, centerSpan, layerMode) {\nconst numStrands = layerMode === 'back' ? 28 : 24;\nconst stepX = Math.max(4, Math.floor(width / 180));\nconst baseAmp = Math.min(height * 0.13, 92);\nconst sensitivity = .6;\nconst amp = baseAmp * (.025 + state.overall*1.25 + state.bass*.8 + state.mid*.55 + state.beatPulse*.2) * sensitivity;\nctx.save();\nif (layerMode === 'back') {\nfor (let s = 0; s \u003c numStrands; s++) {\nconst norm = (s / (numStrands - 1)) * 2 - 1;\nconst strandPhase = norm * 0.65;\nconst spread = norm * (.7 + (state.overall*22 + state.mid*26) * sensitivity);\nconst alpha = (1 - Math.abs(norm) * 0.62) * 0.42;\nconst grad = ctx.createLinearGradient(0, cy - amp, width, cy + amp);const warm = s % 11 === 0;const warmGold = s % 13 === 0;\ngrad.addColorStop(0, `rgba(35, 255, 190, ${Math.min(.9,alpha*1.65)})`);\ngrad.addColorStop(0.35, `rgba(40, 210, 255, ${Math.min(1,alpha*1.85)})`);\ngrad.addColorStop(0.65, `rgba(42, 255, 224, ${Math.min(.95,alpha*1.75)})`);\ngrad.addColorStop(1, `rgba(0, 135, 128, ${Math.min(1,alpha*3.1)})`);\nif(typeof warm !== \"undefined\" && warmGold)grad.addColorStop(.5,`rgba(238,188,52,${Math.min(.95,alpha*3.4)})`);else if(typeof warm !== \"undefined\" && warm)grad.addColorStop(.5,`rgba(219,66,74,${Math.min(.92,alpha*3.2)})`);ctx.strokeStyle = grad;\nctx.lineWidth = .72;ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,92,115,.72)\";ctx.shadowBlur=5;\nctx.beginPath();\nfor (let x = 0; x \u003c= width + stepX; x += stepX) {\nconst nx = x / width;\nconst distFromCenter = Math.abs(x - cx) / Math.max(40, centerSpan * 0.5);\nconst centerPinch = x > cx\n? Math.min(1, 0.32 + distFromCenter * 0.55)\n: 1.0;\nconst w1 = Math.sin(nx * 7.2 - state.phase * 1.35 + strandPhase) * (0.62 + state.bass * 0.5);\nconst w2 = Math.sin(nx * 13.5 + state.phase * 0.9 - strandPhase * 1.4) * (0.28 + state.mid * 0.45);\nconst w3 = Math.cos(nx * 21.0 - state.phase * 2.1 + norm) * (0.10 + state.treble * 0.35);\nconst envelope = Math.sin(nx * Math.PI * 2.5 + 0.6) * 0.35 + 0.78;\nconst yOffset = (w1 + w2 + w3 + sampleWave(nx)*.9) * amp * envelope * centerPinch + spread * Math.cos(nx * 5.0 - state.phase * 0.7);\nif (x === 0) {\nctx.moveTo(x, cy + yOffset);\n} else {\nctx.lineTo(x, cy + yOffset);\n}\n}\nctx.stroke();\n}\n} else {\nconst pinchX = cx;\nconst pinchY = state.visualEffect === 'cassette' ? cy - centerSpan * 0.045 : cy;\nfor (let s = 0; s \u003c numStrands; s++) {\nconst norm = (s / (numStrands - 1)) * 2 - 1;\nconst strandPhase = norm * 0.85;\nconst alpha = (1 - Math.abs(norm) * 0.55) * 0.48;\nconst grad = ctx.createLinearGradient(0, cy, pinchX, pinchY);\ngrad.addColorStop(0, `rgba(34, 246, 208, ${Math.min(.92,alpha*1.55)})`);\ngrad.addColorStop(0.55, `rgba(24, 216, 255, ${Math.min(1,alpha*1.9)})`);\ngrad.addColorStop(0.92, `rgba(51, 255, 184, ${Math.min(1,alpha*2.05)})`);\ngrad.addColorStop(1, `rgba(24, 216, 255, 0.0)`);\nif(typeof warm !== \"undefined\" && warmGold)grad.addColorStop(.5,`rgba(238,188,52,${Math.min(.95,alpha*3.4)})`);else if(typeof warm !== \"undefined\" && warm)grad.addColorStop(.5,`rgba(219,66,74,${Math.min(.92,alpha*3.2)})`);ctx.strokeStyle = grad;\nctx.lineWidth = .62;ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,83,108,.78)\";ctx.shadowBlur=6;\nctx.beginPath();\nfor (let x = 0; x \u003c= pinchX; x += stepX) {\nconst t = x / pinchX;\nconst taper = Math.pow(Math.max(0, 1 - t), 1.45);\nconst baselineY = cy + (pinchY - cy) * Math.pow(t, 1.5);\nconst w1 = Math.sin(t * 5.4 - state.phase * 1.45 + strandPhase) * (0.68 + state.bass * 0.55);\nconst w2 = Math.cos(t * 9.8 + state.phase * 1.1 - strandPhase * 1.2) * (0.32 + state.mid * 0.45);\nconst spread = norm * (.7 + (state.overall*28 + state.mid*24) * sensitivity) * Math.sin(t * Math.PI * 0.85 + 0.25);\nconst yOffset = ((w1 + w2 + sampleWave(t)*.9) * amp * 0.82 + spread) * taper;\nif (x === 0) {\nctx.moveTo(x, baselineY + yOffset);\n} else {\nctx.lineTo(x, baselineY + yOffset);\n}\n}\nctx.lineTo(pinchX, pinchY);\nctx.stroke();\n}\n}\nctx.restore();\n}\nfunction spawnBroadcastRing(isBeat = false) {\nbroadcastRings.push({\nradius: 6,\nmaxRadius: Math.min(width, height) * (isBeat ? 0.44 : 0.36),\nspeed: isBeat ? 1.85 : 1.35,\nalpha: isBeat ? 0.78 : 0.55,\nlineWidth: isBeat ? 2.4 : 1.5,\nisCoral: isBeat || Math.random() \u003c 0.65,\nwobbleFreq: 6 + Math.floor(Math.random() * 6),\n});\n}\nfunction updateAndDrawBroadcastWaves(cx, beaconY, dt) {\nconst spawnRate = state.isPlaying ? (0.045 + state.overall * 0.09) : 0.015;\nringSpawnAccum += spawnRate * dt;\nif (ringSpawnAccum >= 1) {\nringSpawnAccum = 0;\nspawnBroadcastRing(false);\n}\nctx.save();\nfor (let i = broadcastRings.length - 1; i >= 0; i--) {\nconst ring = broadcastRings[i];\nconst speedBoost = state.isPlaying ? (1 + state.bass * 0.85) : 0.45;\nring.radius += ring.speed * speedBoost * dt;\nconst progress = ring.radius / ring.maxRadius;\nif (progress >= 1) {\nbroadcastRings.splice(i, 1);\ncontinue;\n}\nconst fadeAlpha = ring.alpha * Math.pow(1 - progress, 1.35);\nctx.strokeStyle = ring.isCoral\n? `rgba(242, 113, 84, ${fadeAlpha})`\n: `rgba(201, 162, 85, ${fadeAlpha * 0.9})`;\nctx.lineWidth = ring.lineWidth * (1 - progress * 0.35);\n[-1, 1].forEach((dir) => {\nconst startAngle = dir === 1 ? -Math.PI * 0.36 : Math.PI * 0.64;\nconst endAngle = dir === 1 ? Math.PI * 0.36 : Math.PI * 1.36;\nctx.beginPath();\nconst steps = 28;\nfor (let s = 0; s \u003c= steps; s++) {\nconst a = startAngle + ((endAngle - startAngle) * s) / steps;\nconst ripple = Math.sin(a * ring.wobbleFreq + state.phase * 2.2) * (state.mid * 4.5 * progress);\nconst r = ring.radius + ripple;\nconst px = cx + Math.cos(a) * r;\nconst py = beaconY + Math.sin(a) * r;\nif (s === 0) ctx.moveTo(px, py);\nelse ctx.lineTo(px, py);\n}\nctx.stroke();\n});\n}\nctx.restore();\n}\nfunction drawVinylRecord(cx, cy, radius) {\nctx.save();\nctx.translate(cx, cy);\nctx.save();\nctx.beginPath();\nctx.arc(0, 8, radius * 1.01, 0, Math.PI * 2);\nctx.fillStyle = 'rgba(35, 31, 30, 0.16)';\nctx.filter = 'blur(14px)';\nctx.fill();\nctx.restore();\nctx.save();\nctx.rotate(state.vinylAngle);\nconst discGrad = ctx.createRadialGradient(0, 0, radius * 0.25, 0, 0, radius);\ndiscGrad.addColorStop(0, '#2A2729');\ndiscGrad.addColorStop(0.55, '#1D1B1E');\ndiscGrad.addColorStop(0.92, '#252226');\ndiscGrad.addColorStop(1, '#141315');\nctx.beginPath();\nctx.arc(0, 0, radius, 0, Math.PI * 2);\nctx.fillStyle = discGrad;\nctx.fill();\nctx.lineWidth = 2;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.35)';\nctx.stroke();\nconst labelR = radius * 0.385;\nconst grooveStart = labelR + radius * 0.045;\nconst grooveEnd = radius * 0.945;\nconst grooveCount = 26;\nfor (let g = 0; g \u003c grooveCount; g++) {\nconst r = grooveStart + ((grooveEnd - grooveStart) * g) / (grooveCount - 1);\nctx.beginPath();\nctx.arc(0, 0, r, 0, Math.PI * 2);\nctx.lineWidth = g % 6 === 0 ? 1.15 : 0.65;\nctx.strokeStyle = g % 6 === 0\n? 'rgba(255, 255, 255, 0.085)'\n: 'rgba(255, 255, 255, 0.038)';\nctx.stroke();\n}\nctx.beginPath();\nctx.arc(0, 0, labelR + radius * 0.024, 0, Math.PI * 2);\nctx.lineWidth = 1.4;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.24)';\nctx.stroke();\nconst labelGrad = ctx.createRadialGradient(-labelR * 0.2, -labelR * 0.2, 2, 0, 0, labelR);\nlabelGrad.addColorStop(0, state.vinylPalette.light);\nlabelGrad.addColorStop(0.65, state.vinylPalette.base);\nlabelGrad.addColorStop(1, state.vinylPalette.shadow);\nctx.beginPath();\nctx.arc(0, 0, labelR, 0, Math.PI * 2);\nctx.fillStyle = labelGrad;\nctx.fill();\nconst spindleR = radius * 0.044;\nctx.beginPath();\nctx.arc(0, 0, spindleR, 0, Math.PI * 2);\nctx.fillStyle = '#141315';\nctx.fill();\nctx.lineWidth = .62;ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,83,108,.78)\";ctx.shadowBlur=6;\nctx.strokeStyle = '#FAF6EC';\nctx.stroke();\nctx.restore(); // End rotating disc\nctx.save();\nctx.beginPath();\nctx.arc(0, 0, radius * 0.99, 0, Math.PI * 2);\nctx.clip();\nctx.rotate(-Math.PI * 0.24);\nconst sheenGrad = ctx.createLinearGradient(-radius, 0, radius, 0);\nsheenGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.36, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.47, 'rgba(255, 252, 245, 0.08)');\nsheenGrad.addColorStop(0.50, 'rgba(255, 252, 245, 0.14)');\nsheenGrad.addColorStop(0.53, 'rgba(255, 252, 245, 0.08)');\nsheenGrad.addColorStop(0.64, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');\nctx.fillStyle = sheenGrad;\nctx.fillRect(-radius, -radius, radius * 2, radius * 2);\nctx.restore();\nctx.restore();\n}\nfunction roundRectPath(ctx, x, y, w, h, r) {\nconst radius = Math.min(r, w * 0.5, h * 0.5);\nctx.beginPath();\nctx.moveTo(x + radius, y);\nctx.lineTo(x + w - radius, y);\nctx.quadraticCurveTo(x + w, y, x + w, y + radius);\nctx.lineTo(x + w, y + h - radius);\nctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);\nctx.lineTo(x + radius, y + h);\nctx.quadraticCurveTo(x, y + h, x, y + h - radius);\nctx.lineTo(x, y + radius);\nctx.quadraticCurveTo(x, y, x + radius, y);\nctx.closePath();\n}\nfunction drawCassetteReel(ctx, rx, ry, hubRadius, tapePackRadius, angle) {\nctx.save();\nctx.translate(rx, ry);\nconst packGrad = ctx.createRadialGradient(0, 0, hubRadius * 0.9, 0, 0, tapePackRadius);\npackGrad.addColorStop(0, '#2C221E');\npackGrad.addColorStop(0.55, '#3A2C26');\npackGrad.addColorStop(0.92, '#241C19');\npackGrad.addColorStop(1, '#4A3931');\nctx.beginPath();\nctx.arc(0, 0, tapePackRadius, 0, Math.PI * 2);\nctx.fillStyle = packGrad;\nctx.fill();\nctx.strokeStyle = 'rgba(250, 246, 236, 0.06)';\nctx.lineWidth = 0.7;\nfor (let r = hubRadius + 3; r \u003c tapePackRadius - 1.5; r += 3.2) {\nctx.beginPath();\nctx.arc(0, 0, r, 0, Math.PI * 2);\nctx.stroke();\n}\nctx.rotate(angle);\nctx.beginPath();\nctx.arc(0, 0, hubRadius, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.lineWidth = .62;ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,83,108,.78)\";ctx.shadowBlur=6;\nctx.strokeStyle = '#D4B475';\nctx.stroke();\nconst innerHoleR = hubRadius * 0.56;\nctx.beginPath();\nctx.arc(0, 0, innerHoleR, 0, Math.PI * 2);\nctx.fillStyle = '#18171A';\nctx.fill();\nctx.fillStyle = '#FAF6EC';\nfor (let t = 0; t \u003c 6; t++) {\nconst theta = (t / 6) * Math.PI * 2;\nctx.save();\nctx.rotate(theta);\nctx.beginPath();\nctx.rect(innerHoleR * 0.64, -hubRadius * 0.085, innerHoleR * 0.42, hubRadius * 0.17);\nctx.fill();\nctx.restore();\n}\nctx.beginPath();\nctx.arc(hubRadius * 0.78, 0, Math.max(1.4, hubRadius * 0.08), 0, Math.PI * 2);\nctx.fillStyle = '#F27154';\nctx.fill();\nctx.restore();\n}\nfunction drawCassetteTape(cx, cy, cassetteW) {\nconst cassetteH = cassetteW * 0.635;\nconst halfW = cassetteW * 0.5;\nconst halfH = cassetteH * 0.5;\nconst cornerR = cassetteW * 0.042;\nctx.save();\nctx.translate(cx, cy);\nconst dynamicTilt = state.cassetteTilt + Math.sin(state.phase * 0.5) * 0.008;\nctx.rotate(dynamicTilt);\nctx.save();\nroundRectPath(ctx, -halfW, -halfH + 10, cassetteW, cassetteH, cornerR);\nctx.fillStyle = 'rgba(35, 31, 30, 0.16)';\nctx.filter = 'blur(14px)';\nctx.fill();\nctx.restore();\nconst shellGrad = ctx.createLinearGradient(-halfW, -halfH, halfW, halfH);\nshellGrad.addColorStop(0, '#272528');\nshellGrad.addColorStop(0.5, '#1D1B1E');\nshellGrad.addColorStop(1, '#151416');\nroundRectPath(ctx, -halfW, -halfH, cassetteW, cassetteH, cornerR);\nctx.fillStyle = shellGrad;\nctx.fill();\nctx.lineWidth = 1.6;\nctx.strokeStyle = 'rgba(255, 255, 255, 0.11)';\nctx.stroke();\nconst labelX = -halfW + cassetteW * 0.085;\nconst labelY = -halfH + cassetteH * 0.105;\nconst labelW = cassetteW * 0.83;\nconst labelH = cassetteH * 0.58;\nconst labelR = cassetteW * 0.022;\nroundRectPath(ctx, labelX, labelY, labelW, labelH, labelR);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nconst pad = cassetteW * 0.011;\nconst coralGrad = ctx.createLinearGradient(labelX, labelY, labelX + labelW, labelY + labelH);\ncoralGrad.addColorStop(0, state.cassettePalette.light);\ncoralGrad.addColorStop(0.6, state.cassettePalette.base);\ncoralGrad.addColorStop(1, state.cassettePalette.shadow);\nroundRectPath(ctx, labelX + pad, labelY + pad, labelW - pad * 2, labelH - pad * 2, labelR * 0.7);\nctx.fillStyle = coralGrad;\nctx.fill();\nconst topStripY = labelY + labelH * 0.21;\nctx.strokeStyle = 'rgba(250, 246, 236, 0.78)';\nctx.lineWidth = Math.max(1, cassetteW * 0.0032);\nctx.beginPath();\nctx.moveTo(labelX + cassetteW * 0.04, topStripY);\nctx.lineTo(labelX + labelW - cassetteW * 0.04, topStripY);\nctx.stroke();\nctx.fillStyle = state.cassettePalette.ink;\nctx.font = `600 ${Math.max(9, Math.round(cassetteW * 0.032))}px -apple-system, sans-serif`;\nctx.textBaseline = 'middle';\nctx.fillText('A', labelX + cassetteW * 0.045, labelY + labelH * 0.115);\nctx.font = `500 ${Math.max(7, Math.round(cassetteW * 0.021))}px -apple-system, sans-serif`;\nctx.fillStyle = 'rgba(250, 246, 236, 0.88)';\nctx.textAlign = 'right';\nctx.fillText('TYPE II • CrO₂ 90', labelX + labelW - cassetteW * 0.045, labelY + labelH * 0.115);\nctx.textAlign = 'left';\nconst winW = cassetteW * 0.56;\nconst winH = cassetteH * 0.265;\nconst winX = -winW * 0.5;\nconst winY = labelY + labelH * 0.34;\nconst winR = winH * 0.22;\nroundRectPath(ctx, winX - 3, winY - 3, winW + 6, winH + 6, winR + 2);\nctx.fillStyle = '#171619';\nctx.fill();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.fillStyle = '#121114';\nctx.fill();\nctx.save();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.clip();\nconst windowGlow = ctx.createRadialGradient(0, winY + winH * 0.5, 4, 0, winY + winH * 0.5, winW * 0.6);\nwindowGlow.addColorStop(0, `rgba(242, 113, 84, ${0.10 + state.mid * 0.14})`);\nwindowGlow.addColorStop(1, 'rgba(18, 17, 20, 0)');\nctx.fillStyle = windowGlow;\nctx.fillRect(winX, winY, winW, winH);\nconst reelCenterY = winY + winH * 0.5;\nconst leftReelX = -winW * 0.275;\nconst rightReelX = winW * 0.275;\nconst hubRadius = winH * 0.34;\nconst minPackR = hubRadius * 1.16;\nconst maxPackR = hubRadius * 2.18;\nconst leftPackRadius = minPackR + (maxPackR - minPackR) * state.tapeProgress;\nconst rightPackRadius = minPackR + (maxPackR - minPackR) * (1 - state.tapeProgress);\nctx.strokeStyle = '#4E3A30';\nctx.lineWidth = 2;\nctx.beginPath();\nctx.moveTo(leftReelX, reelCenterY + leftPackRadius * 0.78);\nctx.lineTo(rightReelX, reelCenterY + rightPackRadius * 0.78);\nctx.stroke();\ndrawCassetteReel(ctx, leftReelX, reelCenterY, hubRadius, leftPackRadius, state.leftReelAngle);\ndrawCassetteReel(ctx, rightReelX, reelCenterY, hubRadius, rightPackRadius, state.rightReelAngle);\nctx.strokeStyle = 'rgba(250, 246, 236, 0.24)';\nctx.lineWidth = 1;\nfor (let m = -2; m \u003c= 2; m++) {\nconst tickX = m * (winW * 0.032);\nconst tickH = m === 0 ? 7 : 4;\nctx.beginPath();\nctx.moveTo(tickX, winY + winH * 0.5 - tickH * 0.5);\nctx.lineTo(tickX, winY + winH * 0.5 + tickH * 0.5);\nctx.stroke();\n}\nctx.restore();\nroundRectPath(ctx, winX, winY, winW, winH, winR);\nctx.lineWidth = 1.1;\nctx.strokeStyle = 'rgba(201, 162, 85, 0.35)';\nctx.stroke();\nconst bridgeTopW = cassetteW * 0.54;\nconst bridgeBotW = cassetteW * 0.64;\nconst bridgeH = cassetteH * 0.23;\nconst bridgeTopY = halfH - bridgeH;\nctx.beginPath();\nctx.moveTo(-bridgeBotW * 0.5, halfH);\nctx.lineTo(-bridgeTopW * 0.5, bridgeTopY);\nctx.lineTo(bridgeTopW * 0.5, bridgeTopY);\nctx.lineTo(bridgeBotW * 0.5, halfH);\nctx.closePath();\nctx.fillStyle = '#252327';\nctx.fill();\nctx.lineWidth = 1.1;\nctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';\nctx.stroke();\nconst tapeY = halfH - bridgeH * 0.26;\nctx.strokeStyle = '#5C4336';\nctx.lineWidth = Math.max(2.2, cassetteW * 0.01);\nctx.beginPath();\nctx.moveTo(-bridgeBotW * 0.38, tapeY);\nctx.lineTo(bridgeBotW * 0.38, tapeY);\nctx.stroke();\nconst holePositions = [\n{ x: -bridgeTopW * 0.32, y: bridgeTopY + bridgeH * 0.46, r: cassetteW * 0.018 },\n{ x: bridgeTopW * 0.32, y: bridgeTopY + bridgeH * 0.46, r: cassetteW * 0.018 },\n{ x: -bridgeTopW * 0.14, y: bridgeTopY + bridgeH * 0.52, r: cassetteW * 0.012 },\n{ x: bridgeTopW * 0.14, y: bridgeTopY + bridgeH * 0.52, r: cassetteW * 0.012 },\n];\nholePositions.forEach((h) => {\nctx.beginPath();\nctx.arc(h.x, h.y, h.r, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.lineWidth = 1;\nctx.strokeStyle = '#141315';\nctx.stroke();\n});\nctx.fillStyle = '#C9A255';\nctx.fillRect(-cassetteW * 0.025, tapeY - cassetteW * 0.012, cassetteW * 0.05, cassetteW * 0.016);\nconst screwOffsetX = halfW - cassetteW * 0.046;\nconst screwOffsetY = halfH - cassetteH * 0.068;\nconst screwR = Math.max(3, cassetteW * 0.014);\n[\n[-screwOffsetX, -screwOffsetY],\n[screwOffsetX, -screwOffsetY],\n[-screwOffsetX, screwOffsetY],\n[screwOffsetX, screwOffsetY],\n].forEach(([sx, sy]) => {\nctx.beginPath();\nctx.arc(sx, sy, screwR, 0, Math.PI * 2);\nctx.fillStyle = '#141315';\nctx.fill();\nctx.beginPath();\nctx.arc(sx, sy, screwR * 0.72, 0, Math.PI * 2);\nctx.fillStyle = '#3B383D';\nctx.fill();\nctx.strokeStyle = '#181719';\nctx.lineWidth = 1;\nctx.beginPath();\nctx.moveTo(sx - screwR * 0.45, sy);\nctx.lineTo(sx + screwR * 0.45, sy);\nctx.moveTo(sx, sy - screwR * 0.45);\nctx.lineTo(sx, sy + screwR * 0.45);\nctx.stroke();\n});\nctx.save();\nroundRectPath(ctx, -halfW, -halfH, cassetteW, cassetteH, cornerR);\nctx.clip();\nctx.rotate(-Math.PI * 0.22);\nconst sheenGrad = ctx.createLinearGradient(-cassetteW * 0.7, 0, cassetteW * 0.7, 0);\nsheenGrad.addColorStop(0.0, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.36, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(0.47, 'rgba(255, 252, 245, 0.075)');\nsheenGrad.addColorStop(0.50, 'rgba(255, 252, 245, 0.12)');\nsheenGrad.addColorStop(0.53, 'rgba(255, 252, 245, 0.075)');\nsheenGrad.addColorStop(0.64, 'rgba(255, 255, 255, 0)');\nsheenGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0)');\nctx.fillStyle = sheenGrad;\nctx.fillRect(-cassetteW, -cassetteW, cassetteW * 2, cassetteW * 2);\nctx.restore();\nctx.restore();\n}\n\nfunction drawRadioTower(cx, baseY, towerH, timestamp) {\nconst topY = baseY - towerH;\nconst spireH = towerH * 0.16;\nconst latticeTopY = topY + spireH;\nconst latticeH = towerH - spireH;\nconst baseHalfW = towerH * 0.165;\nconst topHalfW = towerH * 0.026;\nctx.save();\nctx.save();\nctx.beginPath();\nctx.ellipse(cx, baseY + 5, baseHalfW * 1.65, towerH * 0.025, 0, 0, Math.PI * 2);\nctx.fillStyle = 'rgba(35, 31, 30, 0.12)';\nctx.filter = 'blur(6px)';\nctx.fill();\nctx.restore();\nconst guyLevels = [0.28, 0.62];\nconst anchorSpan = baseHalfW * 2.55;\nguyLevels.forEach((lvl, idx) => {\nconst attachY = latticeTopY + latticeH * lvl;\nconst legXAtLvl = topHalfW + (baseHalfW - topHalfW) * lvl;\nconst groundX = anchorSpan * (idx === 0 ? 0.82 : 1.05);\n[-1, 1].forEach((dir) => {\nconst startX = cx + dir * legXAtLvl;\nconst endX = cx + dir * groundX;\nctx.strokeStyle = 'rgba(29, 27, 30, 0.34)';\nctx.lineWidth = 1.05;\nctx.beginPath();\nctx.moveTo(startX, attachY);\nctx.lineTo(endX, baseY);\nctx.stroke();\n[0.32, 0.68].forEach((t) => {\nconst ix = startX + (endX - startX) * t;\nconst iy = attachY + (baseY - attachY) * t;\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(ix, iy, 2.3, 0, Math.PI * 2);\nctx.fill();\n});\nctx.fillStyle = '#1D1B1E';\nctx.beginPath();\nctx.arc(endX, baseY, 2.5, 0, Math.PI * 2);\nctx.fill();\n});\n});\nconst numBays = 7;\nctx.strokeStyle = '#1D1B1E';\nctx.lineCap = 'round';\nctx.lineJoin = 'round';\nctx.lineWidth = Math.max(2.4, towerH * 0.011);\nctx.beginPath();\nctx.moveTo(cx - topHalfW, latticeTopY);\nctx.lineTo(cx - baseHalfW, baseY);\nctx.moveTo(cx + topHalfW, latticeTopY);\nctx.lineTo(cx + baseHalfW, baseY);\nctx.stroke();\nfor (let b = 0; b \u003c numBays; b++) {\nconst t0 = b / numBays;\nconst t1 = (b + 1) / numBays;\nconst y0 = latticeTopY + latticeH * t0;\nconst y1 = latticeTopY + latticeH * t1;\nconst w0 = topHalfW + (baseHalfW - topHalfW) * t0;\nconst w1 = topHalfW + (baseHalfW - topHalfW) * t1;\nctx.lineWidth = Math.max(1.5, towerH * 0.0065);\nctx.beginPath();\nctx.moveTo(cx - w0, y0);\nctx.lineTo(cx + w0, y0);\nctx.stroke();\nctx.lineWidth = Math.max(1.1, towerH * 0.0045);\nctx.strokeStyle = 'rgba(29, 27, 30, 0.85)';\nctx.beginPath();\nctx.moveTo(cx - w0, y0);\nctx.lineTo(cx + w1, y1);\nctx.moveTo(cx + w0, y0);\nctx.lineTo(cx - w1, y1);\nctx.stroke();\nctx.strokeStyle = '#1D1B1E';\n}\nconst galleryY = latticeTopY + latticeH * 0.14;\nconst galleryW = (topHalfW + (baseHalfW - topHalfW) * 0.14) * 1.65;\nctx.fillStyle = '#1D1B1E';\nctx.fillRect(cx - galleryW, galleryY - 2, galleryW * 2, 4);\nctx.lineWidth = 1.1;\nctx.beginPath();\nctx.moveTo(cx - galleryW, galleryY - 7);\nctx.lineTo(cx + galleryW, galleryY - 7);\nctx.moveTo(cx - galleryW, galleryY - 7);\nctx.lineTo(cx - galleryW, galleryY);\nctx.moveTo(cx + galleryW, galleryY - 7);\nctx.lineTo(cx + galleryW, galleryY);\nctx.stroke();\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(cx + galleryW * 0.65, galleryY - 5, Math.max(3, towerH * 0.015), 0, Math.PI * 2);\nctx.fill();\nctx.strokeStyle = '#1D1B1E';\nctx.lineWidth = .62;ctx.globalCompositeOperation=\"source-over\";ctx.shadowColor=\"rgba(0,83,108,.78)\";ctx.shadowBlur=6;\nctx.stroke();\nconst platW = baseHalfW * 2.5;\nconst platH = Math.max(5, towerH * 0.02);\nctx.fillStyle = '#1D1B1E';\nctx.fillRect(cx - platW * 0.5, baseY - platH * 0.5, platW, platH);\nconst shackW = baseHalfW * 0.92;\nconst shackH = towerH * 0.095;\nconst shackX = cx - shackW * 0.5;\nconst shackY = baseY - platH * 0.5 - shackH;\nctx.fillStyle = '#262326';\nctx.fillRect(shackX, shackY, shackW, shackH);\nctx.strokeStyle = '#C9A255';\nctx.lineWidth = 1.1;\nctx.strokeRect(shackX, shackY, shackW, shackH);\nconst winW = shackW * 0.36;\nconst winH = shackH * 0.42;\nctx.fillStyle = state.isPlaying ? '#F27154' : '#C9A255';\nctx.fillRect(cx - winW * 0.5, shackY + shackH * 0.24, winW, winH);\n\nctx.strokeStyle = '#1D1B1E';\nctx.lineWidth = Math.max(2.6, towerH * 0.01);\nctx.beginPath();\nctx.moveTo(cx, latticeTopY);\nctx.lineTo(cx, topY);\nctx.stroke();\nconst dipoleOffsets = [0.35, 0.68];\ndipoleOffsets.forEach((d) => {\nconst dy = topY + spireH * d;\nconst dw = towerH * 0.032;\nctx.lineWidth = 1.6;\nctx.beginPath();\nctx.moveTo(cx - dw, dy);\nctx.lineTo(cx + dw, dy);\nctx.stroke();\nctx.fillStyle = '#C9A255';\nctx.beginPath();\nctx.arc(cx - dw, dy, 1.8, 0, Math.PI * 2);\nctx.arc(cx + dw, dy, 1.8, 0, Math.PI * 2);\nctx.fill();\n});\nconst pulseIntensity = state.isPlaying\n? (0.55 + state.bass * 0.45 + state.beatPulse * 0.45 + state.tuningSurge * 0.4)\n: 0.35;\nconst glowRadius = Math.max(22, towerH * 0.14) * (0.85 + pulseIntensity * 0.45);\nconst beaconGlow = ctx.createRadialGradient(cx, topY, 2, cx, topY, glowRadius);\nbeaconGlow.addColorStop(0, `rgba(242, 113, 84, ${Math.min(0.95, 0.55 + pulseIntensity * 0.4)})`);\nbeaconGlow.addColorStop(0.35, `rgba(246, 168, 122, ${0.28 + pulseIntensity * 0.22})`);\nbeaconGlow.addColorStop(1, 'rgba(242, 113, 84, 0)');\nctx.fillStyle = beaconGlow;\nctx.beginPath();\nctx.arc(cx, topY, glowRadius, 0, Math.PI * 2);\nctx.fill();\nconst bulbR = Math.max(4.5, towerH * 0.022) * (1 + state.beatPulse * 0.16);\nctx.beginPath();\nctx.arc(cx, topY, bulbR, 0, Math.PI * 2);\nctx.fillStyle = '#F27154';\nctx.fill();\nctx.lineWidth = 1.5;\nctx.strokeStyle = '#FAF6EC';\nctx.stroke();\nctx.beginPath();\nctx.arc(cx, topY, bulbR * 0.45, 0, Math.PI * 2);\nctx.fillStyle = '#FAF6EC';\nctx.fill();\nctx.restore();\nreturn topY; // Return exact Y coordinate of the top beacon bulb\n}\nconst ambientNotes=[{x:.12,y:.24,phase:.2,type:0},{x:.22,y:.76,phase:1.1,type:1},{x:.79,y:.28,phase:2.2,type:2},{x:.9,y:.68,phase:3.1,type:3},{x:.08,y:.53,phase:4.2,type:1},{x:.88,y:.45,phase:5.1,type:0}];\nfunction drawAmbientNotes(cx,cy,span){\n const exclusion=Math.max(26,span*.36),size=Math.max(13,Math.min(24,Math.min(width,height)*.06));\n for(const note of ambientNotes){\n  const x=width*note.x+Math.sin(state.notePhase*.55+note.phase)*6;\n  const y=height*note.y+Math.sin(state.notePhase*.8+note.phase)*4;\n  if(Math.abs(x-cx)\u003c=exclusion&&Math.abs(y-cy)\u003c=exclusion*.75)continue;\n  ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(state.notePhase+note.phase)*.08);ctx.scale(size/24,size/24);\n  ctx.fillStyle='rgba(201,162,85,'+(.56+.12*Math.sin(state.notePhase+note.phase))+')';ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=2.4;ctx.lineCap='round';ctx.lineJoin='round';\n  if(note.type===0){\n   ctx.beginPath();ctx.ellipse(-7,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(7,5,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,7.5);ctx.lineTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,4.5);ctx.stroke();\n   ctx.beginPath();ctx.moveTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,-9.2);ctx.lineTo(-3.2,-6.2);ctx.closePath();ctx.fill();\n  }else if(note.type===1){\n   ctx.beginPath();ctx.ellipse(-1,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(3,7);ctx.lineTo(3,-13);ctx.quadraticCurveTo(16,-11,7,-3);ctx.stroke();\n  }else if(note.type===2){\n   ctx.beginPath();ctx.ellipse(-1,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(3,7);ctx.lineTo(3,-13);ctx.stroke();\n  }else{\n   ctx.beginPath();ctx.ellipse(-7,8,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(7,5,4.6,3.4,-.35,0,Math.PI*2);ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,7.5);ctx.lineTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,4.5);ctx.stroke();\n   ctx.beginPath();ctx.moveTo(-3.2,-10);ctx.lineTo(10.8,-13);ctx.lineTo(10.8,-11);ctx.lineTo(-3.2,-8);ctx.closePath();ctx.fill();\n   ctx.beginPath();ctx.moveTo(-3.2,-6);ctx.lineTo(10.8,-9);ctx.lineTo(10.8,-7);ctx.lineTo(-3.2,-4);ctx.closePath();ctx.fill();\n  }\n  ctx.restore();\n }\n}\nfunction animate(timestamp) {\nif (!state.lastTimestamp) state.lastTimestamp = timestamp;\nconst frameDt = Math.min((timestamp - state.lastTimestamp) / 16.666, 2.5);\nconst dt = reduced.matches ? 0 : frameDt;\nconst mediaDt = state.dancerPlaying ? frameDt : 0;\nstate.lastTimestamp = timestamp;\nupdateAudioMetrics(timestamp);\nstate.visualTransition = Math.min(1, state.visualTransition + 0.07 * dt);\nconst easeScale = 0.94 + 0.06 * (1 - Math.pow(1 - state.visualTransition, 3));\nconst targetVinylVel = state.targetVinylVelocity;\nstate.vinylVelocity += (targetVinylVel - state.vinylVelocity) * 0.06 * mediaDt;\nstate.vinylAngle = (state.vinylAngle + state.vinylVelocity * mediaDt) % (Math.PI * 2);\nconst targetTapeVel = state.targetTapeVelocity;\nstate.tapeVelocity += (targetTapeVel - state.tapeVelocity) * 0.06 * mediaDt;\nconst leftSpeedFactor = 1.35 - state.tapeProgress * 0.55;\nconst rightSpeedFactor = 0.80 + state.tapeProgress * 0.55;\nstate.leftReelAngle = (state.leftReelAngle + state.tapeVelocity * leftSpeedFactor * mediaDt) % (Math.PI * 2);\nstate.rightReelAngle = (state.rightReelAngle + state.tapeVelocity * rightSpeedFactor * mediaDt) % (Math.PI * 2);\nstate.tapeProgress += state.tapeVelocity * 0.0045 * state.tapeDirection * mediaDt;\nif (state.tapeProgress >= 0.92) {\nstate.tapeProgress = 0.92;\nstate.tapeDirection = -1;\n} else if (state.tapeProgress \u003c= 0.08) {\nstate.tapeProgress = 0.08;\nstate.tapeDirection = 1;\n}\nconst phaseSpeed = state.isPlaying\n? (0.024 + state.overall * 0.032)\n: 0.008;\nstate.phase += phaseSpeed * dt; state.notePhase += (state.dancerPlaying ? 0.024 + state.overall * 0.032 : 0.008) * frameDt;\nctx.fillStyle = '#d9e2e4';\nctx.fillRect(0, 0, width, height);\nconst cx = width * 0.5;\nconst minDim = Math.min(width, height);\nif (state.visualEffect === 'vinyl') {\nconst vinylCx = width * 0.72;\nconst cy = height * 0.34;\nconst vinylRadius = Math.min(width*.64,height*.64,410) * (1 + state.bass * 0.02) * easeScale;\ndrawLeftStaffLines(cx, cy, vinylRadius * 0.85);\n\ndrawVinylRecord(vinylCx, cy, vinylRadius);paintVinylLabel(vinylCx,cy,vinylRadius);\n\ndrawAmbientNotes(vinylCx,cy,vinylRadius*2);\n} else if (state.visualEffect === 'cassette') {\nconst cy = height * 0.48;\nconst cassetteW = Math.min(width*.86,height*.98,500) * (1 + state.bass * 0.015) * easeScale;\ndrawLeftStaffLines(cx, cy, cassetteW * 0.5);\n\ndrawCassetteTape(cx, cy, cassetteW);paintCassetteLabel(cx,cy,cassetteW);\n\ndrawAmbientNotes(cx,cy,cassetteW);\n} else {\nconst baseY = height * 0.85;\nconst towerH = Math.min(height*.72,width*.66,430) * easeScale;\nconst beaconY = baseY - towerH;\ndrawLeftStaffLines(cx, beaconY + towerH * 0.35, towerH * 0.25);\n\nupdateAndDrawBroadcastWaves(cx, beaconY, dt);\ndrawRadioTower(cx, baseY, towerH, timestamp);\n\ndrawAmbientNotes(cx,beaconY+towerH*.5,towerH);\n}\n}\n})();\u003c/script>\u003c/body>\u003c/html>";
+ stage.prepend(frame);
  const mirror=document.createElement('canvas');mirror.className='ux-original-visualizer';mirror.setAttribute('aria-hidden','true');stage.prepend(mirror);
  const mirrorContext=mirror.getContext('2d',{alpha:false});
  let mirrorFrame=0;
@@ -4364,9 +4688,14 @@ document.addEventListener('DOMContentLoaded',()=>{
        mirrorContext.drawImage(source,0,0,width,height);
      }
    }catch{}
-   mirrorFrame=requestAnimationFrame(copyOriginal);
+   mirrorFrame=visible()&&!audio.paused&&!audio.ended?requestAnimationFrame(copyOriginal):0;
  }
- frame.addEventListener('load',()=>{cancelAnimationFrame(mirrorFrame);copyOriginal();},{once:true});
+ function refreshMirror(){cancelAnimationFrame(mirrorFrame);mirrorFrame=0;if(ready&&visible())copyOriginal();}
+  frame.addEventListener('load',refreshMirror);
+  for(const type of ['playing','pause','ended'])audio.addEventListener(type,refreshMirror);
+  document.addEventListener('visibilitychange',refreshMirror);
+  new MutationObserver(refreshMirror).observe(shell,{attributes:true,attributeFilter:['data-mode']});
+  if(shell.closest('main'))new MutationObserver(refreshMirror).observe(shell.closest('main'),{attributes:true,attributeFilter:['data-view']});
  logo.addEventListener('load',wake);logo.addEventListener('error',wake);for(const type of ['play','playing','pause','ended','error','loadedmetadata','timeupdate','waiting'])audio.addEventListener(type,wake);
  new MutationObserver(wake).observe(art,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-station-category','data-station-logo']});
  const details=$('ux-radio-details');if(details)new MutationObserver(wake).observe(details,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-station-category','src','hidden']});
@@ -4379,7 +4708,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 document.addEventListener('DOMContentLoaded',()=>{
   const $=id=>document.getElementById(id),stage=$('tv-fullscreen-shell'),display=$('tv-display'),shell=$('ux-receiver'),app=document.querySelector('main.retro-app'),video=$('tv-video');
-  const mobile=()=>((navigator.maxTouchPoints>0)||matchMedia('(pointer:coarse)').matches||navigator.userAgentData?.mobile||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent))&&Math.min(innerWidth,innerHeight)<=1000;
+  // A phone-sized landscape window counts too, so rotating or resizing in any browser opens the full-screen picture.
+  const mobile=()=>(((navigator.maxTouchPoints>0)||matchMedia('(pointer:coarse)').matches||navigator.userAgentData?.mobile||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent))&&Math.min(innerWidth,innerHeight)<=1000)||(innerWidth>innerHeight&&innerWidth<=900&&innerHeight<=600);
   const landscape=()=>innerWidth>innerHeight;
   let floating=false,automatic=false,home=null,homeNext=null,changing=false,suppressed=false;const previousStyles=new Map();
   window.uxIsMobileTV=mobile;
@@ -4428,35 +4758,15 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 document.addEventListener('DOMContentLoaded',()=>{
-  const stage=document.getElementById('ux-radio-stage');
-  const art=document.getElementById('radio-art');
-  const visualizer=document.createElement('div');
-  visualizer.className='ux-native-visualizer';
-  visualizer.dataset.kind='vinyl';
-  visualizer.innerHTML='<span class="ux-native-waves" aria-hidden="true"></span><span class="ux-native-record" aria-hidden="true"></span><span class="ux-native-cassette" aria-hidden="true"></span>';
-  stage.prepend(visualizer);
-  const frame=document.getElementById('ux-unified-radio-frame');
-  if(frame){
-    frame.style.setProperty('display','block','important');
-    frame.style.setProperty('background','#d9e2e4','important');
-  }
-  const update=()=>{
-    const category=art.dataset.stationCategory||document.querySelector('#radio-station-strip .active')?.dataset.stationCategory;
-    visualizer.dataset.kind=category==='CASSETTE'?'cassette':'vinyl';
-  };
-  new MutationObserver(update).observe(art,{attributes:true,attributeFilter:['data-station-category']});
-  new MutationObserver(update).observe(document.getElementById('radio-station-strip'),{subtree:true,attributes:true,attributeFilter:['class','data-station-category']});
-  update();
-});
-
-document.addEventListener('DOMContentLoaded',()=>{
   let lock=null,pending=false;
+  const isPlaying=()=>['radio','tv'].some(kind=>window.retroPlayer?.isPlaying(kind));
+  function releaseIdle(){if(!isPlaying()&&lock){const previous=lock;lock=null;previous.release().catch(()=>{});}}
   async function acquire(){
-    if(document.visibilityState!=='visible'||lock||pending||!navigator.wakeLock?.request)return;
+    if(document.visibilityState!=='visible'||!isPlaying()||lock||pending||!navigator.wakeLock?.request)return;
     pending=true;
     try{
       const next=await navigator.wakeLock.request('screen');
-      if(document.visibilityState!=='visible'){await next.release();return;}
+      if(document.visibilityState!=='visible'||!isPlaying()){await next.release();return;}
       lock=next;next.addEventListener('release',()=>{if(lock===next)lock=null;},{once:true});
     }catch{/* Browser/power settings can deny a screen wake lock. */}finally{pending=false;}
   }
@@ -4468,8 +4778,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('pointerdown',acquire,{passive:true});document.addEventListener('keydown',acquire);
   window.addEventListener('pageshow',acquire);
   const media=[document.getElementById('radio-audio'),document.getElementById('tv-video')].filter(Boolean);
-  function playbackState(){if(!navigator.mediaSession)return;try{navigator.mediaSession.playbackState=media.some(m=>!m.paused&&!m.ended)?'playing':'paused';}catch{}}
-  for(const item of media){item.addEventListener('playing',()=>{acquire();playbackState();});item.addEventListener('pause',playbackState);item.addEventListener('ended',playbackState);}
+  function playbackState(){if(!navigator.mediaSession)return;try{navigator.mediaSession.playbackState=isPlaying()?'playing':'paused';}catch{}}
+  for(const item of media){item.addEventListener('playing',()=>{acquire();playbackState();});item.addEventListener('pause',()=>{playbackState();releaseIdle();});item.addEventListener('ended',()=>{playbackState();releaseIdle();});item.addEventListener('error',releaseIdle);}
+  new MutationObserver(()=>{if(isPlaying())acquire();else releaseIdle();playbackState();}).observe(document.getElementById('tv-toggle'),{attributes:true,attributeFilter:['aria-label']});
   acquire();
 });
 
@@ -4497,6 +4808,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     resize();
     const width=canvas.clientWidth,height=canvas.clientHeight;
     if(!width||!height)return;
+    const pattern=window.uxVisualizerPattern?.()||'wave';
+    if(pattern!=='dots'){
+      context.clearRect(0,0,width,height);
+      if(pattern!=='off')window.uxDrawVisualizer?.(context,width,height,now,window.uxRadioAnalysis?.read());
+      return;
+    }
     const packet=window.uxRadioAnalysis?.read(),samples=packet?.available?packet.samples:null;
     const playing=Boolean(packet?.available);
     phase+=playing?.018:.004;
@@ -4530,8 +4847,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   const deck=receiver.querySelector('.ux-hardware-deck');
   const badge=document.createElement('img');
   badge.className='ux-control-badge';
-  badge.src='assets/station-logos/small_badge.png';
-  badge.alt='COOLmag RetroRADtv';
+  function updateModeBadge(){
+    const tv=receiver.dataset.mode==='tv';
+    const source='assets/station-logos/'+(tv?'tv_badge.png':'radio_badge.png');
+    if(badge.getAttribute('src')!==source)badge.src=source;
+    badge.alt=tv?'COOLmag TV':'COOLmag Radio';
+  }
+  updateModeBadge();
+  new MutationObserver(updateModeBadge).observe(receiver,{attributes:true,attributeFilter:['data-mode']});
   badge.width=418;
   badge.height=125;
   badge.decoding='async';
@@ -4540,25 +4863,61 @@ document.addEventListener('DOMContentLoaded',()=>{
   secondary.className='ux-secondary-controls';
   secondary.setAttribute('role','group');
   secondary.setAttribute('aria-label','Secondary playback controls');
+  // Order: sound and transport, then favourite, then navigation, then view and settings.
   secondary.innerHTML=[
-    '<button type="button" data-ux-delegate="ux-mute" aria-label="Mute"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-mode-hardware" aria-label="Switch TV and Radio"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="m8 2 4 4 4-4m-5 17v3m-5 0h10"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-prev" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14M19 6l-9 6 9 6z"/></svg></button>',
-    '<button type="button" class="ux-secondary-play" data-ux-delegate="ux-play" aria-label="Play or pause"><svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7z"/></svg><svg class="pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-next" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 6l9 6-9 6z"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-expand" aria-label="Fullscreen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-add" aria-label="Add stream"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>',
-    '<button type="button" data-ux-delegate="ux-explore" aria-label="Search stations and channels"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>'
+    '<button type="button" class="ux-sec-mute" data-ux-delegate="ux-mute" aria-label="Mute" aria-pressed="false" title="Mute"><svg class="sound" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg><svg class="silent" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4zM16 9l5 6m0-6-5 6"/></svg></button>',
+    '<button type="button" data-ux-delegate="ux-prev" aria-label="Previous station" title="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14M19 6l-9 6 9 6z"/></svg></button>',
+    '<button type="button" class="ux-secondary-play" data-ux-delegate="ux-play" aria-label="Play or pause" title="Play / Pause"><svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7z"/></svg><svg class="pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button>',
+    '<button type="button" data-ux-delegate="ux-next" aria-label="Next station" title="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 6l9 6-9 6z"/></svg></button>',
+    '<button type="button" class="ux-sec-favourite" data-ux-action="favourite" aria-label="Add to favourites" aria-pressed="false" title="Favourite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 5.7a5.4 5.4 0 0 0-8.8-1A5.4 5.4 0 0 0 3.2 10c-.6 2.8 2.4 5.2 8.8 10 6.4-4.8 9.4-7.2 8.8-10a5.4 5.4 0 0 0 0-4.3z"/></svg></button>',
+    '<button type="button" class="ux-sec-mode" data-ux-delegate="ux-mode-hardware" aria-label="Switch to television" title="TV / Radio"></button>',
+    '<button type="button" data-ux-delegate="ux-explore" aria-label="Search stations and channels" title="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>',
+    '<button type="button" data-ux-delegate="ux-add" aria-label="Add stream" title="Add stream"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>',
+    '<button type="button" class="ux-sec-expand" data-ux-delegate="ux-expand" aria-label="Fullscreen" aria-pressed="false" title="Fullscreen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>',
+    '<button type="button" class="ux-sec-settings" data-ux-action="settings" aria-label="Settings" aria-haspopup="dialog" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>'
   ].join('');
   deck.append(secondary);
   secondary.addEventListener('click',event=>{
     const button=event.target.closest('[data-ux-delegate]');
-    if(button)document.getElementById(button.dataset.uxDelegate)?.click();
+    if(button){document.getElementById(button.dataset.uxDelegate)?.click();return;}
+    const action=event.target.closest('[data-ux-action]')?.dataset.uxAction;
+    if(action==='settings')document.getElementById('ux-settings')?.showModal();
+    if(action==='favourite'){
+      const star=document.getElementById(receiver.dataset.mode==='tv'?'tv-star':'radio-star');
+      if(star&&!star.disabled)star.click();
+      else{const note=document.getElementById('ux-message');if(note)note.textContent='Choose a station first, then tap the heart.';}
+    }
   });
   const playSecondary=secondary.querySelector('.ux-secondary-play');
   const syncSecondary=()=>playSecondary.classList.toggle('is-playing',receiver.classList.contains('ux-on'));
   new MutationObserver(syncSecondary).observe(receiver,{attributes:true,attributeFilter:['class']});
   syncSecondary();
+  const secMode=secondary.querySelector('.ux-sec-mode'),secFavourite=secondary.querySelector('.ux-sec-favourite');
+  const secMute=secondary.querySelector('.ux-sec-mute'),secExpand=secondary.querySelector('.ux-sec-expand');
+  const tvGlyph='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="m8 2 4 4 4-4m-5 17v3m-5 0h10"/></svg>';
+  const radioGlyph='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="m7 8 11-5M6 12h6m-6 3h6m-6 3h6"/><circle cx="17" cy="14" r="2"/></svg>';
+  const paintSecondary=()=>{
+    const radio=receiver.dataset.mode!=='tv';
+    secMode.innerHTML=radio?tvGlyph:radioGlyph;
+    secMode.setAttribute('aria-label',radio?'Switch to television':'Switch to radio');
+    secMode.title=radio?'Switch to TV':'Switch to Radio';
+    const star=document.getElementById(radio?'radio-star':'tv-star'),saved=Boolean(star?.classList.contains('saved'));
+    secFavourite.classList.toggle('is-active',saved);
+    secFavourite.setAttribute('aria-pressed',String(saved));
+    secFavourite.setAttribute('aria-label',saved?'Remove from favourites':'Add to favourites');
+    const active=document.getElementById(radio?'radio-audio':'tv-video'),muted=Boolean(active?.muted||active?.volume===0);
+    secMute.classList.toggle('is-active',muted);
+    secMute.setAttribute('aria-pressed',String(muted));
+    secMute.setAttribute('aria-label',muted?'Unmute':'Mute');
+    const full=document.getElementById('ux-expand')?.getAttribute('aria-pressed')==='true';
+    secExpand.classList.toggle('is-active',full);
+    secExpand.setAttribute('aria-pressed',String(full));
+  };
+  new MutationObserver(paintSecondary).observe(receiver,{attributes:true,attributeFilter:['data-mode']});
+  for(const id of ['radio-star','tv-star']){const star=document.getElementById(id);if(star)new MutationObserver(paintSecondary).observe(star,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});}
+  const expandButton=document.getElementById('ux-expand');if(expandButton)new MutationObserver(paintSecondary).observe(expandButton,{attributes:true,attributeFilter:['aria-pressed']});
+  for(const id of ['radio-audio','tv-video'])document.getElementById(id)?.addEventListener('volumechange',paintSecondary);
+  paintSecondary();
   const indicator=document.createElement('div');
   indicator.className='ux-volume-indicator';
   indicator.setAttribute('role','meter');
@@ -4566,7 +4925,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   indicator.setAttribute('aria-valuemin','0');
   indicator.setAttribute('aria-valuemax','100');
   for(let index=0;index<5;index++)indicator.append(document.createElement('span'));
-  deck.append(indicator);
+  receiver.querySelector('.ux-dpad').append(indicator);
   const levels=[...indicator.children];
   const modeButton=document.getElementById('ux-mode-hardware');
   const radioIcon='<svg class="ux-mode-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="m7 8 11-5M6 12h6m-6 3h6m-6 3h6"/><circle cx="17" cy="14" r="2"/><path d="M16 18h2"/></svg>';
@@ -4646,13 +5005,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       openSearch(card.dataset.stationName,card.dataset.stationKind);
     });
     const heart=card.querySelector('.ux-station-heart');
-    const toggleFavorite=event=>{
-      event.preventDefault();
-      event.stopPropagation();
-      const active=heart.getAttribute('aria-pressed')!=='true';
-      heart.setAttribute('aria-pressed',String(active));
-      heart.textContent=active?'♥':'♡';
-    };
+    function paintHeart(){const saved=window.retroPlayer?.isFavorite(card.dataset.stationKind,card.dataset.stationName)||false;heart.setAttribute('aria-pressed',String(saved));heart.textContent=saved?'?':'?';}
+    paintHeart();window.addEventListener('retro-favorites-changed',paintHeart);
+    const toggleFavorite=event=>{event.preventDefault();event.stopPropagation();if(!window.retroPlayer?.toggleFavorite(card.dataset.stationKind,card.dataset.stationName))openSearch(card.dataset.stationName,card.dataset.stationKind);paintHeart();};
     heart.addEventListener('click',toggleFavorite);
     heart.addEventListener('keydown',event=>{
       if(event.key==='Enter'||event.key===' '){toggleFavorite(event);}
@@ -4690,5 +5045,110 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 </script>
+<script>
+/* Settings: theme colour, sleep timer and radio visualiser. */
+(()=>{
+  const THEME_KEY='retrotvra.ux-theme.v1',VISUALIZER_KEY='retrotvra.ux-visualizer.v2';
+  const themes=['steel','ocean','forest','wine','amber','graphite'],patterns=['dots','mesh','wave','halo','mix','off'];
+  const load=(key,list,fallback)=>{try{const value=localStorage.getItem(key);return list.includes(value)?value:fallback;}catch{return fallback;}};
+  const save=(key,value)=>{try{localStorage.setItem(key,value);}catch{}};
+  let theme=load(THEME_KEY,themes,'steel'),pattern=load(VISUALIZER_KEY,patterns,'wave');
+  document.documentElement.dataset.uxTheme=theme;
+  window.uxVisualizerPattern=()=>pattern;
+
+  const mix={bag:[],current:'mesh',since:0};
+  let level=0;
+  function nextMix(){
+    if(!mix.bag.length){mix.bag=['mesh','wave','halo'].sort(()=>Math.random()-.5);if(mix.bag[0]===mix.current)mix.bag.push(mix.bag.shift());}
+    mix.current=mix.bag.shift();
+  }
+  // Draws inside the existing bottom strip of the radio stage; the idle animation runs without audio.
+  window.uxDrawVisualizer=(c,w,h,now,packet)=>{
+    const live=Boolean(packet?.available),samples=live?packet.samples:null;
+    const target=live?Math.min(1,Number(packet.overall??((packet.bass+packet.mid+packet.treble)/3))*1.6||0):0;
+    level+=(target-level)*(target>level?.5:.12);
+    const strength=Math.min(1,Math.sqrt(level)*1.5),t=matchMedia('(prefers-reduced-motion: reduce)').matches?now/4500:now/1000;
+    const sample=u=>samples?.length?Math.min(1,Math.abs(samples[Math.min(samples.length-1,Math.floor(u*(samples.length-1)))])*2.9):0;
+    let active=pattern,alpha=1;
+    if(pattern==='mix'){
+      if(!mix.since||now-mix.since>=10000){nextMix();mix.since=now;}
+      active=mix.current;const elapsed=now-mix.since;alpha=Math.max(0,Math.min(1,elapsed/450,(10000-elapsed)/450));
+    }
+    c.save();c.globalAlpha=alpha;c.lineCap='round';
+    const base=h-3;
+    if(active==='mesh'){
+      const cols=30,rows=7,grid=[];
+      for(let r=0;r<rows;r++){grid[r]=[];for(let k=0;k<=cols;k++){
+        const u=k/cols,depth=r/(rows-1),swell=.5+.5*Math.sin(u*7+t*.85+r*.16);
+        grid[r][k]={x:u*w,y:base-depth*h*.42-swell*h*(.2+strength*.22+sample(u)*.12)*depth};
+      }}
+      c.lineWidth=1;
+      for(let r=0;r<rows;r++)for(let k=0;k<cols;k++){
+        const p=grid[r][k];c.strokeStyle=`hsla(${185+k/cols*95},80%,38%,${.55+strength*.3})`;
+        for(const n of [grid[r][k+1],grid[r+1]?.[k],grid[r+1]?.[k+1]])if(n){c.beginPath();c.moveTo(p.x,p.y);c.lineTo(n.x,n.y);c.stroke();}
+      }
+    }else if(active==='wave'){
+      const gradient=c.createLinearGradient(0,0,w,0);
+      [['#1aa7c4',0],['#4a6fe0',.25],['#a455e0',.5],['#e0489d',.75],['#e8a22d',1]].forEach(([color,stop])=>gradient.addColorStop(stop,color));
+      c.strokeStyle=gradient;c.lineWidth=1.2;
+      for(let line=0;line<14;line++){
+        const strand=line/13;c.globalAlpha=alpha*(.3+strand*.45);c.beginPath();
+        for(let step=0;step<=90;step++){
+          const u=step/90,swing=Math.sin(u*Math.PI*3+t*.9+strand*2.2)*.5+Math.sin(u*Math.PI*7-t*.6+strand)*.25;
+          const y=h*.55+swing*h*(.18+strength*.25+sample(u)*.18)*(.4+strand*.6);
+          step?c.lineTo(u*w,y):c.moveTo(u*w,y);
+        }
+        c.stroke();
+      }
+    }else if(active==='halo'){
+      const count=110,cx=w/2,cy=h*.52,rx=w*.42,ry=h*.4;
+      for(let i=0;i<count;i++){
+        const angle=i/count*Math.PI*2,bump=1+(sample(i/count)-.2)*.25*strength+Math.sin(angle*9+t*.5)*.05;
+        const x=cx+Math.cos(angle+t*.08)*rx*bump,y=cy+Math.sin(angle+t*.08)*ry*bump;
+        c.fillStyle=`hsla(${(185+i/count*300+t*9)%360},85%,42%,${.55+strength*.35})`;
+        c.beginPath();c.arc(x,y,1.2+strength*1.2,0,Math.PI*2);c.fill();
+      }
+    }
+    c.restore();
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const dialog=document.getElementById('ux-settings');
+    if(!dialog)return;
+    const themeGroup=document.getElementById('ux-theme-group'),sleepGroup=document.getElementById('ux-sleep-group'),visualGroup=document.getElementById('ux-vis-group');
+    const mark=(group,attribute,value)=>group.querySelectorAll('['+attribute+']').forEach(button=>button.setAttribute('aria-checked',String(button.getAttribute(attribute)===String(value))));
+    mark(themeGroup,'data-ux-theme',theme);mark(visualGroup,'data-ux-visualizer',pattern);
+    themeGroup.addEventListener('click',event=>{
+      const value=event.target.closest('[data-ux-theme]')?.dataset.uxTheme;
+      if(!value)return;theme=value;document.documentElement.dataset.uxTheme=value;save(THEME_KEY,value);mark(themeGroup,'data-ux-theme',value);
+    });
+    visualGroup.addEventListener('click',event=>{
+      const value=event.target.closest('[data-ux-visualizer]')?.dataset.uxVisualizer;
+      if(!value)return;pattern=value;mix.since=0;save(VISUALIZER_KEY,value);mark(visualGroup,'data-ux-visualizer',value);
+    });
+
+    // The timer itself lives in hardware-feedback.js; Settings drives it through its existing dialog.
+    const legacy=document.getElementById('cabinet-sleep-dialog'),badge=document.querySelector('[data-sleep-open] span');
+    const status=document.getElementById('ux-sleep-status'),gear=document.querySelector('.ux-sec-settings');
+    let chosen='0';
+    const showSleep=()=>{
+      const minutes=/^(\d+)m$/.exec(badge?.textContent.trim()||'')?.[1];
+      gear?.classList.toggle('sleep-armed',Boolean(minutes));
+      status.textContent=minutes?'Stopping playback in about '+minutes+' min.':'Sleep timer is off.';
+      mark(sleepGroup,'data-ux-sleep',minutes?chosen:'0');
+    };
+    sleepGroup.addEventListener('click',event=>{
+      const value=event.target.closest('[data-ux-sleep]')?.dataset.uxSleep;
+      if(value===undefined||!legacy)return;
+      chosen=value;legacy.showModal();legacy.close(value);
+      setTimeout(showSleep,60);
+    });
+    const badgeParent=badge?.closest('button');
+    if(badgeParent)new MutationObserver(showSleep).observe(badgeParent,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class']});
+    showSleep();
+  });
+})();
+</script>
+
 </body>
 </html>
