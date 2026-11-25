@@ -42,8 +42,8 @@ The new interface, icons, splash and slider are embedded below. -->
   <script defer src="audio-meter.js?v=4.1.13"></script>
   <script defer src="hardware-feedback.js?v=1.0.9"></script>
   <script src="station-category.js?v=2"></script>
-  <script defer src="preset-defaults.js?v=4.1.71"></script>
-  <script defer src="app.js?v=4.1.85"></script>
+  <script defer src="preset-defaults.js?v=4.1.73"></script>
+  <script defer src="app.js?v=4.1.87"></script>
 <style id="compact-receiver-design">
 :root{--ux-metal: #b8a397; --ux-ink: #383631; --ux-green: #8bee87; --ux-dark: #171b18; --ux-edge: #75665c;}
 html{min-height: 100%; color-scheme: light; background: rgb(48, 32, 25) !important;}
@@ -2878,6 +2878,9 @@ body.broadcast-console #ux-receiver#ux-receiver>.ux-hardware-deck:before{
 
 /* Lift the badge visually without changing control layout. */
 body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 -12px}
+@media(max-width:560px){
+  body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 -4px}
+}
 
 /* Larger white page headings; card text remains untouched. */
 body.broadcast-console #presets-screen>.screen-heading .screen-title,
@@ -2906,6 +2909,13 @@ body.broadcast-console #explore-screen>.screen-heading .explore-mode-label .ux-s
   overflow:visible!important;
   clip:auto!important;clip-path:none!important;
   white-space:normal!important;
+}
+/* Export both current favourite collections without changing the saved stations. */
+body.broadcast-console #presets-screen>#save-presets{
+  align-self:flex-end;margin:0 0 12px auto;padding:9px 16px;min-height:42px;
+  border:1px solid var(--uxp-edge);border-radius:12px;
+  background:linear-gradient(145deg,var(--uxp-ring1),var(--uxp-ring2));
+  color:#fff;font:500 15px/1.3 "Segoe UI",Arial,sans-serif;letter-spacing:.2px;
 }
 /* Readable top-page controls only; station/result card typography is untouched. */
 body.broadcast-console #presets-screen>.ux-browser-close,
@@ -3710,6 +3720,7 @@ body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls button,
     <section class="screen" id="presets-screen" aria-label="Favorites and recent stations">
       <div class="screen-heading"><div><span class="eyebrow">YOUR FAVORITES</span><h1 class="screen-title">Favorites</h1></div><div class="preset-priority-control" id="preset-priority-control" hidden><small id="preset-selection-label">SELECT A TV CHANNEL</small></div></div>
       <div class="segmented preset-tabs"><button class="selected" data-preset-mode="radio">♫ RADIO <b id="preset-radio-count">0</b></button><button data-preset-mode="tv">▣ TV <b id="preset-tv-count">0</b></button><button data-preset-mode="recent">RECENT <b id="preset-recent-count">0</b></button></div>
+      <button id="save-presets" class="ux-pill" type="button" title="Download your Radio and TV favourites in their current order">Save presets</button>
       <div class="preset-grid" id="preset-grid"></div>
       <p class="footnote" id="preset-footnote">Tap a favorite to play · Use ♥ to save or remove <button type="button" id="clear-recent" hidden>Clear recent history</button></p>
     </section>
