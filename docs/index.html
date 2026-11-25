@@ -19,7 +19,7 @@ The new interface, icons, splash and slider are embedded below. -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="stylesheet" href="styles.css?v=4.1.7">
+  <link rel="stylesheet" href="styles.css?v=4.1.8">
   <link rel="stylesheet" href="receiver-responsive.css?v=4.1.72">
   <link rel="stylesheet" href="modern-theme.css?v=1.0.0">
   <link rel="stylesheet" href="weathered-theme.css?v=1">
@@ -38,12 +38,12 @@ The new interface, icons, splash and slider are embedded below. -->
   <script defer src="tone-controls.js?v=4.1.2"></script>
   <script defer src="playback-mechanics.js?v=4.1.16"></script>
   <script defer src="volume-knob.js?v=4.1.9"></script>
-  <script defer src="tv-auto-fullscreen.js?v=3.0.163"></script>
+  <script defer src="tv-auto-fullscreen.js?v=3.0.164"></script>
   <script defer src="audio-meter.js?v=4.1.13"></script>
   <script defer src="hardware-feedback.js?v=1.0.9"></script>
   <script src="station-category.js?v=2"></script>
   <script defer src="preset-defaults.js?v=4.1.73"></script>
-  <script defer src="app.js?v=4.1.87"></script>
+  <script defer src="app.js?v=4.1.88"></script>
 <style id="compact-receiver-design">
 :root{--ux-metal: #b8a397; --ux-ink: #383631; --ux-green: #8bee87; --ux-dark: #171b18; --ux-edge: #75665c;}
 html{min-height: 100%; color-scheme: light; background: rgb(48, 32, 25) !important;}
@@ -152,12 +152,6 @@ body:has(.ux-splash:not(.ux-dismissed)){overflow: hidden !important;}
 #ux-receiver #tv-fullscreen-shell video,#ux-receiver #tv-fullscreen-shell iframe,#ux-receiver #cooltv-youtube-player{position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; object-fit: contain !important; border: 0px !important; transform: none !important;}
 #ux-receiver #tv-placeholder{align-items: center; justify-content: center; flex-direction: column; color: rgb(189, 208, 183); background: radial-gradient(rgb(38, 61, 46), rgb(13, 24, 16)); font: 12px Arial; position: absolute !important; inset: 0px !important;}
 #ux-receiver #tv-placeholder .tv-screen-logo{font: 26px Georgia; letter-spacing: 3px; margin-bottom: 10px;}
-#ux-receiver #tv-fullscreen-shell:fullscreen,#ux-receiver #tv-fullscreen-shell.ux-tv-fullscreen{position: fixed !important; inset: 0px !important; width: 100vw !important; height: 100dvh !important; max-width: none !important; max-height: none !important; margin: 0px !important; padding: 0px !important; border: 0px !important; border-radius: 0px !important; background: rgb(0, 0, 0) !important; overflow: hidden !important; zoom: 1 !important; transform: none !important;}
-#ux-receiver #tv-fullscreen-shell:fullscreen #tv-display{inset: 0px !important; width: 100% !important; height: 100% !important; max-height: none !important; background: rgb(0, 0, 0) !important;}
-#ux-receiver #tv-fullscreen-shell:fullscreen .tv-picture{inset: 0px !important; width: 100% !important; height: 100% !important; background: rgb(0, 0, 0) !important;}
-#ux-receiver #tv-fullscreen-shell:fullscreen .fullscreen-side-controls{display: flex !important; position: absolute !important; inset: auto 18px 24px auto !important; z-index: 30 !important; padding: 10px !important; gap: 8px !important; border-radius: 14px !important; background: rgba(24, 27, 24, 0.79) !important; color: rgb(255, 255, 255) !important; flex-wrap: wrap !important; max-width: calc(100% - 36px) !important;}
-#ux-receiver #tv-fullscreen-shell:fullscreen .fullscreen-side-controls button{width: 36px !important; height: 36px !important; min-height: 36px !important; border: 1px solid rgb(111, 128, 107) !important; border-radius: 8px !important; background: rgb(32, 41, 31) !important; color: rgb(229, 239, 223) !important; padding: 7px !important;}
-#ux-receiver #tv-fullscreen-shell:fullscreen .fullscreen-side-controls svg{stroke: currentcolor; fill: none; width: 20px !important; height: 20px !important;}
 #ux-receiver:fullscreen{zoom: 1 !important; width: min(90vw, 580px) !important; margin: auto !important; max-height: 100dvh !important; overflow: auto !important;}
 @media (min-width: 901px){body.broadcast-console{padding: 28px 16px !important;}
 .ux-receiver{zoom: 1.35;}
@@ -171,10 +165,6 @@ body.broadcast-console main.retro-app > #presets-screen.active,body.broadcast-co
 #tv-fullscreen-shell .tv-picture > div:has(iframe){display: block !important; visibility: visible !important; opacity: 1 !important; z-index: 3 !important;}
 #tv-fullscreen-shell .tv-picture iframe{display: block !important; visibility: visible !important; opacity: 1 !important; filter: none !important;}
 #tv-fullscreen-shell #tv-placeholder[hidden]{display: none !important;}
-#tv-fullscreen-shell:fullscreen,body > #tv-fullscreen-shell{position: fixed !important; inset: 0px !important; width: 100vw !important; height: 100dvh !important; min-height: 0px !important; margin: 0px !important; padding: 0px !important; border: 0px !important; border-radius: 0px !important; background: rgb(0, 0, 0) !important; overflow: hidden !important; zoom: 1 !important; transform: none !important; visibility: visible !important; opacity: 1 !important; z-index: 2147482000 !important;}
-#tv-fullscreen-shell:fullscreen #tv-display,body > #tv-fullscreen-shell #tv-display{display: block !important; position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; min-height: 0px !important; max-height: none !important; padding: 0px !important; margin: 0px !important; border: 0px !important; background: rgb(0, 0, 0) !important; visibility: visible !important; opacity: 1 !important; transform: none !important;}
-#tv-fullscreen-shell:fullscreen #tv-display > .tv-picture,body > #tv-fullscreen-shell #tv-display > .tv-picture{display: block !important; position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; min-height: 0px !important; max-height: none !important; margin: 0px !important; padding: 0px !important; aspect-ratio: auto !important; background: rgb(0, 0, 0) !important; transform: none !important;}
-#tv-fullscreen-shell:fullscreen .tv-picture > video,#tv-fullscreen-shell:fullscreen .tv-picture iframe,#tv-fullscreen-shell:fullscreen #cooltv-youtube-player,body > #tv-fullscreen-shell .tv-picture > video,body > #tv-fullscreen-shell .tv-picture iframe{position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; object-fit: contain !important; border: 0px !important; transform: none !important;}
 #ux-receiver .ux-brandrow{display: flex; align-items: center; overflow: hidden; border-bottom: 1px solid rgba(128, 107, 88, 0.25);}
 #ux-receiver .ux-volume{gap: 7px; margin-top: 14px; flex-wrap: nowrap;}
 #ux-receiver .ux-volume .ux-mute{flex: 0 0 auto; gap: 4px;}
@@ -206,8 +196,6 @@ body.broadcast-console main.retro-app > #presets-screen.active,body.broadcast-co
 #ux-receiver[data-mode="tv"] .ux-screen > .ux-telemetry{display: none !important;}
 #tv-fullscreen-shell #tv-video{object-fit: cover !important;}
 #tv-fullscreen-shell .tv-picture{overflow: hidden !important;}
-#tv-fullscreen-shell:fullscreen .ux-movable-controls,body > #tv-fullscreen-shell .ux-movable-controls{display: flex !important; position: absolute !important; inset: auto 16px 16px auto !important; transform: none !important; z-index: 50 !important; max-width: calc(100% - 12px) !important; gap: 6px !important; flex-wrap: wrap !important; padding: 8px !important; border: 1px solid rgba(118, 131, 113, 0.533) !important; border-radius: 12px !important; background: rgba(24, 32, 22, 0.85) !important; color: rgb(239, 246, 232) !important; box-sizing: border-box !important;}
-#tv-fullscreen-shell:fullscreen .ux-movable-controls.ux-controls-positioned,body > #tv-fullscreen-shell .ux-movable-controls.ux-controls-positioned{left: var(--ux-controls-x) !important; top: var(--ux-controls-y) !important; right: auto !important; bottom: auto !important; transform: none !important;}
 #tv-fullscreen-shell .ux-movable-controls .ux-drag-handle{display: grid !important; place-items: center !important; min-width: 34px !important; min-height: 36px !important; align-self: stretch !important; cursor: grab !important; touch-action: none !important; user-select: none !important; color: rgb(223, 234, 213) !important; background: rgb(55, 69, 49) !important; border-radius: 7px !important; font: 25px Arial !important;}
 #tv-fullscreen-shell .ux-movable-controls .ux-dragging{cursor: grabbing !important;}
 #tv-fullscreen-shell .ux-movable-controls button{width: 36px !important; height: 36px !important; min-height: 36px !important; padding: 7px !important; border-radius: 8px !important; border: 1px solid rgb(111, 128, 107) !important; background: rgb(32, 41, 31) !important; color: rgb(229, 239, 223) !important;}
@@ -267,11 +255,6 @@ body.broadcast-console main.retro-app[data-view="presets"] > #presets-screen.act
 #ux-receiver > .ux-controls{grid-area: 4 / 2 !important;}
 #ux-receiver > .ux-volume{grid-area: 5 / 2 !important;}
 #ux-receiver > .ux-foot{grid-area: 6 / 2 !important;}}
-body.ux-mobile-cinema-open{overflow: hidden !important;}
-#tv-fullscreen-shell.ux-mobile-cinema{display: block !important; position: fixed !important; inset: 0px !important; width: 100vw !important; height: 100dvh !important; z-index: 2147482000 !important; background: rgb(0, 0, 0) !important; transform: none !important; zoom: 1 !important;}
-#tv-fullscreen-shell.ux-mobile-cinema #tv-display{display: block !important; position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; min-height: 0px !important; max-height: none !important; margin: 0px !important; padding: 0px !important; transform: none !important; background: rgb(0, 0, 0) !important;}
-#tv-fullscreen-shell.ux-mobile-cinema .tv-picture{display: block !important; position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; min-height: 0px !important; margin: 0px !important; padding: 0px !important; transform: none !important;}
-#tv-fullscreen-shell.ux-portrait-cinema{inset: 50% auto auto 50% !important; width: 100dvh !important; height: 100vw !important; transform: translate(-50%, -50%) rotate(90deg) !important; transform-origin: center center !important;}
 #ux-receiver > .ux-channel-identity{display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; min-height: 0px !important; width: 100% !important; margin: 0px !important; padding: 0px !important; border: 0px !important; background: transparent !important; box-shadow: none !important; overflow: hidden !important;}
 #ux-receiver .ux-channel-logo{display: block !important; width: min(150px, 45%) !important; max-width: 100% !important; object-fit: contain !important; object-position: center center !important; margin: 0px !important; padding: 0px !important; border: 0px !important; border-radius: 0px !important; background: transparent !important; box-shadow: none !important;}
 #ux-receiver .ux-channel-logo[hidden]{display: none !important;}
@@ -2498,20 +2481,6 @@ body.broadcast-console main.retro-app[data-view="explore"]>#explore-screen.activ
 @media(max-width:560px){
   #ux-receiver .ux-control-badge{top:-63px;width:min(280px,72%);height:58px}
 }
-#ux-receiver>.ux-channel-identity{
-  align-items:flex-end!important;
-  padding-top:13px!important;
-}
-#ux-receiver .ux-channel-logo{
-  margin-bottom:1px!important;
-}
-#ux-receiver .ux-channel-title{
-  display:flex!important;
-  align-items:flex-end!important;
-  line-height:1.08!important;
-  min-height:30px!important;
-}
-
 body.broadcast-console{
   height:100dvh!important;
   overflow:hidden!important;
@@ -2879,7 +2848,7 @@ body.broadcast-console #ux-receiver#ux-receiver>.ux-hardware-deck:before{
 /* Lift the badge visually without changing control layout. */
 body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 -12px}
 @media(max-width:560px){
-  body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 -4px}
+  body.broadcast-console #ux-receiver#ux-receiver .ux-control-badge{translate:0 2px}
 }
 
 /* Larger white page headings; card text remains untouched. */
@@ -3144,11 +3113,55 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-action-key svg{
   pointer-events:none;
 }
 
-/* Channel name: thin white lettering */
+/* Stack the station logo and name on the badge's centerline. */
+body.broadcast-console #ux-receiver#ux-receiver > .ux-channel-identity{
+  --station-logo-size:24px;
+  --station-name-size:18px;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  height:100%!important;
+  min-height:0!important;
+  padding:0 8px 12px!important;
+}
+body.broadcast-console #ux-receiver#ux-receiver .ux-channel-logo{
+  flex:0 0 var(--station-logo-size)!important;
+  width:var(--station-logo-size)!important;
+  height:var(--station-logo-size)!important;
+  max-width:100%!important;
+  max-height:var(--station-logo-size)!important;
+  margin:0!important;
+}
+@media(max-width:560px), (max-height:720px) and (orientation:portrait){
+  body.broadcast-console #ux-receiver#ux-receiver > .ux-channel-identity{
+    --station-logo-size:18px;
+    --station-name-size:16px;
+    padding-bottom:8px!important;
+  }
+}
+@media(max-width:900px) and (orientation:landscape) and (max-height:600px){
+  body.broadcast-console #ux-receiver#ux-receiver > .ux-channel-identity{
+    --station-logo-size:18px;
+    --station-name-size:13px;
+    padding-bottom:0!important;
+  }
+}
 body.broadcast-console #ux-receiver#ux-receiver .ux-channel-title{
+  display:block!important;
+  flex:0 0 auto;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  text-align:center!important;
+  white-space:nowrap;
+  text-overflow:ellipsis;
   color:#fff!important;
   font-family:"Segoe UI","Helvetica Neue",Roboto,Arial,sans-serif!important;
+  font-size:var(--station-name-size)!important;
   font-weight:300!important;
+  line-height:1.1!important;
   letter-spacing:1.6px!important;
   -webkit-text-stroke:0!important;
   text-shadow:none!important;
@@ -3260,27 +3273,43 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
 }
 .ux-secondary-controls .ux-sec-favourite.is-active{color:#ff7d96!important}
 
-/* TV fullscreen: translucent control card so the picture stays visible */
-body>#tv-fullscreen-shell.ux-mobile-cinema #tv-video{
-  inset:0!important;width:100%!important;height:100%!important;
-  object-fit:contain!important;background:#000!important;border-radius:0!important;
+/* The same TV layout applies in the browser top layer and in the viewport. */
+:is(#ux-receiver #tv-screen > #tv-fullscreen-shell, #tv-fullscreen-shell).tv-cinema{
+  display:block!important;position:fixed!important;inset:0!important;
+  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:#000!important;overflow:hidden!important;visibility:visible!important;
+  z-index:2147483646!important;transform:none!important;zoom:1!important;
 }
-body>#tv-fullscreen-shell.ux-mobile-cinema #tv-video::-webkit-media-controls{display:none!important}
-body>#tv-fullscreen-shell.ux-mobile-cinema .module-legend,
-body>#tv-fullscreen-shell.ux-mobile-cinema .tv-actions{display:none!important}
-body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls,
-#tv-fullscreen-shell:fullscreen .fullscreen-side-controls.ux-movable-controls{
+:is(#ux-receiver #tv-screen > #tv-fullscreen-shell, #tv-fullscreen-shell).tv-cinema.ux-portrait-cinema{
+  inset:50% auto auto 50%!important;width:100dvh!important;height:100vw!important;
+  transform:translate(-50%,-50%) rotate(90deg)!important;transform-origin:center;
+}
+#tv-fullscreen-shell.tv-cinema::backdrop{background:#000}
+#tv-fullscreen-shell.tv-cinema #tv-display#tv-display,
+#tv-fullscreen-shell.tv-cinema #tv-display > .tv-picture{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:#000!important;visibility:visible!important;
+}
+#tv-fullscreen-shell.tv-cinema #tv-display .fullscreen-titlebar{display:flex!important}
+#tv-fullscreen-shell.tv-cinema #tv-display .tv-inline-fullscreen,
+#tv-fullscreen-shell.tv-cinema #tv-video::-webkit-media-controls{display:none!important}
+#tv-fullscreen-shell.tv-cinema #tv-display .ux-movable-controls{
+  position:absolute!important;display:flex!important;align-items:center;flex-wrap:wrap;
+  inset:auto max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) auto!important;
+  transform:none!important;z-index:50!important;max-width:calc(100% - 24px)!important;
+  gap:6px!important;padding:8px!important;border-radius:12px!important;
   background:rgba(14,22,28,.32)!important;
   border-color:rgba(255,255,255,.16)!important;
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   box-shadow:0 6px 22px rgba(0,0,0,.25)!important;
   opacity:.9;transition:opacity .2s ease,background-color .2s ease;
 }
-body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:hover,
-body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:focus-within,
-body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls:active{opacity:1;background:rgba(14,22,28,.55)!important}
-body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls button,
-#tv-fullscreen-shell:fullscreen .fullscreen-side-controls.ux-movable-controls button{
+#tv-fullscreen-shell.tv-cinema #tv-display .ux-movable-controls:is(:hover,:focus-within,:active){
+  opacity:1;background:rgba(14,22,28,.55)!important;
+}
+#tv-fullscreen-shell.tv-cinema #tv-display .ux-movable-controls button{
   background:rgba(255,255,255,.1)!important;
   border-color:rgba(255,255,255,.22)!important;
   color:#fff!important;
@@ -3658,7 +3687,7 @@ body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls button,
 
         <div class="fullscreen-titlebar"><span class="crt-osd-channel" id="v4-osd-channel">CH 01</span><b id="fullscreen-channel-name">Choose a channel</b><span id="fullscreen-channel-country">TV</span></div>
         <div class="crt-telemetry"><span class="tv-live-indicator" role="status">STANDBY</span><span class="crt-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><time class="crt-clock" aria-label="Local time"></time></div>
-        <div class="tv-picture"><video id="tv-video" playsinline controls preload="none"></video><div class="tv-placeholder" id="tv-placeholder"><span class="tv-screen-logo">RETRO<span>TV</span></span><small>SELECT A CHANNEL BELOW</small></div></div>
+        <div class="tv-picture"><video id="tv-video" playsinline controls controlslist="nofullscreen" preload="none"></video><div class="tv-placeholder" id="tv-placeholder"><span class="tv-screen-logo">RETRO<span>TV</span></span><small>SELECT A CHANNEL BELOW</small></div></div>
         <div class="fullscreen-side-controls" role="group" aria-label="Fullscreen TV controls"><div class="fullscreen-drag-handle" title="Drag controls" aria-label="Drag controls">⠿</div>
           <button type="button" data-fullscreen-action="previous" aria-label="Previous channel" title="Previous channel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14M19 6l-9 6 9 6z"/></svg></button>
           <button type="button" data-fullscreen-action="next" aria-label="Next channel" title="Next channel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14M5 6l9 6-9 6z"/></svg></button>
@@ -3666,7 +3695,7 @@ body>#tv-fullscreen-shell .fullscreen-side-controls.ux-movable-controls button,
           <button type="button" data-fullscreen-action="vol-up" aria-label="Volume up" title="Volume up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 12h7m-3.5-3.5v7"/></svg></button>
           <button type="button" data-fullscreen-action="play" aria-label="Pause or play" title="Pause or play"><svg class="fs-play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7z"/></svg><svg class="fs-pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button>
           <button type="button" data-fullscreen-action="mute" aria-label="Mute" title="Mute"><svg class="fs-sound-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg><svg class="fs-muted-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 9l6 6m0-6-6 6"/></svg></button>
-          <button type="button" data-fullscreen-action="home" class="fullscreen-home" aria-label="Return to TV page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5-6 6 6 6M3 11h11a6 6 0 0 1 6 6v2"/></svg><span>RETURN</span></button>
+          <button type="button" data-fullscreen-action="home" class="fullscreen-home" aria-label="Return to TV tuner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5-6 6 6 6M3 11h11a6 6 0 0 1 6 6v2"/></svg><span>RETURN</span></button>
         </div>
         <div class="tv-rail-wrap"><div class="tv-rail" id="tv-rail" aria-label="Swipe or drag to choose a channel"></div></div>
 
@@ -4487,30 +4516,26 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('ux-prev').onclick=()=>originalClick(mode==='radio'?'#radio-prev':'#tv-prev');
   $('ux-next').onclick=()=>originalClick(mode==='radio'?'#radio-next':'#tv-next');
   async function fullscreen(){
-    if(mode==='tv'&&window.uxIsMobileTV?.()){await window.uxMobileTVFullscreen();return;}
+    if(mode==='tv'){await window.retroPlayer?.toggleTVFullscreen();return;}
     try{
       if(document.fullscreenElement){await document.exitFullscreen();return;}
-      mountTVPicture();
-      const target=mode==='tv'?$('tv-fullscreen-shell'):shell;
-      // Fullscreen the complete visible TV stage, including YouTube/embed content.
-      if(target?.requestFullscreen)await target.requestFullscreen();
-      else if(mode==='tv'&&video?.webkitEnterFullscreen&&video.currentSrc)video.webkitEnterFullscreen();
+      if(shell.requestFullscreen)await shell.requestFullscreen();
       else showMessage('Fullscreen is unavailable in this browser.');
     }catch{showMessage('Fullscreen could not open. Try the browser fullscreen command.');}
   }
   $('ux-expand').onclick=fullscreen;
-  // Use a single path for compact, original and fullscreen-toolbar buttons.
-  document.addEventListener('click',event=>{
-    if(!event.target.closest('[data-remote="fullscreen"],[data-fullscreen-action="home"]'))return;
-    event.preventDefault();event.stopImmediatePropagation();fullscreen();
-  },true);
   function updateFullscreen(){
-    const active=!!document.fullscreenElement;
+    const active=window.retroPlayer?.isTVFullscreen()||document.fullscreenElement===shell;
     $('ux-expand').setAttribute('aria-pressed',String(active));
     $('ux-expand').setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');
-    $('tv-fullscreen-shell')?.classList.toggle('ux-tv-fullscreen',document.fullscreenElement===$('tv-fullscreen-shell'));
   }
   document.addEventListener('fullscreenchange',updateFullscreen);
+  document.addEventListener('retro-tv-fullscreen',updateFullscreen);
+  document.addEventListener('retro-tv-return',()=>{
+    paintMode('tv');
+    showView('tuner',false);
+    $('ux-expand').focus({preventScroll:true});
+  });
   // Independent drag handle: previous drag code used transforms overridden by
   // the compact theme. Use explicit, bounded coordinates for mouse and touch.
   const toolbar=document.querySelector('.fullscreen-side-controls');
@@ -4526,8 +4551,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     handle.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.id)return;event.preventDefault();event.stopImmediatePropagation();const [x,y]=dragDelta(event.clientX-drag.x,event.clientY-drag.y);place(drag.left+x,drag.top+y);},true);
     for(const type of ['pointerup','pointercancel','lostpointercapture'])handle.addEventListener(type,event=>{if(!drag)return;event.stopImmediatePropagation();drag=null;handle.classList.remove('ux-dragging');},true);
     handle.addEventListener('keydown',event=>{const directions={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]},d=directions[event.key];if(!d)return;event.preventDefault();event.stopImmediatePropagation();const step=event.shiftKey?30:10,[x,y]=dragDelta(d[0]*step,d[1]*step);place(toolbar.offsetLeft+x,toolbar.offsetTop+y);},true);
-    function clampPosition(){if(position)requestAnimationFrame(()=>place(position.x,position.y));}
+    function clampPosition(){if(position&&toolbar.offsetWidth)requestAnimationFrame(()=>place(position.x,position.y));}
     window.addEventListener('resize',clampPosition);document.addEventListener('fullscreenchange',clampPosition);
+    document.addEventListener('retro-tv-fullscreen',clampPosition);
     if(window.ResizeObserver)new ResizeObserver(clampPosition).observe(toolbar);
   }
   function sync(){
@@ -4717,56 +4743,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const $=id=>document.getElementById(id),stage=$('tv-fullscreen-shell'),display=$('tv-display'),shell=$('ux-receiver'),app=document.querySelector('main.retro-app'),video=$('tv-video');
-  // A phone-sized landscape window counts too, so rotating or resizing in any browser opens the full-screen picture.
-  const mobile=()=>(((navigator.maxTouchPoints>0)||matchMedia('(pointer:coarse)').matches||navigator.userAgentData?.mobile||/Android|iPhone|iPad|iPod/i.test(navigator.userAgent))&&Math.min(innerWidth,innerHeight)<=1000)||(innerWidth>innerHeight&&innerWidth<=900&&innerHeight<=600);
-  const landscape=()=>innerWidth>innerHeight;
-  let floating=false,automatic=false,home=null,homeNext=null,changing=false,suppressed=false;const previousStyles=new Map();
-  window.uxIsMobileTV=mobile;
-  function floatStage(auto){
-    if(!floating){home=stage.parentElement;homeNext=stage.nextSibling;document.body.append(stage);floating=true;}
-    automatic=auto;stage.classList.add('ux-mobile-cinema');document.body.classList.add('ux-mobile-cinema-open');sizeStage();
-  }
-  function sizeStage(){
-    if(!floating)return;
-    const portrait=!landscape();stage.classList.toggle('ux-portrait-cinema',portrait);
-    const styles={position:'fixed',width:(portrait?innerHeight:innerWidth)+'px',height:(portrait?innerWidth:innerHeight)+'px',left:portrait?'50%':'0px',top:portrait?'50%':'0px',right:'auto',bottom:'auto',transform:portrait?'translate(-50%, -50%) rotate(90deg)':'none','transform-origin':'center center'};
-    for(const [key,value] of Object.entries(styles)){if(!previousStyles.has(key))previousStyles.set(key,[stage.style.getPropertyValue(key),stage.style.getPropertyPriority(key)]);if(stage.style.getPropertyValue(key)!==value||stage.style.getPropertyPriority(key)!=='important')stage.style.setProperty(key,value,'important');}
-  }
-  new MutationObserver(()=>{if(floating)sizeStage();}).observe(stage,{attributes:true,attributeFilter:['style']});
-  async function leave(){
-    if(changing)return;changing=true;
-    try{if(document.fullscreenElement===stage)await document.exitFullscreen();}catch{}
-    try{screen.orientation?.unlock?.();}catch{}
-    stage.classList.remove('ux-mobile-cinema','ux-portrait-cinema');document.body.classList.remove('ux-mobile-cinema-open');
-    const wasFloating=floating;floating=false;for(const [key,[value,priority]] of previousStyles){if(value)stage.style.setProperty(key,value,priority);else stage.style.removeProperty(key);}previousStyles.clear();
-    if(wasFloating&&home){if(homeNext?.parentNode===home)home.insertBefore(stage,homeNext);else home.append(stage);}
-    automatic=false;changing=false;
-  }
-  async function enter(auto){
-    if(changing)return;changing=true;floatStage(auto);
-    try{if(document.fullscreenElement!==stage)await stage.requestFullscreen();}catch{/* Rotation has no gesture in many browsers: keep viewport cinema. */}
-    if(!auto&&document.fullscreenElement===stage){try{await screen.orientation?.lock?.('landscape');}catch{}}
-    changing=false;sizeStage();
-  }
-  window.uxMobileTVFullscreen=async()=>{if(floating||document.fullscreenElement===stage){suppressed=landscape();await leave();}else{suppressed=false;await enter(false);}};
-  function rotate(){
-    if(!mobile()){if(floating)leave();return;}
-    const tv=shell.dataset.mode==='tv'&&app.dataset.view==='tuner';
-    if(!tv){if(floating)leave();return;}
-    if(!landscape()){suppressed=false;if(floating&&automatic)leave();else sizeStage();return;}
-    if(!floating&&!suppressed&&!changing)enter(true);else sizeStage();
-  }
-  window.addEventListener('resize',rotate);window.addEventListener('orientationchange',()=>requestAnimationFrame(rotate));
-  screen.orientation?.addEventListener?.('change',()=>requestAnimationFrame(rotate));
-  new MutationObserver(rotate).observe(shell,{attributes:true,attributeFilter:['data-mode']});
-  new MutationObserver(rotate).observe(app,{attributes:true,attributeFilter:['data-view']});
-  document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&floating&&!changing){suppressed=landscape();leave();}});
-  video.addEventListener('playing',rotate);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&floating&&!document.fullscreenElement){suppressed=landscape();leave();}});
-  rotate();
-});
 
 document.addEventListener('DOMContentLoaded',()=>{
   let lock=null,pending=false;
