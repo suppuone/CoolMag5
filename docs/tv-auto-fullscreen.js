@@ -1,37 +1,48 @@
-/* Rotation-triggered app fullscreen. Native fullscreen requires a gesture on
- * many phones, so automatic entry uses the existing viewport-filling TV shell.
- * It never locks orientation, reloads a stream, or calls play().
- */
-window.createTVAutoFullscreen=function({media,isTVVisible,isFullscreen,isAutomatic,enter,exit}){
-  let dismissed=false,timer=0,wasLandscape=false;
-  const mobile=()=>window.matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
-  const landscape=()=>{
-    const viewport=window.visualViewport;
-    return (viewport?.width||window.innerWidth)>(viewport?.height||window.innerHeight);
+/* Desktop TV entry and rotation-triggered mobile cinema mode. */
+window.createTVAutoFullscreen=function({isTVVisible,isFullscreen,isAutomatic,enter,enterDesktop,exit}){
+  let dismissed=false;
+  let desktopDismissed=false;
+  let frame=0;
+  const orientation=window.matchMedia('(orientation: landscape)');
+  const desktop=window.matchMedia('(hover: hover) and (pointer: fine)');
+  const landscape=()=>orientation.matches;
+  const mobile=()=>{
+    const {innerWidth,innerHeight}=window;
+    const touch=window.matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
+    return (touch&&Math.min(innerWidth,innerHeight)<=1000)||(innerWidth<=900&&innerHeight<=600);
   };
   function update(){
-    clearTimeout(timer);
-    const wide=landscape();
-    if(!wide){
-      dismissed=false;wasLandscape=false;
+    frame=0;
+    if(!isTVVisible())desktopDismissed=false;
+    if(desktop.matches){
+      openDesktop();
+      return;
+    }
+    if(!landscape()){
+      dismissed=false;
       if(isFullscreen()&&isAutomatic())exit('portrait');
       return;
     }
-    if(!wasLandscape)dismissed=false;
-    wasLandscape=true;
     if(!mobile()||document.hidden||!isTVVisible())return;
-    if(!dismissed&&!isFullscreen()&&!media.paused&&!media.ended)enter(true);
+    if(!dismissed&&!isFullscreen())enter();
   }
-  function schedule(){clearTimeout(timer);timer=setTimeout(update,120);}
+  function openDesktop(){
+    if(desktop.matches&&!desktopDismissed&&!document.hidden&&isTVVisible()&&!isFullscreen()){
+      enterDesktop();
+    }
+  }
+  function schedule(){if(!frame)frame=requestAnimationFrame(update);}
+  if(orientation.addEventListener)orientation.addEventListener('change',schedule);
+  else orientation.addListener(schedule);
   window.addEventListener('orientationchange',schedule);
   window.addEventListener('resize',schedule);
-  window.visualViewport?.addEventListener('resize',schedule);
-  window.screen?.orientation?.addEventListener('change',schedule);
-  media.addEventListener('playing',schedule);
+  window.screen?.orientation?.addEventListener?.('change',schedule);
   document.addEventListener('visibilitychange',schedule);
+  schedule();
   return {
-    update,
-    dismiss(){dismissed=landscape();wasLandscape=landscape();},
-    leave(){clearTimeout(timer);if(isFullscreen())exit('leave');}
+    schedule,
+    openDesktop,
+    dismiss(){dismissed=landscape();desktopDismissed=desktop.matches;},
+    leave(){desktopDismissed=false;if(isFullscreen())exit('leave');}
   };
 };

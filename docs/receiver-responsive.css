@@ -28,9 +28,6 @@ body.broadcast-console{
  grid-template-rows:minmax(0,1fr);gap:20px;padding:5px 12px;
  align-items:center;min-height:0;height:100%;width:100%;
 }
-.broadcast-console .master-tone-control,
-.broadcast-console .tv-tone-unavailable,
-.broadcast-console .trim-knobs,.broadcast-console .tv-trim-legend{display:none!important}
 .broadcast-console .radio-tone-bank>.mini-rocker,
 .broadcast-console .tv-hifi-deck>.mini-rocker{grid-column:1;grid-row:1;gap:6px}
 .broadcast-console .radio-tone-bank>.radio-transport-stack,
@@ -85,9 +82,6 @@ body.broadcast-console{
 .broadcast-console .knob-calendar-slot{
  grid-column:3;grid-row:1;align-self:center;justify-self:center;min-width:0;width:100%;
 }
-.broadcast-console .epaper-calendar{justify-content:center;padding:0;gap:10px}
-.broadcast-console .epaper-calendar time{font-size:clamp(12px,1vw,19px)}
-.broadcast-console .epaper-calendar span{font-size:clamp(11px,.8vw,15px)}
 .broadcast-console .orange-rocker{height:60px;min-height:44px;max-height:60px}
 .broadcast-console .chrome-mute{height:28px;min-height:28px;font-size:10px}
 .broadcast-console .chrome-mute[data-console-mute][aria-pressed="true"]{
@@ -222,10 +216,6 @@ body.broadcast-console{
  .broadcast-console .tone-label{font-size:9px}
  .broadcast-console #radio-volume-knob-value,.broadcast-console #v4-tv-volume-value{font-size:12px;line-height:1;height:auto}
  .broadcast-console .volume-dial.thumbwheel-dial{width:44px;max-height:none}
- .broadcast-console .epaper-calendar{gap:5px}
- .broadcast-console .epaper-moon{width:30px;height:30px}
- .broadcast-console .epaper-calendar time{font-size:11px;line-height:1.3}
- .broadcast-console .epaper-calendar span{font-size:10px;line-height:1.2}
  .broadcast-console .receiver-readout.vfd-window,.broadcast-console .tv-receiver-readout.vfd-window{padding:4px 28px 4px 22px}
  .broadcast-console .radio-tuning-scale{font-size:9px}
  .broadcast-console .radio-tuning-card b{font-size:12px}
@@ -251,8 +241,6 @@ body.broadcast-console{
 @media(max-width:900px) and (max-height:620px) and (orientation:portrait){
  .broadcast-console #radio-screen.active,.broadcast-console #tv-screen.active{grid-template-rows:minmax(100px,1fr) 248px}
  .broadcast-console .receiver-panel.radio-receiver,.broadcast-console .receiver-panel.tv-receiver{grid-template-rows:60px 76px minmax(0,1fr)}
- .broadcast-console .epaper-moon{width:24px;height:24px}
- .broadcast-console .epaper-calendar time{font-size:10px}.broadcast-console .epaper-calendar span{font-size:9px}
 }
 @media(max-height:590px) and (orientation:landscape){
  body.broadcast-console{padding:4px 54px}
@@ -277,7 +265,7 @@ body.broadcast-console{
 }
 
 /* Compact silver roller: mode on the left, volume across the middle, mute right. */
-.broadcast-console .knob-calendar-slot,.broadcast-console #epaper-calendar{display:none!important}
+.broadcast-console .knob-calendar-slot{display:none!important}
 .broadcast-console .radio-tone-bank.receiver-knobs,.broadcast-console .tv-hifi-deck{
  grid-template-columns:52px minmax(0,1fr) 52px;gap:16px;height:100%;padding:4px 10px!important;
 }
@@ -429,11 +417,6 @@ body.broadcast-console{
 .broadcast-console .radio-art .cassette-playback-head::after{display:none;opacity:0}
 .broadcast-console .radio-art .receiver-station-artwork[data-kind=cassette][data-playing=true][data-engaged=true]:not(.cassette-flipping) .cassette-playback-head::after{display:block;opacity:1}
 /* Keep mesh clear of the ticker, above the grille and beneath station artwork. */
-.broadcast-console #radio-screen .radio-art>.sound-rays[data-pattern=mesh]{
- display:block;visibility:visible;z-index:3;top:auto;bottom:30px;left:0;right:0;
- width:100%;height:30%;min-height:55px;max-height:160px;filter:none;
- background:linear-gradient(transparent,#03101899);pointer-events:none;
-}
 .broadcast-console .radio-transport-stack .volume-knob-control,
 .broadcast-console .tv-hifi-deck>.volume-knob-control{
  width:100%;max-width:220px;margin-inline:auto;justify-self:center;
@@ -613,7 +596,6 @@ body.broadcast-console{
   display:inline-flex;align-items:center;height:100%;margin:0;padding-block:0;
   font-size:clamp(18px,1.55vw,30px);line-height:1.2;
  }
- .broadcast-console #radio-screen .radio-art>.sound-rays[data-pattern=mesh]{bottom:60px}
 }
 
 /* 4.1.21: mobile presentation only. Existing carousel geometry and hooks remain. */
@@ -1018,9 +1000,6 @@ body.broadcast-console{
  .broadcast-console #radio-screen .ticker-headline,
  .broadcast-console #radio-screen .ticker-static{
   font-size:clamp(11px,3.7cqw,16px);line-height:var(--mobile-news-height);
- }
- .broadcast-console #radio-screen .radio-art>.sound-rays[data-pattern=mesh]{
-  bottom:var(--mobile-news-height);height:30%;min-height:0;
  }
 }
 @media(min-width:901px) and (max-height:590px) and (orientation:landscape){
