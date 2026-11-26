@@ -36,8 +36,6 @@ body[data-theme="modern"] #radio-screen .radio-art{
  background:radial-gradient(ellipse at 48% 34%,#333e4b,#151a22 78%)!important;
 }
 [data-theme="modern"] #radio-screen .radio-dot-texture{opacity:.48}
-[data-theme="modern"] #radio-screen .radio-news-ticker{background-color:#141c26;color:var(--modern-ice)}
-[data-theme="modern"] #radio-screen .ticker-headline{color:var(--modern-ice)}
 [data-theme="modern"] :is(.radio-monitor-title,.fullscreen-titlebar,.module-legend){color:var(--modern-ink)}
 [data-theme="modern"] :is(.radio-monitor-channel,.radio-monitor-details,#v4-osd-channel,#fullscreen-channel-country){color:var(--modern-muted)}
 [data-theme="modern"] :is(#radio-screen,#tv-screen) .crt-telemetry{

@@ -14,7 +14,6 @@ window.createThumbwheelVolume=function({dial,input,output,onInput}){
   function setValue(value){
     value=clamp(value);input.value=String(value);
     input.setAttribute('aria-valuetext',value+' percent');
-    dial.style.setProperty('--thumbwheel-level',value+'%');
     dial.style.setProperty('--thumbwheel-offset',((value*1.8)%5)+'px');
     if(output)output.textContent=value+'%';
   }

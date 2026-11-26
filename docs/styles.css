@@ -46,7 +46,7 @@ select,input[type=search]{min-height:44px;padding:8px 10px;border:1px solid #494
 .radio-dot-texture{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#38e54d08 1px,transparent 1px),linear-gradient(90deg,#38e54d08 1px,transparent 1px);background-size:30px 30px}
 .speaker-aura,.speaker-cone,.radio-glow-ring,.radio-glow-bloom{display:none}.radio-art-caption{position:absolute;z-index:5;top:14px;right:16px;left:16px;text-align:right;font-family:var(--type-data);pointer-events:none}.radio-art-caption h1{margin:0;color:var(--amber);font-size:13px;font-weight:500}.radio-art-caption p{margin:4px 0;color:var(--green);font-size:10px}
 .record-equalizer{height:30px;display:flex;align-items:center;gap:4px}.record-equalizer i{width:3px;height:5px;background:var(--green);box-shadow:0 0 4px #38e54d55;transform-origin:center}.radio-art.playing .record-equalizer i{animation:scope .7s ease-in-out infinite alternate}.record-equalizer i:nth-child(3n){animation-delay:-.3s}.record-equalizer i:nth-child(2n){animation-delay:-.5s}@keyframes scope{to{transform:scaleY(4)}}
-.equalizer{display:none}.radio-news-ticker{overflow:hidden;height:32px;padding:7px 0 0;color:#94ad91;font:10px var(--type-data)}.ticker-window,.ticker-track{overflow:hidden;height:100%}.ticker-marquee{display:flex;width:max-content;height:100%;animation:news-scroll 90s linear infinite}.ticker-group{display:flex;flex:none;align-items:center}.ticker-headline{white-space:nowrap;padding-right:48px}@keyframes news-scroll{to{transform:translateX(-50%)}}
+.equalizer{display:none} /* Retained for the backup receiver page. */
 /* VFD uses real station/status text. LED segments indicate the existing play state,
    not an invented recovery countdown; the copied engine still waits ten seconds. */
 .vfd-window{min-width:0;padding:16px;border:3px solid #080a09;border-radius:6px;background:linear-gradient(155deg,#111a13bb,transparent 65%),#090c0a;box-shadow:inset 0 4px 12px #000,0 0 0 1px #3d4540,0 1px #ffffff22}.vfd-heading{color:#78957c;letter-spacing:1px}
@@ -134,7 +134,7 @@ body.broadcast-console{--metal:repeating-linear-gradient(0deg,#ffffff03 0 1px,#0
 .broadcast-console .tv-rail-wrap{grid-row:2;min-height:0;height:100%;overflow:hidden}.broadcast-console .tv-rail{height:100%;min-height:0;gap:0;scrollbar-width:none;overflow-y:hidden}.broadcast-console .tv-rail-card{height:100%;flex:0 0 100%;min-width:0;min-height:0;border:0;border-radius:20px;transform:none!important}
 .broadcast-console .tv-display>.tv-picture{display:none}.broadcast-console .tv-video-card .tv-picture{width:100%;height:100%;min-height:0;aspect-ratio:auto;border:12px solid #0b1009;border-radius:22px / 17px;box-shadow:0 0 0 1px #626a55}.broadcast-console .tv-picture video{width:100%;height:100%;object-fit:contain}
 .broadcast-console .tv-picture::after,.broadcast-console .radio-art::after{background:linear-gradient(135deg,#ffffff10,transparent 37%,transparent 68%,#ffffff04),repeating-linear-gradient(0deg,#00000024 0 1px,transparent 1px 3px);box-shadow:inset 0 0 28px #000b;pointer-events:none}
-.broadcast-console .radio-news-ticker{display:none}.broadcast-console .monitor-badge{grid-row:3;text-align:center;align-self:center;color:#909985;font:700 12px Georgia,serif;text-shadow:0 1px #000}.monitor-badge span{display:block;margin-top:2px;font:6px var(--type-data);letter-spacing:1px;color:#76896d}
+.broadcast-console .monitor-badge{grid-row:3;text-align:center;align-self:center;color:#909985;font:700 12px Georgia,serif;text-shadow:0 1px #000}.monitor-badge span{display:block;margin-top:2px;font:6px var(--type-data);letter-spacing:1px;color:#76896d}
 .broadcast-console .radio-art .record-mark{position:absolute;bottom:17%;left:8%;width:84%;min-height:0;padding:0;gap:5px;background:none;box-shadow:none;border:0;transform:none}.broadcast-console .radio-center-title{font:500 clamp(14px,1.8vw,26px)/1.2 var(--type-data);color:#84e58d}.broadcast-console .radio-center-country{font-size:9px}.broadcast-console .radio-signal-icon{display:none}.broadcast-console .record-equalizer{height:14px}.broadcast-console .radio-art-caption{top:12px;right:12px;left:12px}.broadcast-console .radio-art-caption h1{font:10px var(--type-data);color:#83c98b}.broadcast-console .radio-art-caption p{font-size:7px}
 .receiver-station-artwork{position:absolute;top:13%;left:50%;transform:translateX(-50%);width:28%;height:30%;max-width:140px;max-height:140px;display:grid;place-items:center;z-index:4;pointer-events:none}.receiver-station-artwork img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px}
 .broadcast-console .vfd-window{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:8px 28px;border:1px solid #4c5644;border-radius:4px;background:linear-gradient(120deg,#21311a44,transparent 60%),#070a06;box-shadow:inset 0 4px 14px #000f,0 0 0 2px #181f14;overflow:hidden}
@@ -1201,76 +1201,23 @@ body.tv-fullscreen-open .retro-app{visibility:hidden}body.tv-fullscreen-open{pad
 /* 4.0.38 — 30px news crawl below the Radio screen, above the control lip. */
 .broadcast-console #radio-screen .crt-module{grid-template-rows:20px minmax(0,1fr) 44px 42px}
 .broadcast-console #radio-screen .monitor-badge{grid-row:4}
-.broadcast-console #radio-screen .radio-news-ticker{
- display:block;grid-row:3;position:relative;min-width:0;width:100%;height:44px;min-height:44px;
- margin:0;padding:0;border-block:1px solid #77846166;border-radius:3px;
- background:linear-gradient(#141e12,#090f08);overflow:hidden;
-}
-.broadcast-console #radio-screen .ticker-window,.broadcast-console #radio-screen .ticker-track{position:relative;width:100%;height:100%;overflow:hidden}
-.broadcast-console #radio-screen .ticker-marquee{display:flex;width:max-content;height:100%;animation:radio-news-crawl var(--news-duration,180s) linear infinite!important;will-change:transform}
-.broadcast-console #radio-screen .ticker-group{display:flex;align-items:center;flex:none;gap:50px;padding-right:50px;width:max-content;height:100%}
-.broadcast-console #radio-screen .ticker-headline{
- position:static;display:inline-flex;flex:none;align-items:center;height:100%;opacity:1;transform:none;
- font:500 30px/42px var(--type-ui);color:#e5dcb1;text-decoration:none;white-space:nowrap;transition:none;animation:none;
-}
-.broadcast-console #radio-screen .ticker-static{font:500 30px/42px var(--type-ui);color:#c6cda9;white-space:nowrap}
-.broadcast-console #radio-screen .radio-news-ticker:hover .ticker-marquee,
-.broadcast-console #radio-screen .radio-news-ticker:focus-within .ticker-marquee{animation-play-state:paused!important}
-@keyframes radio-news-crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:900px) and (orientation:portrait){
  .broadcast-console #radio-screen .crt-module{grid-template-rows:13px minmax(0,1fr) 44px 25px;gap:4px}
 }
 @media(max-height:590px) and (orientation:landscape){
  .broadcast-console #radio-screen .crt-module{grid-template-rows:12px minmax(0,1fr) 44px 26px;gap:4px}
 }
-@media(prefers-reduced-motion:reduce){
- .broadcast-console #radio-screen .ticker-marquee{animation:none!important}
- .broadcast-console #radio-screen .ticker-track{overflow-x:auto}
- .broadcast-console #radio-screen .ticker-group[aria-hidden=true]{display:none}
-}
 
 /* 4.0.39 — the live crawl belongs inside the CRT viewport. */
 .broadcast-console #radio-screen .crt-module{grid-template-rows:20px minmax(0,1fr) 42px}
 .broadcast-console #radio-screen .monitor-badge{grid-row:3}
-.broadcast-console #radio-screen .radio-art>.radio-news-ticker{
- position:absolute;z-index:12;left:0;right:0;bottom:0;grid-row:auto;
- width:100%;height:44px;min-height:44px;border:0;border-top:1px solid #aab98555;
- border-radius:0 0 10px 10px;background:#071006d9;pointer-events:auto;
-}
 .broadcast-console #radio-screen .radio-art .receiver-station-artwork{bottom:49px}
-.broadcast-console #radio-screen .ticker-marquee{animation:radio-news-crawl var(--news-duration,180s) linear infinite!important}
 @media(max-width:900px) and (orientation:portrait){
  .broadcast-console #radio-screen .crt-module{grid-template-rows:13px minmax(0,1fr) 25px;gap:4px}
 }
 @media(max-height:590px) and (orientation:landscape){
  .broadcast-console #radio-screen .crt-module{grid-template-rows:12px minmax(0,1fr) 26px;gap:4px}
 }
-@media(prefers-reduced-motion:reduce){
- .broadcast-console #radio-screen .ticker-marquee{animation:none!important}
-}
-
-/* 4.0.40 — clean broadcast crawl with no framed strip or scrollbars. */
-.broadcast-console #radio-screen .radio-art>.radio-news-ticker{
- bottom:6px;border:0;border-radius:0;background:transparent;box-shadow:none;
- overflow:hidden;padding:0;
-}
-.broadcast-console #radio-screen .ticker-window,
-.broadcast-console #radio-screen .ticker-track{
- overflow:hidden!important;border:0;background:none;box-shadow:none;
- scrollbar-width:none;-ms-overflow-style:none;
-}
-.broadcast-console #radio-screen .ticker-window::-webkit-scrollbar,
-.broadcast-console #radio-screen .ticker-track::-webkit-scrollbar{display:none;width:0;height:0}
-.broadcast-console #radio-screen .ticker-headline{
- border:0;background:none;box-shadow:none;color:#f4edd8;
- text-shadow:0 1px 3px #000,0 0 2px #000;font-size:30px;line-height:42px;
-}
-.broadcast-console #radio-screen .ticker-marquee{
- animation:radio-news-crawl var(--news-duration,180s) linear infinite!important;
- animation-play-state:running!important;
-}
-.broadcast-console #radio-screen .radio-news-ticker:hover .ticker-marquee,
-.broadcast-console #radio-screen .radio-news-ticker:focus-within .ticker-marquee{animation-play-state:paused!important}
 
 
 /* Restored the 4.0.41 protective steel side guards. */
@@ -1370,9 +1317,6 @@ body.broadcast-console{padding-inline:58px}
  width:fit-content;max-width:calc(100% - 24px);left:auto;padding:5px 8px;
  border-radius:5px;background:#0b1b0de0;box-shadow:0 1px 3px #0004;
 }
-.broadcast-console #radio-screen .radio-art>.radio-news-ticker{
- background:linear-gradient(transparent,#09120aca);border:0;
-}
 
 /* 4.0.47 — darker grille finish for clearer phosphor-green tower artwork. */
 .broadcast-console #radio-screen .radio-art{
@@ -1394,19 +1338,8 @@ body.broadcast-console{padding-inline:58px}
  content:none;display:none;
 }
 
-/* Fade at the stationary glass edges, leaving the moving track unmasked. */
-.broadcast-console #radio-screen .radio-news-ticker .ticker-window{
- --ticker-edge-fade:clamp(16px,2vw,24px);
- -webkit-mask-image:linear-gradient(to right,transparent,#000 var(--ticker-edge-fade),#000 calc(100% - var(--ticker-edge-fade)),transparent);
- mask-image:linear-gradient(to right,transparent,#000 var(--ticker-edge-fade),#000 calc(100% - var(--ticker-edge-fade)),transparent);
-}
-
 /* 4.0.48 - compact mobile news crawl; desktop retains 30px text. */
 @media(max-width:900px){
- .broadcast-console #radio-screen .radio-art>.radio-news-ticker{height:28px;min-height:28px;bottom:5px}
- .broadcast-console #radio-screen .ticker-headline,
- .broadcast-console #radio-screen .ticker-static{font-size:16px;line-height:28px}
- .broadcast-console #radio-screen .ticker-group{gap:28px;padding-right:28px}
  .broadcast-console #radio-screen .radio-art .receiver-station-artwork{bottom:35px}
 }
 
@@ -1674,7 +1607,6 @@ body.broadcast-console{padding-inline:58px}
 }
 
 /* 4.0.77 - desktop faceplate alignment per marked reference. */
-.broadcast-console #radio-screen .radio-art>.radio-news-ticker{bottom:1px}
 @media(min-width:901px) and (min-height:650px){
  .broadcast-console .large-radio-tuner>.tuner-instrument{transform:translateY(-26px)}
  .broadcast-console .large-radio-tuner::after{bottom:14px}

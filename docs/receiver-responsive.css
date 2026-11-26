@@ -231,8 +231,6 @@ body.broadcast-console{
  .broadcast-console .hardware-filter{font-size:10px}
  .broadcast-console .retro-app>.bottom-nav{grid-row:2;gap:4px;height:44px}
  .broadcast-console .bottom-nav .nav-item{font-size:10px;gap:3px;letter-spacing:0}
- .broadcast-console .radio-art>.radio-news-ticker{height:24px;min-height:24px;bottom:1px}
- .broadcast-console #radio-screen .ticker-headline,.broadcast-console #radio-screen .ticker-static{font-size:14px;line-height:24px}
  .broadcast-console .radio-art-caption{top:5px;right:6px;left:6px}
  .broadcast-console #radio-screen .radio-art-caption h1{font-size:12px}
  .broadcast-console #radio-screen .radio-art-caption p{font-size:10px}
@@ -387,7 +385,6 @@ body.broadcast-console{
   left:90px;border:0;background:none;box-shadow:none;
  }
  .broadcast-console .radio-display .cassette-counter>.counter-slot{border:0}
- .broadcast-console #radio-screen .ticker-headline,.broadcast-console #radio-screen .ticker-static{font-size:16px}
 }
 @media(max-width:900px) and (max-height:620px) and (orientation:portrait){
  .broadcast-console .receiver-panel.radio-receiver,.broadcast-console .receiver-panel.tv-receiver{grid-template-rows:60px 72px minmax(0,1fr)}
@@ -416,7 +413,7 @@ body.broadcast-console{
 /* Tape stays in the cassette when the bare playback head retracts. */
 .broadcast-console .radio-art .cassette-playback-head::after{display:none;opacity:0}
 .broadcast-console .radio-art .receiver-station-artwork[data-kind=cassette][data-playing=true][data-engaged=true]:not(.cassette-flipping) .cassette-playback-head::after{display:block;opacity:1}
-/* Keep mesh clear of the ticker, above the grille and beneath station artwork. */
+/* Keep mesh above the grille and beneath station artwork. */
 .broadcast-console .radio-transport-stack .volume-knob-control,
 .broadcast-console .tv-hifi-deck>.volume-knob-control{
  width:100%;max-width:220px;margin-inline:auto;justify-self:center;
@@ -582,22 +579,6 @@ body.broadcast-console{
  .broadcast-console .hardware-filter-bar .hardware-filter{font-size:11px;letter-spacing:0}
 }
 
-/* 4.1.20: desktop news sits evenly inside the glass, on the display's own grille. */
-@media(min-width:901px){
- .broadcast-console #radio-screen .radio-art>.radio-news-ticker{
-  left:12px;right:12px;bottom:8px;width:auto;height:44px;min-height:44px;
-  margin:0;padding:2px 0;border:0;border-radius:0;background:transparent;box-shadow:none;
- }
- .broadcast-console #radio-screen .ticker-window,
- .broadcast-console #radio-screen .ticker-track{height:100%;margin:0;padding:0;background:transparent}
- .broadcast-console #radio-screen .ticker-group{height:100%;align-items:center}
- .broadcast-console #radio-screen .ticker-headline,
- .broadcast-console #radio-screen .ticker-static{
-  display:inline-flex;align-items:center;height:100%;margin:0;padding-block:0;
-  font-size:clamp(18px,1.55vw,30px);line-height:1.2;
- }
-}
-
 /* 4.1.21: mobile presentation only. Existing carousel geometry and hooks remain. */
 @media(max-width:900px){
  .broadcast-console :is(#radio-screen,#tv-screen) :is(.receiver-readout,.tv-receiver-readout).vfd-window{
@@ -707,7 +688,6 @@ body.broadcast-console{
 
 .broadcast-console #tv-video::-webkit-media-controls-fullscreen-button{display:none}
 
-.broadcast-console #radio-screen .crt-module>.radio-news-ticker{display:none}
 .broadcast-console .crt-module>.cabinet-badge{
  grid-column:1;
  grid-row:3;
@@ -993,14 +973,6 @@ body.broadcast-console{
  .broadcast-console #radio-screen .radio-art .standard-cassette{
   width:min(90cqw,112cqh,472px);
  }
- .broadcast-console #radio-screen .radio-art>.radio-news-ticker{
-  grid-area:2 / 1;position:relative;inset:auto;
-  margin:0;padding:0;height:var(--mobile-news-height);min-height:0;
- }
- .broadcast-console #radio-screen .ticker-headline,
- .broadcast-console #radio-screen .ticker-static{
-  font-size:clamp(11px,3.7cqw,16px);line-height:var(--mobile-news-height);
- }
 }
 @media(min-width:901px) and (max-height:590px) and (orientation:landscape){
  body.broadcast-console{padding-inline:clamp(64px,7.3vw,84px)}
@@ -1122,8 +1094,6 @@ body.broadcast-console{
 .broadcast-console .receiver-panel:has(.vfd-signal-running) .tuner-signal::before{
  background:#9aea9d;box-shadow:0 0 6px #8aff91;
 }
-.broadcast-console #radio-screen .radio-art>.radio-news-ticker{padding-inline:clamp(8px,2vw,16px)}
-.broadcast-console #radio-screen .ticker-window{mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent)}
 
 /* Readout, tuning bay, then the mode / volume / mute deck. */
 .broadcast-console #radio-screen .receiver-panel.radio-receiver,

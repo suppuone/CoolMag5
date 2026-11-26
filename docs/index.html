@@ -19,9 +19,9 @@ The new interface, icons, splash and slider are embedded below. -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="stylesheet" href="styles.css?v=4.1.10">
-  <link rel="stylesheet" href="receiver-responsive.css?v=4.1.74">
-  <link rel="stylesheet" href="modern-theme.css?v=1.0.0">
+  <link rel="stylesheet" href="styles.css?v=4.1.11">
+  <link rel="stylesheet" href="receiver-responsive.css?v=4.1.75">
+  <link rel="stylesheet" href="modern-theme.css?v=1.0.1">
   <link rel="stylesheet" href="weathered-theme.css?v=1">
   <link rel="stylesheet" href="shattered-theme.css?v=1">
   <script>
@@ -30,17 +30,15 @@ The new interface, icons, splash and slider are embedded below. -->
   window.addEventListener('beforeinstallprompt',event=>{
     event.preventDefault();window.retroDeferredInstallPrompt=event;
   });
-  // Disable the retired mesh engine before app.js initializes.
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
   <script defer src="stream-recovery.js?v=4.1.4"></script>
-  <script defer src="playback-mechanics.js?v=4.1.16"></script>
-  <script defer src="volume-knob.js?v=4.1.9"></script>
+  <script defer src="volume-knob.js?v=4.1.10"></script>
   <script defer src="tv-auto-fullscreen.js?v=3.0.165"></script>
   <script defer src="hardware-feedback.js?v=1.0.9"></script>
   <script src="station-category.js?v=2"></script>
   <script defer src="preset-defaults.js?v=4.1.73"></script>
-  <script defer src="app.js?v=4.1.91"></script>
+  <script defer src="app.js?v=4.1.93"></script>
 <style id="compact-receiver-design">
 :root{--ux-metal: #b8a397; --ux-ink: #383631; --ux-green: #8bee87; --ux-dark: #171b18; --ux-edge: #75665c;}
 html{min-height: 100%; color-scheme: light; background: rgb(48, 32, 25) !important;}
@@ -3379,8 +3377,6 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
         <div class="radio-art" id="radio-art"><div class="record-mark"><span class="radio-signal-icon" aria-hidden="true">◉</span><b class="radio-center-title">Choose a station</b><small class="radio-center-country">WORLD RADIO</small><div class="record-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
         <div class="crt-telemetry"><span class="radio-live-indicator" role="status">STANDBY</span><span class="crt-signal-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><time class="crt-clock" aria-label="Local time"></time></div>
 
-        <div class="playing-meta radio-news-ticker" aria-label="The Hindu and BBC World news headlines"><div class="ticker-window"><div class="ticker-track" id="radio-news-track"><span class="ticker-headline is-current">Loading the latest national news…</span></div></div></div>
-        <div class="equalizer" id="equalizer" aria-label="Audio level animation"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <audio id="radio-audio" preload="none"></audio>
         <picture class="cabinet-badge">
           <source media="(min-width: 901px)" srcset="assets/station-logos/badge.png" width="1946" height="576">
@@ -3587,17 +3583,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   let lastArtworkTime=Number(audio.currentTime)||0;
   let tvSignalPlaying=!video.paused&&video.readyState>=3,lastTVSignalTime=Number(video.currentTime)||0;
   const signalIsPlaying=(media,playing)=>Boolean(playing&&!media.paused&&!media.ended&&!document.hidden);
-  if(window.createRadioMechanismGate)window.retroRadioMechanism=window.createRadioMechanismGate({getArtwork:()=>null,paint:()=>{}});
   let lastRadioPreset=-1,lastTVPreset=-1;
-  // The player redraws radio-art; retain the live news node inside the screen.
-  const radioNewsTicker=document.querySelector('.radio-news-ticker');
-  function placeRadioNewsTicker(){
-    const art=$('radio-art');
-    const host=$('ux-news-slot');if(host&&radioNewsTicker&&radioNewsTicker.parentElement!==host)host.append(radioNewsTicker);
-  }
   function sync(){
     placeCompactUtilities();
-    placeRadioNewsTicker();
     for(const [button,media] of muteControls){
       if(!button)continue;
       button.setAttribute('aria-pressed',String(media.muted));
@@ -3981,18 +3969,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     const drag=tunerDrag;tunerDrag=null;tunerDragging=false;stopCoasting();
     if(drag?.surface.hasPointerCapture(drag.id))drag.surface.releasePointerCapture(drag.id);
   }
-  function stepFromRemote(direction){
-    if(!tunerEntries.length)return false;
-    cancelStationTuner();
-    const playingIndex=tunerEntries.findIndex(entry=>entry.button.classList.contains('active'));
-    const startIndex=kind==='radio'?tunerIndex:(playingIndex>=0?playingIndex:tunerIndex);
-    previewStationTuner((startIndex+direction+tunerEntries.length)%tunerEntries.length);
-    return commitStationTuner(direction)===true;
-  }
-  return {paint:paintStationTuner,cancel:cancelStationTuner,stepFromRemote,order:()=>tunerEntries.map(entry=>entry.index)};
+  return {paint:paintStationTuner,cancel:cancelStationTuner,order:()=>tunerEntries.map(entry=>entry.index)};
   }
   const stationTuners={radio:createStationTuner('radio'),tv:createStationTuner('tv')};
-  window.retroStepStationTuner=(kind,direction)=>stationTuners[kind].stepFromRemote(direction);
   window.retroStationTunerOrder=kind=>stationTuners[kind].order();
   document.addEventListener('retro-sleep-expired',()=>{
     stationTuners.radio.cancel();stationTuners.tv.cancel();
@@ -4113,9 +4092,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   const volumeRow=document.querySelector('.ux-volume');volumeRow.querySelector(':scope>svg')?.remove();
   $('ux-mute').querySelector('svg').innerHTML='<path d="m11 5-5 4H3v6h3l5 4z"/><path class="ux-mute-cross" d="m16 9 5 6m0-6-5 6"/>';
   const volumeUp=document.createElement('button');volumeUp.id='ux-volume-up';volumeUp.type='button';volumeUp.className='ux-volume-speaker';volumeUp.setAttribute('aria-label','Increase volume');volumeUp.title='Increase volume';volumeUp.innerHTML='<svg class="ux-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg>';volumeRow.append(volumeUp);
-  const newsSlot=document.createElement('div');newsSlot.id='ux-news-slot';
-  // Keep legacy feed hooks hidden so companion scripts remain compatible.
-  newsSlot.hidden=true;newsSlot.style.setProperty('display','none','important');document.body.append(newsSlot);
   const identityRow=document.querySelector('.ux-brandrow');identityRow.replaceChildren();identityRow.after(document.querySelector('.ux-grille'));
   document.querySelector('.ux-grille').replaceChildren(...Array.from({length:3},()=>{const section=document.createElement('span');section.className='ux-speaker-section';return section;}));
   const shortcuts=document.createElement('nav');shortcuts.className='ux-shortcuts';shortcuts.setAttribute('aria-label','Quick favorite filters');
@@ -4123,7 +4099,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     const button=document.createElement('button');button.type='button';button.className='ux-pill';button.dataset.quickKind=kind;button.textContent=label;button.setAttribute('aria-controls','radio-screen tv-screen');button.title='Play matching favorites';button.onclick=()=>playQuickFavorite(kind);shortcuts.append(button);
   }
   document.querySelector('.ux-volume').before(shortcuts);
-  const newsTicker=document.querySelector('.radio-news-ticker');if(newsTicker)newsSlot.append(newsTicker);
   // Keep the complete original player trees inside the original app ancestor.
   // Channel engines can render <video>, HLS, or an embedded player into this tree.
   const app=document.querySelector('main.retro-app'),radioScreen=$('radio-screen'),tvScreen=$('tv-screen');
@@ -4348,7 +4323,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   function update(){
     const mode=shell.dataset.mode||'radio',tv=mode==='tv';
     const active=[...document.querySelectorAll(tv?'#tv-rail .tv-rail-card.active,#remote-presets .active':'#radio-station-strip .active')];
-    let name=((tv?$('tv-title')?.textContent:document.querySelector('.radio-monitor-title b')?.textContent)||$('ux-station-name')?.textContent||'Choose a channel').trim();
+    let name=((tv?$('tv-title')?.textContent:document.querySelector('.radio-monitor-title b')?.textContent)||'Choose a channel').trim();
     if(/^(?:unavailable|offline|reconnecting|buffering|loading|connection|stream error)/i.test(name))name=active[0]?.querySelector('.console-channel-name,.tv-rail-copy b,strong')?.textContent.trim()||currentName||name;
     const id=mode+'|'+normalize(name),urls=[];
     const add=value=>{if(!value||typeof value!=='string')return;try{const url=new URL(value,document.baseURI);if(['http:','https:','data:','blob:','file:'].includes(url.protocol)&&!urls.includes(url.href))urls.push(url.href);}catch{}};
@@ -4368,7 +4343,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     else if(!loading&&!timer&&image.hidden&&attempt===0)resolve();
   }
   const observer=new MutationObserver(update);
-  for(const id of ['tv-title','radio-art','radio-station-strip','tv-rail','remote-presets','ux-station-name','preset-grid'])if($(id))observer.observe($(id),{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','src','srcset','data-logo','data-station-logo']});
+  for(const id of ['tv-title','radio-art','radio-station-strip','tv-rail','remote-presets','preset-grid'])if($(id))observer.observe($(id),{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','src','srcset','data-logo','data-station-logo']});
   observer.observe(shell,{attributes:true,attributeFilter:['data-mode']});
   const radioTitle=document.querySelector('.radio-monitor-title b');if(radioTitle)observer.observe(radioTitle,{childList:true,characterData:true,subtree:true});
   window.addEventListener('online',()=>{cancel();generation++;attempt=0;update();});window.addEventListener('storage',update);

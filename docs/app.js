@@ -15,7 +15,7 @@
   const initialsFor = title => String(title||'LIVE').trim().split(/\s+/).filter(Boolean).slice(0,3).map(word=>word[0]).join('').toUpperCase()||'TV';
   function logoInitials(image){const card=image.closest('.radio-mini-card,.tv-rail-card,.preset-card,.result-row'),title=card?.querySelector('.radio-mini-card b,.tv-rail-copy b,.preset-card>b,.result-copy b')?.textContent||$('radio-title')?.textContent||'LIVE';return initialsFor(title);}
   document.addEventListener('error',event=>{const image=event.target;if(!image||image.tagName!=='IMG')return;const source=image.currentSrc||image.src;if(/^http:\/\//i.test(source)&&image.dataset.httpsRetry!=='1'){image.dataset.httpsRetry='1';image.src=source.replace(/^http:/i,'https:');return;}if(image.dataset.namedFallback!=='1'){const title=image.alt||image.closest('[aria-label]')?.getAttribute('aria-label')?.replace(/^Play /,'')||'';const station=[...radios,...tvs].find(s=>s.name===title);if(station?.fallbackLogo){image.dataset.namedFallback='1';image.src=station.fallbackLogo;return;}}const fallback=document.createElement('span');if(image.classList.contains('station-logo-badge')){fallback.className='station-logo-fallback';fallback.textContent=logoInitials(image);}else{fallback.className='logo-fallback';fallback.textContent=logoInitials(image);}image.replaceWith(fallback);},true);
-  const RADIO_STORE='retrotvra.radio-presets.v3',TV_STORE='retrotvra.tv-presets.v3',TV_ORDER_STORE='retrotvra.tv-order.dd-news-only.v1',RADIO_HIDDEN_STORE='retrotvra.radio-hidden.v9',TV_HIDDEN_STORE='retrotvra.tv-hidden.v4',VOLUME_STORE='retrotvra.volume.v1',RECENT_STORE='retrotvra.recent.v2';
+  const RADIO_STORE='retrotvra.radio-presets.v3',TV_STORE='retrotvra.tv-presets.v3',RADIO_HIDDEN_STORE='retrotvra.radio-hidden.v9',TV_HIDDEN_STORE='retrotvra.tv-hidden.v4',VOLUME_STORE='retrotvra.volume.v1',RECENT_STORE='retrotvra.recent.v2';
   let radios=[],tvs=[],radioPresets={},tvPresets={},recentHistory=[],radioIndex=-1,tvIndex=-1,presetMode='radio',selectedTVPresetKey=null,browserKind='radio',browserSource='library',onlineRows=[],onlineTVCache=null,onlineCountries=[],onlineGenres=[],onlineOffset=0,onlineVisibleLimit=100,onlineHasMore=false,onlineSearchDone=false,hls=null,radioHls=null,currentRadioSource='',toastTimer=null,dragState=null,languageCatalog=[],languageNameByCode=new Map(),languageNameByKey=new Map();
   const audio=$('radio-audio'),video=$('tv-video');
 
@@ -154,51 +154,6 @@
 
   function formatClock(){const d=new Date();$('clock').textContent=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}).toUpperCase();const day=$('radio-clock-day');if(day){day.textContent=d.toLocaleDateString([], {weekday:'short'}).slice(0,2);const time=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit',hour12:true}).match(/^(.+?)\s*(AM|PM)$/i);$('radio-clock-time').textContent=time?time[1]:d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});$('radio-clock-meridiem').textContent=time?time[2].toUpperCase():'';$('radio-clock-date').textContent=d.toLocaleDateString([], {month:'short',day:'2-digit',year:'numeric'}).toUpperCase();}}
   initSplash();
-  const radioNewsFeeds=[
-    {name:'The Hindu',url:'https://www.thehindu.com/news/national/feeder/default.rss'},
-    {name:'BBC World',url:'https://feeds.bbci.co.uk/news/world/rss.xml'}
-  ];
-  function setRadioNews(headlines){
-    const track=$('radio-news-track');if(!track)return;
-    const items=(headlines||[]).filter(item=>item.title).slice(0,12);
-    if(!items.length){
-      if(track.querySelector('.ticker-marquee'))return;
-      track.textContent='News feeds unavailable — retrying later';track.classList.add('ticker-static');return;
-    }
-    const group=document.createElement('div');group.className='ticker-group';
-    for(const item of items){
-      const link=document.createElement('a');link.className='ticker-headline';link.textContent=item.source+' · '+String(item.title).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-      try{const url=new URL(item.link);if(url.protocol==='https:'||url.protocol==='http:'){link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';}}catch{}
-      group.append(link);
-    }
-    const marquee=document.createElement('div');marquee.className='ticker-marquee';
-    const copy=group.cloneNode(true);copy.setAttribute('aria-hidden','true');copy.querySelectorAll('a').forEach(link=>link.tabIndex=-1);
-    marquee.append(group,copy);track.replaceChildren(marquee);track.classList.remove('ticker-static');
-    requestAnimationFrame(()=>marquee.style.setProperty('--news-duration',Math.max(30,group.scrollWidth/80)+'s'));
-  }
-  async function loadRadioNews(){
-    const results=await Promise.allSettled(radioNewsFeeds.map(async feed=>{
-      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
-      try{
-        const response=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed.url),{cache:'no-store',signal:controller.signal});
-        if(!response.ok)throw new Error('News service '+response.status);
-        const data=await response.json();if(!data.items?.length)throw new Error('Empty news feed');
-        return data.items.slice(0,6).map(item=>({title:item.title,link:item.link,source:feed.name}));
-      }finally{clearTimeout(timer);}
-    }));
-    const groups=results.map(result=>result.status==='fulfilled'?result.value:[]),headlines=[];
-    for(let i=0;i<6;i++)for(const group of groups)if(group[i])headlines.push(group[i]);
-    setRadioNews(headlines);
-  }
-  function inferTVCountry(name=''){
-    const n=String(name).toLowerCase();
-    if(/bbc|star vijay uk|reuters/.test(n))return 'United Kingdom';
-    if(/cnn|abc news|discovery|cartoon network|accuweather|hallmark|hbo|create/.test(n))return 'United States';
-    if(/al jazeera/.test(n))return 'Qatar';if(/dw english/.test(n))return 'Germany';if(/arirang/.test(n))return 'South Korea';
-    if(/kantipur/.test(n))return 'Nepal';if(/africanews/.test(n))return 'Republic of the Congo';if(/nhk/.test(n))return 'Japan';
-    if(/france 24/.test(n))return 'France';if(/trt world/.test(n))return 'Turkey';
-    return 'India';
-  }
   function fillCountries(){
     const fill=(id,rows)=>{const countries=[...new Set(rows.map(s=>String(s.country||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));$(id).innerHTML='<option value="all">All countries</option>'+countries.map(name=>`<option value="${safe(name)}">${safe(name)}</option>`).join('');};
     fill('radio-country',radios);fill('tv-country',tvs);
@@ -253,7 +208,6 @@
     saveStore(RECENT_STORE,recentHistory);
     saveStore(RADIO_STORE,radioPresets);
     saveStore(TV_STORE,tvPresets);
-    saveStore(TV_ORDER_STORE,Object.keys(tvPresets));
     const launchRadio=Object.values(radioPresets)[0]||builtIn.radio[DEFAULT_RADIO_KEY];
     const launchTV=Object.values(tvPresets)[0];
     radioIndex=launchRadio?radios.findIndex(station=>stationKey(station)===stationKey(launchRadio)):-1;
@@ -437,7 +391,6 @@
     if(!station)return;
     cancelContinuousRetry('radio');
     $('radio-art').dataset.playbackBlocked='false';
-    window.retroRadioMechanism?.cancel();
     const generation=++radioPlaybackGeneration;
     radioRecovery.stop();
     const src=station?.url_resolved||station?.url;
@@ -448,20 +401,20 @@
     // Match v1's direct-stream order. HLS sources must be attached through
     // Hls.js instead of being assigned to audio.src as a playlist URL.
     // Preserve listener volume across station changes.
-    $('equalizer').classList.remove('playing');drawRadio();$('radio-status').textContent='CONNECTING · '+(station.name||'RADIO');rememberPlayed('radio',station);renderRadioShortcuts();
+    drawRadio();$('radio-status').textContent='CONNECTING · '+(station.name||'RADIO');rememberPlayed('radio',station);renderRadioShortcuts();
     radioRecovery.begin(automatic,direction);
     if(!src||blockedStream(station)){radioRecovery.fail();return;}
     if($('radio-screen').classList.contains('active')){
       remoteMedia=audio;
       syncRemoteMedia();
     }
-    const onRadioStarted=()=>{if(generation!==radioPlaybackGeneration)return;$('radio-art').classList.add('playing');$('equalizer').classList.add('playing');$('radio-play').textContent='Ⅱ';$('radio-play').title='Pause';$('radio-play').setAttribute('aria-label','Pause');$('radio-status').textContent=`Playing · ${station.name||'Internet radio'}`;};
+    const onRadioStarted=()=>{if(generation!==radioPlaybackGeneration)return;$('radio-art').classList.add('playing');$('radio-play').textContent='Ⅱ';$('radio-play').title='Pause';$('radio-play').setAttribute('aria-label','Pause');$('radio-status').textContent=`Playing · ${station.name||'Internet radio'}`;};
     const onRadioFailed=error=>{if(generation!==radioPlaybackGeneration||error?.name==='AbortError')return;radioRecovery.reject(error);if(error?.name==='NotAllowedError'){radioAutoplayBlocked=true;showRemoteCommand('Radio playback','Browser blocked audio: NotAllowedError');$('radio-art').dataset.playbackBlocked='true';if(remoteMedia===audio)syncRemoteMedia();$('radio-status').textContent='TAP PLAY TO START RADIO';return;}console.error('Radio playback failed:',currentRadioSource,error||'play() rejected');if(location.protocol==='https:'&&/^http:\/\//i.test(currentRadioSource)){$('radio-status').textContent='HTTPS REQUIRED · THIS STREAM USES HTTP';notify('This station uses an HTTP link, which secure pages block. Use an HTTPS stream.');}else{$('radio-status').textContent='STREAM COULD NOT START';notify('This station stream could not start. Try another station.');}};
     const isHls=/\.m3u8(?:$|[?#])/i.test(src);
     if(isHls&&window.Hls&&Hls.isSupported()){
       const player=new Hls({enableWorker:true,lowLatencyMode:false,maxBufferLength:18});radioHls=player;
       player.on(Hls.Events.MANIFEST_PARSED,()=>{if(radioHls!==player||generation!==radioPlaybackGeneration)return;startRadioAudio().then(onRadioStarted).catch(onRadioFailed);});
-      player.on(Hls.Events.ERROR,(_event,data)=>{if(data.fatal&&radioHls===player){radioRecovery.fail();const insecure=location.protocol==='https:'&&/^http:\/\//i.test(currentRadioSource);$('radio-status').textContent=insecure?'HTTPS REQUIRED · THIS STREAM USES HTTP':'RADIO STREAM UNAVAILABLE';console.error('Radio HLS error:',data.type,data.details,currentRadioSource);notify(insecure?'This station uses an HTTP link, which secure pages block. Use an HTTPS stream.':'This radio stream is unavailable right now. Try another station.');player.destroy();radioHls=null;audio.pause();audio.removeAttribute('src');audio.load();$('radio-art').classList.remove('playing');$('equalizer').classList.remove('playing');$('radio-play').textContent='▶';}});
+      player.on(Hls.Events.ERROR,(_event,data)=>{if(data.fatal&&radioHls===player){radioRecovery.fail();const insecure=location.protocol==='https:'&&/^http:\/\//i.test(currentRadioSource);$('radio-status').textContent=insecure?'HTTPS REQUIRED · THIS STREAM USES HTTP':'RADIO STREAM UNAVAILABLE';console.error('Radio HLS error:',data.type,data.details,currentRadioSource);notify(insecure?'This station uses an HTTP link, which secure pages block. Use an HTTPS stream.':'This radio stream is unavailable right now. Try another station.');player.destroy();radioHls=null;audio.pause();audio.removeAttribute('src');audio.load();$('radio-art').classList.remove('playing');$('radio-play').textContent='▶';}});
       player.on(Hls.Events.MEDIA_ATTACHED,()=>{if(radioHls===player)player.loadSource(src);});
       player.attachMedia(audio);
     }else if(isHls&&audio.canPlayType('application/vnd.apple.mpegurl')){
@@ -477,8 +430,8 @@
     }
     if(generation===radioPlaybackGeneration)renderPresets();
   }
-  function toggleRadio(){if(continuousRetryTimers.radio){stopRadio();return;}if(radioAutoplayBlocked&&$('radio-screen').classList.contains('active')){retryBlockedRadio();return;}if(radioRecovery.connecting&&audio.paused){stopRadio();return;}if(window.retroRadioMechanism?.pending){window.retroRadioMechanism.cancel();radioRecovery.stop();return;}if(!audio.src){const rows=currentRows('radio'),selected=radioCurrent(),station=rows.find(item=>selected&&stationKey(item)===stationKey(selected))||rows[0];if(station)playRadio(station);else notify('Choose a radio favorite first.');return;}if(audio.paused){startRadioAudio().then(()=>{$('equalizer').classList.add('playing');$('radio-art').classList.add('playing');$('radio-play').textContent='Ⅱ';}).catch(error=>{console.error('Radio resume failed:',currentRadioSource,error);if(location.protocol==='https:'&&/^http:\/\//i.test(currentRadioSource)){ $('radio-status').textContent='HTTPS REQUIRED · THIS STREAM USES HTTP';notify('This station uses an HTTP link, which secure pages block. Use an HTTPS stream.');}else notify('This stream could not be resumed. Try another station.');});}else{radioRecovery.stop();audio.pause();}}
-  function stopRadio(){cancelContinuousRetry('radio');$('radio-art').dataset.playbackBlocked='false';setRecoveryStatus('radio','');window.retroRadioMechanism?.cancel();radioPlaybackGeneration++;radioAutoplayBlocked=false;radioRecovery.stop();if(radioHls){radioHls.destroy();radioHls=null;}audio.pause();audio.removeAttribute('src');audio.load();if(remoteMedia===audio)syncRemoteMedia();currentRadioSource='';$('radio-art').classList.remove('playing');$('radio-play').textContent='▶';$('radio-play').title='Play';$('radio-play').setAttribute('aria-label','Play');$('equalizer').classList.remove('playing');$('radio-status').textContent='STOPPED';}
+  function toggleRadio(){if(continuousRetryTimers.radio){stopRadio();return;}if(radioAutoplayBlocked&&$('radio-screen').classList.contains('active')){retryBlockedRadio();return;}if(radioRecovery.connecting&&audio.paused){stopRadio();return;}if(!audio.src){const rows=currentRows('radio'),selected=radioCurrent(),station=rows.find(item=>selected&&stationKey(item)===stationKey(selected))||rows[0];if(station)playRadio(station);else notify('Choose a radio favorite first.');return;}if(audio.paused){startRadioAudio().then(()=>{$('radio-art').classList.add('playing');$('radio-play').textContent='Ⅱ';}).catch(error=>{console.error('Radio resume failed:',currentRadioSource,error);if(location.protocol==='https:'&&/^http:\/\//i.test(currentRadioSource)){ $('radio-status').textContent='HTTPS REQUIRED · THIS STREAM USES HTTP';notify('This station uses an HTTP link, which secure pages block. Use an HTTPS stream.');}else notify('This stream could not be resumed. Try another station.');});}else{radioRecovery.stop();audio.pause();}}
+  function stopRadio(){cancelContinuousRetry('radio');$('radio-art').dataset.playbackBlocked='false';setRecoveryStatus('radio','');radioPlaybackGeneration++;radioAutoplayBlocked=false;radioRecovery.stop();if(radioHls){radioHls.destroy();radioHls=null;}audio.pause();audio.removeAttribute('src');audio.load();if(remoteMedia===audio)syncRemoteMedia();currentRadioSource='';$('radio-art').classList.remove('playing');$('radio-play').textContent='▶';$('radio-play').title='Play';$('radio-play').setAttribute('aria-label','Play');$('radio-status').textContent='STOPPED';}
   function togglePreset(kind,station){
     const isRadio=kind==='radio',presets=isRadio?radioPresets:tvPresets,key=presetKey(kind,station);
     if(!key)return;
@@ -495,7 +448,7 @@
     if(isRadio){
       radioPresets=next;drawRadio();renderRadioShortcuts();
     }else{
-      tvPresets=next;saveStore(TV_ORDER_STORE,Object.keys(next));drawTV();
+      tvPresets=next;drawTV();
       if(!tvCurrent())renderTVRail();
     }
     renderPresets();renderExplore();
@@ -787,7 +740,7 @@
     keys.splice(a,1);keys.splice(b,0,from);
     const reordered=Object.fromEntries(keys.map(key=>[key,presets[key]]));
     if(!saveStore(kind==='tv'?TV_STORE:RADIO_STORE,reordered)){renderPresets();return;}
-    if(kind==='tv'){tvPresets=reordered;saveStore(TV_ORDER_STORE,keys);renderTVRail();}
+    if(kind==='tv'){tvPresets=reordered;renderTVRail();}
     else{radioPresets=reordered;renderRadioShortcuts();}
     renderPresets();renderExplore();
   }
@@ -1004,7 +957,6 @@
     const source=browserKind==='tv'?tvs:radios,store=browserKind==='tv'?tvPresets:radioPresets,rows=[...source,...Object.values(store)];
     const countries=browserSource==='online'&&onlineCountries.length?onlineCountries:[...new Set(rows.map(s=>String(s.country||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
     const genres=[...new Set([...(browserSource==='online'&&onlineGenres.length?onlineGenres:rows.map(s=>stationGenre(s,browserKind))),browserKind==='tv'?'DD (Doordarshan)':'Akashvani'])].sort((a,b)=>a.localeCompare(b));
-    const allStationRows=[...radios,...tvs,...Object.values(radioPresets),...Object.values(tvPresets),...onlineRows,...(onlineTVCache||[])];
     const languages=['English',...['Tamil','Hindi','Malayalam','Telugu','Kannada','Bengali','Marathi','Gujarati','Punjabi','Urdu','Odia','Assamese','Sinhala','Nepali'].sort((a,b)=>a.localeCompare(b,'en'))];
     const replace=(id,items,label)=>{const select=$(id),old=select.value;select.innerHTML=`<option value="all">All ${label}</option>`+items.map(v=>`<option value="${safe(v)}">${safe(v)}</option>`).join('');if(items.includes(old))select.value=old;};
     replace('explore-country',countries,'countries');replace('explore-genre',genres,'genres');replace('explore-language',languages,'languages');
@@ -1106,7 +1058,7 @@
   document.querySelectorAll('[data-console-mode]').forEach(button=>button.addEventListener('click',()=>setScreen(button.dataset.consoleMode+'-screen',true)));
   document.addEventListener('retro-sleep-expired',()=>{
     cancelContinuousRetry('radio');cancelContinuousRetry('tv');
-    if(currentRadioSource||radioHls||window.retroRadioMechanism?.pending)stopRadio();
+    if(currentRadioSource||radioHls)stopRadio();
     if(hls||youtubePlayer||youtubeHost||video.src||video.currentSrc)stopTV();
   });
   let pageSwipeStart=null,suppressPresetSwipeClickUntil=0;
@@ -1189,7 +1141,7 @@
     }
   }));
 
-  audio.addEventListener('play',()=>{$('equalizer').classList.add('playing');$('radio-art').classList.add('playing');$('radio-play').textContent='Ⅱ';$('radio-play').title='Pause';$('radio-play').setAttribute('aria-label','Pause');drawRadio();});audio.addEventListener('pause',()=>{$('equalizer').classList.remove('playing');$('radio-art').classList.remove('playing');$('radio-play').textContent='▶';$('radio-play').title='Play';$('radio-play').setAttribute('aria-label','Play');drawRadio();});
+  audio.addEventListener('play',()=>{$('radio-art').classList.add('playing');$('radio-play').textContent='Ⅱ';$('radio-play').title='Pause';$('radio-play').setAttribute('aria-label','Pause');drawRadio();});audio.addEventListener('pause',()=>{$('radio-art').classList.remove('playing');$('radio-play').textContent='▶';$('radio-play').title='Play';$('radio-play').setAttribute('aria-label','Play');drawRadio();});
   audio.addEventListener('playing',()=>{if(currentRadioSource)$('radio-status').textContent='TUNED IN · '+(radioCurrent()?.name||'LIVE RADIO');});
   audio.addEventListener('waiting',()=>{if(currentRadioSource)$('radio-status').textContent='BUFFERING · '+(radioCurrent()?.name||'RADIO');});
   audio.addEventListener('stalled',()=>{if(currentRadioSource)$('radio-status').textContent='STREAM STALLED · WAITING TO RETRY';});
@@ -1283,7 +1235,6 @@
     if(lastPlayerScreen==='tv-screen'){setTVPlayback(action);return;}
     if(action==='pause'){
       if(radioRecovery.connecting&&audio.paused){stopRadio();return;}
-      if(window.retroRadioMechanism?.pending){toggleRadio();return;}
       radioRecovery.stop();audio.pause();
     }else if(audio.paused){
       if(audio.src||audio.currentSrc)startRadioAudio().catch(()=>notify('Tap Play in the app to resume the radio.'));
@@ -1303,7 +1254,7 @@
     if(action==='toggle'){
       const playing=lastPlayerScreen==='tv-screen'
         ?(youtubePlayer?.getPlayerState?youtubePlayer.getPlayerState()===1:!video.paused||tvRecovery.connecting)
-        :!audio.paused||radioRecovery.connecting||window.retroRadioMechanism?.pending;
+        :!audio.paused||radioRecovery.connecting;
       action=playing?'pause':'play';
     }
     if(!remoteTrackEnabled){remotePlayback(action);return;}
@@ -1513,7 +1464,7 @@
     notify('Presets exported: '+Object.keys(radioPresets).length+' Radio and '+Object.keys(tvPresets).length+' TV.');
   });
   $('clear-recent').addEventListener('click',()=>{if(!saveStore(RECENT_STORE,[]))return;recentHistory=[];renderPresets();notify('Recent history cleared.');});
-  formatClock();setInterval(formatClock,30000);loadRadioNews();setInterval(loadRadioNews,60*60*1000);loadLanguageCatalog();
+  formatClock();setInterval(formatClock,30000);loadLanguageCatalog();
   fetchData().finally(()=>{
     audio.autoplay=true;
     audio.preload='auto';
