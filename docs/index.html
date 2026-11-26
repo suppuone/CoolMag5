@@ -19,8 +19,8 @@ The new interface, icons, splash and slider are embedded below. -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="stylesheet" href="styles.css?v=4.1.8">
-  <link rel="stylesheet" href="receiver-responsive.css?v=4.1.72">
+  <link rel="stylesheet" href="styles.css?v=4.1.10">
+  <link rel="stylesheet" href="receiver-responsive.css?v=4.1.74">
   <link rel="stylesheet" href="modern-theme.css?v=1.0.0">
   <link rel="stylesheet" href="weathered-theme.css?v=1">
   <link rel="stylesheet" href="shattered-theme.css?v=1">
@@ -31,19 +31,16 @@ The new interface, icons, splash and slider are embedded below. -->
     event.preventDefault();window.retroDeferredInstallPrompt=event;
   });
   // Disable the retired mesh engine before app.js initializes.
-  try{localStorage.setItem('retrotvra.visualizer-pattern.v5','off');}catch{}
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.18/dist/hls.min.js"></script>
   <script defer src="stream-recovery.js?v=4.1.4"></script>
-  <script defer src="tone-controls.js?v=4.1.2"></script>
   <script defer src="playback-mechanics.js?v=4.1.16"></script>
   <script defer src="volume-knob.js?v=4.1.9"></script>
-  <script defer src="tv-auto-fullscreen.js?v=3.0.164"></script>
-  <script defer src="audio-meter.js?v=4.1.13"></script>
+  <script defer src="tv-auto-fullscreen.js?v=3.0.165"></script>
   <script defer src="hardware-feedback.js?v=1.0.9"></script>
   <script src="station-category.js?v=2"></script>
   <script defer src="preset-defaults.js?v=4.1.73"></script>
-  <script defer src="app.js?v=4.1.88"></script>
+  <script defer src="app.js?v=4.1.91"></script>
 <style id="compact-receiver-design">
 :root{--ux-metal: #b8a397; --ux-ink: #383631; --ux-green: #8bee87; --ux-dark: #171b18; --ux-edge: #75665c;}
 html{min-height: 100%; color-scheme: light; background: rgb(48, 32, 25) !important;}
@@ -290,7 +287,6 @@ body.broadcast-console main.retro-app[data-view="presets"] > #presets-screen.act
 #ux-receiver > .ux-screen{isolation: isolate; clip-path: inset(0px round 20px 20px 12px 12px); overflow: hidden !important;}
 #ux-receiver .radio-display > #radio-art{inset: 0px !important; overflow: hidden !important; contain: paint !important;}
 #ux-receiver #radio-art .radio-art-caption{display: none !important;}
-#ux-receiver #radio-art .sound-rays{position: absolute !important; inset: auto 0px 0px !important; width: 100% !important; max-width: 100% !important; max-height: 32% !important; pointer-events: none !important;}
 #ux-receiver > .ux-grille{display: grid !important; grid-template-columns: repeat(3, minmax(0px, 1fr)) !important; gap: 10px !important; background: none !important; mask-image: none !important; opacity: 0.82 !important;}
 #ux-receiver .ux-speaker-section{display: block !important; width: 100% !important; height: 100% !important; background-image: radial-gradient(circle, rgb(73, 62, 53) 1.1px, transparent 1.35px) !important; background-size: 6px 6px !important; border: 0px !important; border-radius: 3px !important;}
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 600px){#ux-receiver > .ux-grille{display: none !important;}}
@@ -346,14 +342,13 @@ body.broadcast-console main.retro-app > .ux-receiver[data-mode="radio"]{grid-tem
 #ux-receiver > .ux-screen > #ux-radio-stage{display: block !important; position: absolute !important; inset: 0px !important; width: 100% !important; height: 100% !important; background: rgb(250, 246, 236) !important; isolation: isolate !important; overflow: hidden !important; z-index: 2 !important; pointer-events: none !important;}
 #ux-receiver[data-mode="tv"] > .ux-screen > #ux-radio-stage{display: none !important;}
 #ux-receiver[data-mode="radio"] #ux-original-radio-slot{visibility: hidden !important;}
-#visualizer-choice{display: none !important;}
 #ux-receiver[data-mode="radio"] .ux-telemetry{color: rgb(64, 51, 43) !important; text-shadow: none !important;}
 #ux-receiver[data-mode="radio"] .ux-battery{border-color: rgb(106, 104, 86) !important; color: rgb(106, 104, 86) !important;}
 #ux-receiver #ux-radio-stage > .ux-radio-details{display: flex !important; align-items: center !important; gap: 10px !important; position: absolute !important; left: 0px !important; right: 0px !important; bottom: 0px !important; z-index: 8 !important; min-height: 76px !important; max-height: 30% !important; padding: 14px 16px 10px !important; background: linear-gradient(transparent, rgba(250, 246, 236, 0.96) 24%) !important; color: rgb(54, 43, 37) !important; pointer-events: none !important; box-sizing: border-box !important;}
 .ux-radio-detail-logo{width: 36px !important; height: 36px !important; flex: 0 0 auto !important; object-fit: contain !important; background: transparent !important; border: 0px !important; border-radius: 0px !important;}
 .ux-radio-detail-logo[hidden]{display: none !important;}
 .ux-radio-details > div{flex: 1 1 0%; min-width: 0px;}
-.ux-radio-detail-name{display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font: 600 clamp(13px, 3.5vw, 18px) / 1.15 Arial, sans-serif; overflow: hidden; overflow-wrap: anywhere;}
+.ux-radio-detail-name{display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; font: 600 clamp(13px, 3.5vw, 18px) / 1.15 Arial, sans-serif; overflow: hidden; overflow-wrap: anywhere;}
 .ux-radio-detail-meta,.ux-radio-detail-quality{display: block; font: 11px / 1.4 Arial, sans-serif; color: rgb(101, 83, 70); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
 .ux-radio-detail-meta:empty,.ux-radio-detail-quality:empty{display: none;}
 .ux-radio-detail-status{display: block; font: 9px / 1.6 Arial, sans-serif; letter-spacing: 1.6px; color: rgb(119, 99, 75);}
@@ -498,137 +493,6 @@ body.broadcast-console #ux-receiver.ux-receiver{
   display:none!important;
 }
 #ux-original-radio-slot,#ux-tv-slot,#ux-radio-stage,#ux-receiver>.ux-screen>.ux-telemetry{display:none!important}
-.ux-search-screen{
-  position:absolute;
-  inset:0;
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  padding:20px 18px 16px;
-  overflow:hidden;
-  color:#e8b86b;
-  background:
-    radial-gradient(circle at 70% 25%,rgba(50,76,78,.12),transparent 42%),
-    #0d1517;
-}
-.ux-search-header{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  min-height:23px;
-  margin-bottom:16px;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:2px;
-}
-.ux-search-header button{
-  justify-self:start;
-  border:0;
-  padding:4px 0;
-  background:transparent;
-  color:#b88d52;
-  font:inherit;
-  letter-spacing:1.2px;
-}
-.ux-search-header strong{font-size:12px;font-weight:700}
-.ux-search-header:after{content:""}
-.ux-search-field{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  height:43px;
-  padding:0 14px;
-  border:1px solid #32464a;
-  border-radius:13px;
-  background:#111e20;
-  box-shadow:inset 0 1px 6px rgba(0,0,0,.42);
-}
-.ux-search-field svg{width:17px;height:17px;color:#6d8287;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8}
-.ux-search-field input{
-  width:100%;
-  border:0;
-  outline:0;
-  background:transparent;
-  color:#e8b86b;
-  font:11px Arial,sans-serif;
-}
-.ux-search-field input::placeholder{color:#6d8287;opacity:.9}
-.ux-search-filters{display:flex;justify-content:center;gap:8px;margin:13px 0 14px}
-.ux-search-filter{
-  min-width:76px;
-  min-height:27px;
-  border:1px solid #34484c;
-  border-radius:999px;
-  background:#111d20;
-  color:#6d8287;
-  font:700 9px Arial,sans-serif;
-  letter-spacing:1.3px;
-}
-.ux-search-filter.active{
-  color:#e8b86b;
-  border-color:#b98e52;
-  background:#201d18;
-  box-shadow:0 0 11px rgba(232,184,107,.13),inset 0 0 8px rgba(232,184,107,.05);
-}
-.ux-station-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  grid-template-rows:repeat(3,minmax(72px,1fr));
-  gap:8px;
-  min-height:0;
-  flex:1;
-}
-.ux-station-card{
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:center;
-  gap:9px;
-  min-width:0;
-  padding:12px 11px 10px;
-  border:1px solid #263a3d;
-  border-radius:12px;
-  background:linear-gradient(145deg,#132124,#0f191b);
-  color:#d8af70;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
-  text-align:left;
-}
-.ux-station-card:hover,.ux-station-card:focus-visible{border-color:#536c6f;background:#152326}
-.ux-station-card svg{
-  width:25px;
-  height:25px;
-  fill:none;
-  stroke:#789095;
-  stroke-width:1.35;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.ux-station-card b{
-  max-width:calc(100% - 8px);
-  overflow:hidden;
-  color:#dcb778;
-  font:600 10px/1.2 Arial,sans-serif;
-  letter-spacing:.45px;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.ux-station-heart{
-  position:absolute;
-  top:7px;
-  right:7px;
-  display:grid;
-  place-items:center;
-  width:24px;
-  height:24px;
-  padding:0;
-  border:0;
-  background:transparent;
-  color:#52696d;
-  font-size:19px;
-  line-height:1;
-}
-.ux-station-heart[aria-pressed="true"]{color:#e8b86b;text-shadow:0 0 8px rgba(232,184,107,.28)}
 #ux-receiver>.ux-hardware-deck{
   grid-row:2;
   display:grid;
@@ -673,7 +537,6 @@ body.broadcast-console #ux-receiver.ux-receiver{
 }
 .ux-dpad #ux-play .ux-icon{width:22px!important;height:22px!important}
 #ux-receiver>.ux-channel-identity,#ux-receiver>.ux-grille,#ux-receiver>.ux-brandrow,#ux-receiver>.ux-controls,#ux-receiver>.ux-shortcuts,#ux-receiver>.ux-volume,#ux-receiver>.ux-nav{display:none!important}
-#ux-receiver.ux-show-player>.ux-screen>.ux-search-screen{display:none!important}
 #ux-receiver.ux-show-player[data-mode="radio"]>.ux-screen>#ux-radio-stage,
 #ux-receiver.ux-show-player[data-mode="tv"]>.ux-screen>#ux-tv-slot{display:block!important}
 .ux-hardware-right{display:grid;grid-template-rows:55px 1fr;gap:13px;min-width:0}
@@ -785,16 +648,10 @@ body.broadcast-console main.retro-app[data-view="explore"]>#explore-screen.activ
   #ux-receiver>.ux-hardware-deck{grid-template-columns:136px 1fr;gap:12px}
   .ux-dpad{width:132px}
   .ux-dpad #ux-play{inset:37px!important;width:58px!important;height:58px!important}
-  .ux-search-screen{padding:17px 14px 13px}
-  .ux-station-grid{gap:7px}
 }
 @media(max-height:760px) and (orientation:portrait){
   body.broadcast-console main.retro-app>.ux-receiver{grid-template-rows:minmax(330px,1fr) 170px 20px!important;padding:12px!important;gap:8px!important}
   body.broadcast-console #ux-receiver.ux-receiver{grid-template-rows:minmax(330px,1fr) 170px 20px!important}
-  .ux-search-header{margin-bottom:10px}
-  .ux-search-field{height:38px}
-  .ux-search-filters{margin:9px 0 10px}
-  .ux-station-grid{grid-template-rows:repeat(3,minmax(62px,1fr))}
   .ux-hardware-deck{height:170px!important}
   .ux-dpad{width:125px}
   .ux-dpad #ux-play{inset:35px!important;width:55px!important;height:55px!important}
@@ -822,78 +679,6 @@ body.broadcast-console main.retro-app>.ux-receiver{
     0 2px 0 rgba(191,214,222,.16),
     0 0 0 2px #1a2a33,
     inset 0 0 34px #000!important;
-}
-.ux-search-screen{
-  padding:22px 20px 18px!important;
-  background:
-    radial-gradient(circle at 55% 30%,rgba(58,93,94,.16),transparent 42%),
-    linear-gradient(145deg,#111c1d,#080f10 80%)!important;
-}
-.ux-search-header{
-  margin-bottom:17px!important;
-  border-bottom:1px solid rgba(136,101,54,.36);
-  padding-bottom:11px;
-  font-family:"Arial Narrow",Arial,sans-serif!important;
-  letter-spacing:2.8px!important;
-}
-.ux-search-header button{color:#c69a5f!important;font-size:14px!important}
-.ux-search-header strong{font-size:16px!important;color:#e9bc78!important;text-shadow:0 0 10px rgba(232,184,107,.18)}
-.ux-search-field{
-  height:48px!important;
-  border-color:#4f686c!important;
-  border-radius:12px!important;
-  background:linear-gradient(#172528,#111d20)!important;
-  box-shadow:inset 0 2px 8px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.04)!important;
-}
-.ux-search-field svg{width:20px!important;height:20px!important;color:#8da1a4!important}
-.ux-search-field input{
-  color:#f1c77e!important;
-  font:14px "Courier New",monospace!important;
-  letter-spacing:.2px!important;
-}
-.ux-search-field input::placeholder{color:#60767b!important;opacity:1!important}
-.ux-search-filters{margin:14px 0 16px!important;gap:10px!important}
-.ux-search-filter{
-  min-width:82px!important;
-  min-height:31px!important;
-  border-color:#455d61!important;
-  background:#101c1f!important;
-  color:#789095!important;
-  font:700 10px "Courier New",monospace!important;
-}
-.ux-search-filter.active{
-  color:#ffd08a!important;
-  border:2px solid #d3a35f!important;
-  background:linear-gradient(#342b1d,#211d18)!important;
-  box-shadow:0 0 15px rgba(236,177,89,.28),inset 0 0 8px rgba(255,202,112,.08)!important;
-}
-.ux-station-grid{gap:10px!important}
-.ux-station-card{
-  border:1.5px solid #526c70!important;
-  border-radius:12px!important;
-  background:linear-gradient(145deg,#192a2d,#101a1c)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 2px 4px rgba(0,0,0,.24)!important;
-}
-.ux-station-card:hover,.ux-station-card:focus-visible{
-  border-color:#91a7a9!important;
-  background:linear-gradient(145deg,#203438,#122023)!important;
-  box-shadow:0 0 0 2px rgba(124,151,154,.14)!important;
-}
-.ux-station-card svg{width:28px!important;height:28px!important;stroke:#91a9ad!important;stroke-width:1.55!important}
-.ux-station-card b{
-  color:#ffd185!important;
-  font:700 13px/1.2 "Courier New",monospace!important;
-  letter-spacing:.25px!important;
-  text-shadow:0 0 8px rgba(232,184,107,.13)!important;
-}
-.ux-station-heart{
-  color:#71888c!important;
-  font-size:24px!important;
-  filter:drop-shadow(0 1px 0 rgba(255,255,255,.05));
-}
-.ux-station-heart[aria-pressed="true"]{
-  color:#ffc66f!important;
-  filter:drop-shadow(0 0 6px rgba(236,170,70,.55));
 }
 #ux-receiver>.ux-hardware-deck{
   grid-template-columns:190px 1fr!important;
@@ -972,12 +757,6 @@ body.broadcast-console main.retro-app>.ux-receiver{
   .ux-dpad{width:151px!important}
   .ux-dpad #ux-play{inset:41px!important;width:69px!important;height:69px!important}
   .ux-dpad button{font-size:19px!important}
-  .ux-search-screen{padding:18px 15px 15px!important}
-  .ux-search-header strong{font-size:15px!important}
-  .ux-search-header button{font-size:12px!important}
-  .ux-station-card b{font-size:11px!important}
-  .ux-station-card{padding:11px 10px 9px!important}
-  .ux-search-field input{font-size:12px!important}
   .ux-action-key{font-size:8px!important}
 }
 body.broadcast-console #ux-receiver.ux-receiver{
@@ -1005,7 +784,6 @@ body.broadcast-console #ux-receiver.ux-receiver{
 }
 
 /* The receiver display is playback-only. Search uses the separate library view. */
-#ux-receiver>.ux-screen>.ux-search-screen{display:none!important}
 #ux-receiver[data-mode="radio"]>.ux-screen>#ux-radio-stage,
 #ux-receiver[data-mode="tv"]>.ux-screen>#ux-tv-slot{display:block!important}
 #ux-receiver[data-mode="radio"]>.ux-screen>#ux-tv-slot,
@@ -3426,8 +3204,7 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
   if(captureStream){for(const track of captureStream.getTracks())track.stop();captureStream=null;}
   captureAttempt='';
  }
- // Existing tone controls may create a source later. Add only a silent analysis
- // branch to that source, preserving every connection owned by the player.
+ // Add a silent analysis branch without changing existing source connections.
  if(Ctx){try{
   const proto=Ctx.prototype,original=proto.createMediaElementSource;
   proto.createMediaElementSource=function(media){
@@ -3514,19 +3291,6 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
 <div class="ux-screen">
   <div id="ux-radio-stage" class="ux-radio-stage" aria-label="Radio visualizer"></div>
   <div class="ux-telemetry"><span><i class="ux-led"></i><span id="ux-live">READY</span></span><span class="ux-battery" aria-hidden="true"></span></div>
-  <section class="ux-search-screen" aria-label="Search stations and channels">
-    <header class="ux-search-header"><button id="ux-search-back" type="button">← BACK</button><strong>SEARCH</strong></header>
-    <label class="ux-search-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input id="ux-inline-search" type="search" placeholder="Search stations & channels..." autocomplete="off" aria-label="Search stations and channels"></label>
-    <div class="ux-search-filters" role="group" aria-label="Station type"><button class="ux-search-filter active" type="button" data-ux-search-kind="radio" aria-pressed="true">RADIO</button><button class="ux-search-filter" type="button" data-ux-search-kind="tv" aria-pressed="false">TV</button></div>
-    <div class="ux-station-grid" aria-live="polite">
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="AIR Tamil" data-station-kind="radio"><button class="ux-station-heart" type="button" aria-label="Favorite AIR Tamil" aria-pressed="true">♥</button><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="8" r="2"/><path d="M16 10v19M9 29h14M11 15l-4-4m14 4 4-4M7 8a10 10 0 0 0 0 14M25 8a10 10 0 0 1 0 14"/></svg><b>AIR Tamil</b></article>
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="BBC World" data-station-kind="radio"><button class="ux-station-heart" type="button" aria-label="Favorite BBC World" aria-pressed="false">♡</button><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4a19 19 0 0 1 0 24M16 4a19 19 0 0 0 0 24"/></svg><b>BBC World</b></article>
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="Kishore Hits" data-station-kind="radio"><button class="ux-station-heart" type="button" aria-label="Favorite Kishore Hits" aria-pressed="true">♥</button><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="19" rx="3"/><circle cx="11" cy="17" r="4"/><circle cx="22" cy="17" r="4"/><path d="m11 13 5-2 6 2M8 23h16"/></svg><b>Kishore Hits</b></article>
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="Cinema TV" data-station-kind="tv"><button class="ux-station-heart" type="button" aria-label="Favorite Cinema TV" aria-pressed="false">♡</button><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="19" rx="3"/><path d="m11 3 5 4 5-4M12 30h8M16 26v4"/><path d="m13 13 8 4-8 4z"/></svg><b>Cinema TV</b></article>
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="Radio City" data-station-kind="radio"><button class="ux-station-heart" type="button" aria-label="Favorite Radio City" aria-pressed="false">♡</button><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16h4l3-8 5 17 5-20 4 11h7"/><circle cx="16" cy="16" r="14"/></svg><b>Radio City</b></article>
-      <article class="ux-station-card" role="button" tabindex="0" data-station-name="Tamil FM" data-station-kind="radio"><button class="ux-station-heart" type="button" aria-label="Favorite Tamil FM" aria-pressed="true">♥</button><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="10" width="26" height="17" rx="3"/><circle cx="11" cy="19" r="4"/><path d="M18 15h7m-7 4h7m-7 4h5M9 10l14-7M8 6h5"/></svg><b>Tamil FM</b></article>
-    </div>
-  </section>
 
 <div id="ux-tv-slot"></div>
 </div>
@@ -3601,10 +3365,6 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
       <div class="status-cluster"><span class="status-dot"></span><time id="clock">08:30 AM</time><span class="top-separator">•</span><span class="brand-title">CoolMag RetroRADtv v.4.0</span></div>
       
       
-      <div hidden aria-hidden="true" class="epaper-calendar" id="epaper-calendar" role="img" aria-label="Day, date and moon phase">
-        <svg class="epaper-moon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#252721"/><path id="epaper-moon-light" fill="#eeeddf"/><circle cx="20" cy="20" r="17" fill="none" stroke="#252721" stroke-width="1"/></svg>
-        <div><time id="epaper-date"></time><span id="epaper-phase"></span></div>
-      </div>
       <button id="theme-choice" class="theme-toggle" type="button" aria-label="Switch theme" aria-pressed="false">Retro</button>
       <button id="install-app" class="install-app" type="button" aria-label="Install COOLmagRaTv" title="Install"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg></button><button id="settings-open" class="settings-open" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .11-.63l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.6 7.6 0 0 0-1.62-.87l-.36-2.55a.5.5 0 0 0-.49-.42h-3.84a.5.5 0 0 0-.49.42L9.18 5.4c-.59.2-1.13.5-1.62.87l-2.39-.96a.5.5 0 0 0-.61.22L2.64 8.85a.5.5 0 0 0 .11.63l2.03 1.58c-.05.3-.08.62-.08.94s.03.64.08.94l-2.03 1.58a.5.5 0 0 0-.11.63l1.92 3.32a.5.5 0 0 0 .61.22l2.39-.96c.49.37 1.03.67 1.62.87l.36 2.55a.5.5 0 0 0 .49.42h3.84a.5.5 0 0 0 .49-.42l.36-2.55c.59-.2 1.13-.5 1.62-.87l2.39.96a.5.5 0 0 0 .61-.22l1.92-3.32a.5.5 0 0 0-.11-.63l-2.03-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/></svg></button><span id="mode-label" class="mode-label">◉ RADIO MODE</span>
     </header>
@@ -3626,7 +3386,7 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
           <source media="(min-width: 901px)" srcset="assets/station-logos/badge.png" width="1946" height="576">
           <img src="assets/station-logos/small_badge.png" width="418" height="125" alt="COOLmag retroRadioTV" decoding="async">
         </picture>
-      <div class="monitor-transport radio-lip-transport"><button type="button" class="transport-button" id="radio-prev" title="Previous station" aria-label="Previous station">⏮</button><button class="transport-button main-play" id="radio-play" title="Play" aria-label="Play">▶</button><button type="button" class="transport-button" id="radio-next" title="Next station" aria-label="Next station">⏭</button><button type="button" class="mini-star cabinet-favorite" id="radio-star" aria-label="Add station to favorites">♡</button><button type="button" class="cabinet-sleep" data-sleep-open aria-label="Set sleep timer"><span>Zz</span></button></div><details class="module-options"><summary aria-label="Radio station options">OPTIONS</summary><div class="screen-heading"><div class="radio-heading-copy"><span class="eyebrow">RADIO</span><span class="education-note" style="color:#ff3333">ON TEST DRIVE</span></div><div class="radio-heading-tools"><label class="country-picker"><span>COUNTRY</span><select id="radio-country"><option value="all">All countries</option></select></label></div></div><div class="fine-volume"><div class="radio-volume-row" aria-label="Radio volume control"><button type="button" class="radio-volume-icon" data-radio-volume-action="mute" aria-label="Mute radio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg></button><label class="radio-volume-track" id="radio-volume-track" for="radio-volume"><span>VOL</span><input id="radio-volume" type="range" min="0" max="100" value="20" aria-label="Radio volume"><b id="volume-number">20</b></label><button type="button" class="radio-volume-icon" data-radio-volume-action="up" aria-label="Volume up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 12h6m-3-3v6"/></svg></button></div><p id="tone-status" class="tone-status" role="status" aria-live="polite"></p></div></details></article>
+      <div class="monitor-transport radio-lip-transport"><button type="button" class="transport-button" id="radio-prev" title="Previous station" aria-label="Previous station">⏮</button><button class="transport-button main-play" id="radio-play" title="Play" aria-label="Play">▶</button><button type="button" class="transport-button" id="radio-next" title="Next station" aria-label="Next station">⏭</button><button type="button" class="mini-star cabinet-favorite" id="radio-star" aria-label="Add station to favorites">♡</button><button type="button" class="cabinet-sleep" data-sleep-open aria-label="Set sleep timer"><span>Zz</span></button></div><details class="module-options"><summary aria-label="Radio station options">OPTIONS</summary><div class="screen-heading"><div class="radio-heading-copy"><span class="eyebrow">RADIO</span><span class="education-note" style="color:#ff3333">ON TEST DRIVE</span></div><div class="radio-heading-tools"><label class="country-picker"><span>COUNTRY</span><select id="radio-country"><option value="all">All countries</option></select></label></div></div><div class="fine-volume"><div class="radio-volume-row" aria-label="Radio volume control"><button type="button" class="radio-volume-icon" data-radio-volume-action="mute" aria-label="Mute radio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/></svg></button><label class="radio-volume-track" id="radio-volume-track" for="radio-volume"><span>VOL</span><input id="radio-volume" type="range" min="0" max="100" value="20" aria-label="Radio volume"><b id="volume-number">20</b></label><button type="button" class="radio-volume-icon" data-radio-volume-action="up" aria-label="Volume up"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15 12h6m-3-3v6"/></svg></button></div></div></details></article>
 
       
       
@@ -3638,7 +3398,7 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
         <div class="station-status" id="radio-status" role="status">READY · SEARCH OR CHOOSE A FAVORITE</div>
         <div class="signal-led-bar" aria-hidden="true"><span class="vfd-dash-track vfd-dash-red"></span><span class="vfd-dash-track vfd-dash-green"></span></div>
         <div class="vfd-scale" aria-hidden="true"><span>LINK / SIGNAL</span><span>−20 · −10 · 0 dB</span></div><div class="radio-tuning-window" id="radio-tuning-window" role="group" aria-label="Station tuning window"><div class="radio-tuning-scale" aria-hidden="true"><span>FM · DIGITAL</span><span>STATION TUNING</span></div><div class="radio-tuning-track" id="radio-tuning-track"></div><span class="radio-tuning-needle" aria-hidden="true"></span></div>
-      </div><div class="radio-tone-bank receiver-knobs" aria-label="Radio playback and tone controls"><div class="mini-rocker"><button type="button" class="orange-rocker" data-console-mode="tv" aria-label="Switch to TV"><span class="rocker-paddle" aria-hidden="true"><span>TV</span><span>RADIO</span></span></button><button type="button" class="chrome-mute" data-console-mute aria-label="Mute radio">MUTE</button></div>
+      </div><div class="radio-tone-bank receiver-knobs" aria-label="Radio playback and volume controls"><div class="mini-rocker"><button type="button" class="orange-rocker" data-console-mode="tv" aria-label="Switch to TV"><span class="rocker-paddle" aria-hidden="true"><span>TV</span><span>RADIO</span></span></button><button type="button" class="chrome-mute" data-console-mute aria-label="Mute radio">MUTE</button></div>
         <div class="radio-transport-stack">
           <div class="volume-transport" aria-label="Previous, volume and play, next">
             
@@ -3654,24 +3414,6 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
           </div>
             
           </div>
-        </div>
-        <div class="master-tone-control volume-knob-control"><label for="v4-master-tone" class="tone-label">TONE</label><div class="master-tone-dial volume-dial" id="v4-tone-dial"><span class="volume-knob-scale"></span><span class="volume-knob-face"><i></i></span><input id="v4-master-tone" class="hardware-range" type="range" min="-12" max="12" value="0" step="1" aria-label="Master radio tone" title="Adjusts existing bass and treble controls together"></div><output id="v4-tone-value" class="tone-value">0 dB</output></div>
-        <div class="trim-knobs">        <div class="tone-control" style="--tone-angle:0deg">
-          <label for="radio-bass" class="tone-label">BASS</label>
-          <div class="tone-dial" title="Drag up/right to boost, down/left to reduce; double-tap to reset">
-            <span class="tone-scale" aria-hidden="true"></span><span class="tone-face" aria-hidden="true"><i></i></span>
-          </div>
-          <input class="tone-input" id="radio-bass" data-tone="bass" type="range" min="-12" max="12" step="1" value="0" aria-label="Radio bass" aria-describedby="tone-status">
-          <output id="radio-bass-value" for="radio-bass" class="tone-value">0 dB</output>
-        </div>
-        <div class="tone-control" style="--tone-angle:0deg">
-          <label for="radio-treble" class="tone-label">TREBLE</label>
-          <div class="tone-dial" title="Drag up/right to boost, down/left to reduce; double-tap to reset">
-            <span class="tone-scale" aria-hidden="true"></span><span class="tone-face" aria-hidden="true"><i></i></span>
-          </div>
-          <input class="tone-input" id="radio-treble" data-tone="treble" type="range" min="-12" max="12" step="1" value="0" aria-label="Radio treble" aria-describedby="tone-status">
-          <output id="radio-treble-value" for="radio-treble" class="tone-value">0 dB</output>
-        </div>
         </div>
       </div><div class="receiver-matrix"><div class="module-legend"><span>03 / FAVORITES</span><span>SAVED STATIONS</span></div>
       <div class="memory-bank-tabs" role="group" aria-label="Radio favorite list pages"><button type="button" data-memory-kind="radio" data-memory-bank="0" aria-pressed="true">01–10</button><button type="button" data-memory-kind="radio" data-memory-bank="1" aria-pressed="false">11–20</button><button type="button" data-memory-kind="radio" data-memory-bank="2" aria-pressed="false">21–30</button><button type="button" data-memory-kind="radio" data-memory-bank="3" aria-pressed="false">31–40</button><button type="button" data-memory-kind="radio" data-memory-bank="4" aria-pressed="false">41–50</button></div><section class="radio-station-shortcuts" aria-label="Quick tune stations"><div id="radio-station-strip" class="radio-station-strip"></div></section>
@@ -3744,7 +3486,7 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
           <button type="button" class="tv-neighbor-name tv-neighbor-next" id="tv-next-name" aria-label="Play next channel"><span>NEXT ›</span><b id="tv-next-name-text">—</b></button>
         </nav>
         <div class="signal-led-bar" aria-hidden="true"><span class="vfd-dash-track vfd-dash-red"></span><span class="vfd-dash-track vfd-dash-green"></span></div><div class="radio-tuning-window" id="tv-tuning-window" role="group" aria-label="Station tuning window"><div class="radio-tuning-scale" aria-hidden="true"><span>TV · DIGITAL</span><span>STATION TUNING</span></div><div class="radio-tuning-track" id="tv-tuning-track"></div><span class="radio-tuning-needle" aria-hidden="true"></span></div>
-      </div><div class="tv-hifi-deck"><div class="mini-rocker"><button type="button" class="orange-rocker" data-console-mode="radio" aria-label="Switch to Radio"><span class="rocker-paddle" aria-hidden="true"><span>TV</span><span>RADIO</span></span></button><button type="button" class="chrome-mute" data-console-mute aria-label="Mute TV">MUTE</button></div><div class="volume-knob-control"><label for="v4-tv-volume" class="tone-label">VOLUME</label><div class="volume-dial" id="v4-tv-volume-dial"><span class="volume-knob-scale"></span><span class="volume-knob-face"><i></i></span><input id="v4-tv-volume" class="hardware-range" type="range" min="0" max="100" value="20" aria-label="TV volume knob"></div><output id="v4-tv-volume-value" class="tone-value">20%</output></div><div class="volume-knob-control tv-tone-unavailable"><span class="tone-label">TONE</span><div class="volume-dial" title="Tone processing is available in Radio mode"><span class="volume-knob-scale"></span><span class="volume-knob-face"><i></i></span></div><small>RADIO ONLY</small></div><div class="tv-trim-legend" aria-hidden="true"><span>BASS</span><div class="tone-dial"><span class="tone-face"><i></i></span></div><span>TREBLE</span><div class="tone-dial"><span class="tone-face"><i></i></span></div></div></div><div class="remote-shortcuts"><span>03 / FAVORITES</span><div class="memory-bank-tabs" role="group" aria-label="TV favorite list pages"><button type="button" data-memory-kind="tv" data-memory-bank="0" aria-pressed="true">01–10</button><button type="button" data-memory-kind="tv" data-memory-bank="1" aria-pressed="false">11–20</button><button type="button" data-memory-kind="tv" data-memory-bank="2" aria-pressed="false">21–30</button><button type="button" data-memory-kind="tv" data-memory-bank="3" aria-pressed="false">31–40</button><button type="button" data-memory-kind="tv" data-memory-bank="4" aria-pressed="false">41–50</button></div><div id="remote-presets"></div><div class="large-radio-tuner" aria-label="TV channel tuner"><div class="tuner-instrument"><span class="tuner-signal" aria-hidden="true">SIGNAL</span><span class="tuner-band" aria-hidden="true">BAND <b>WEB</b></span><button type="button" class="tuner-step" data-tuner-step="-1" aria-label="Tune previous station"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg></button><div class="station-tuner-dial" id="tv-station-tuner-dial" title="Turn or drag to tune; release to select the station"><span class="station-knob" aria-hidden="true"><span class="station-knob-skirt"></span><span class="station-knob-grip"></span><span class="station-knob-cap"><i class="station-knob-indicator"></i><span class="station-knob-medallion">TUNE</span></span></span><input id="tv-station-tuner-input" type="range" min="0" max="0" step="1" value="0" aria-label="Tune TV channel" disabled></div><button type="button" class="tuner-step" data-tuner-step="1" aria-label="Tune next station"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7z"/></svg></button></div><output id="tv-station-tuner-label" for="tv-station-tuner-input">Choose a station</output></div><div class="hardware-filter-bar" aria-label="Language and genre shortcuts"><button type="button" class="hardware-filter" data-console-filter="Tamil">TAMIL</button><button type="button" class="hardware-filter" data-console-filter="Hindi">HINDI</button><button type="button" class="hardware-filter" data-console-filter="English">ENGLISH</button><button type="button" class="hardware-filter" data-console-filter="News">NEWS</button><button type="button" class="hardware-filter" data-console-filter="Music">MUSIC</button></div></div></div></section>
+      </div><div class="tv-hifi-deck"><div class="mini-rocker"><button type="button" class="orange-rocker" data-console-mode="radio" aria-label="Switch to Radio"><span class="rocker-paddle" aria-hidden="true"><span>TV</span><span>RADIO</span></span></button><button type="button" class="chrome-mute" data-console-mute aria-label="Mute TV">MUTE</button></div><div class="volume-knob-control"><label for="v4-tv-volume" class="tone-label">VOLUME</label><div class="volume-dial" id="v4-tv-volume-dial"><span class="volume-knob-scale"></span><span class="volume-knob-face"><i></i></span><input id="v4-tv-volume" class="hardware-range" type="range" min="0" max="100" value="20" aria-label="TV volume knob"></div><output id="v4-tv-volume-value" class="tone-value">20%</output></div></div><div class="remote-shortcuts"><span>03 / FAVORITES</span><div class="memory-bank-tabs" role="group" aria-label="TV favorite list pages"><button type="button" data-memory-kind="tv" data-memory-bank="0" aria-pressed="true">01–10</button><button type="button" data-memory-kind="tv" data-memory-bank="1" aria-pressed="false">11–20</button><button type="button" data-memory-kind="tv" data-memory-bank="2" aria-pressed="false">21–30</button><button type="button" data-memory-kind="tv" data-memory-bank="3" aria-pressed="false">31–40</button><button type="button" data-memory-kind="tv" data-memory-bank="4" aria-pressed="false">41–50</button></div><div id="remote-presets"></div><div class="large-radio-tuner" aria-label="TV channel tuner"><div class="tuner-instrument"><span class="tuner-signal" aria-hidden="true">SIGNAL</span><span class="tuner-band" aria-hidden="true">BAND <b>WEB</b></span><button type="button" class="tuner-step" data-tuner-step="-1" aria-label="Tune previous station"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg></button><div class="station-tuner-dial" id="tv-station-tuner-dial" title="Turn or drag to tune; release to select the station"><span class="station-knob" aria-hidden="true"><span class="station-knob-skirt"></span><span class="station-knob-grip"></span><span class="station-knob-cap"><i class="station-knob-indicator"></i><span class="station-knob-medallion">TUNE</span></span></span><input id="tv-station-tuner-input" type="range" min="0" max="0" step="1" value="0" aria-label="Tune TV channel" disabled></div><button type="button" class="tuner-step" data-tuner-step="1" aria-label="Tune next station"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7z"/></svg></button></div><output id="tv-station-tuner-label" for="tv-station-tuner-input">Choose a station</output></div><div class="hardware-filter-bar" aria-label="Language and genre shortcuts"><button type="button" class="hardware-filter" data-console-filter="Tamil">TAMIL</button><button type="button" class="hardware-filter" data-console-filter="Hindi">HINDI</button><button type="button" class="hardware-filter" data-console-filter="English">ENGLISH</button><button type="button" class="hardware-filter" data-console-filter="News">NEWS</button><button type="button" class="hardware-filter" data-console-filter="Music">MUSIC</button></div></div></div></section>
 
     <section class="screen" id="presets-screen" aria-label="Favorites and recent stations">
       <div class="screen-heading"><div><span class="eyebrow">YOUR FAVORITES</span><h1 class="screen-title">Favorites</h1></div><div class="preset-priority-control" id="preset-priority-control" hidden><small id="preset-selection-label">SELECT A TV CHANNEL</small></div></div>
@@ -3782,7 +3524,7 @@ body.broadcast-console #ux-receiver#ux-receiver .ux-secondary-controls button.is
       <button class="nav-item" data-screen="explore-screen"><span>⌕</span>SEARCH</button>
     </nav>
   </main>
-  <dialog class="settings-dialog" id="settings-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close settings">×</button><span class="eyebrow">PERSONALISE YOUR PLAYER</span><h2>Settings</h2><select id="visualizer-choice" hidden aria-hidden="true"><option value="off" selected>Off</option></select><div class="setting-row"><span><b>Unavailable channels</b><small>Hide locally; restore whenever you want.</small></span><button type="button" id="hide-radio-channel">Hide current radio</button><button type="button" id="hide-tv-channel">Hide current TV</button><button type="button" id="restore-hidden-channels">Restore hidden</button></div><div class="setting-row"><span><b>Remote channel buttons & mode switch</b><small>Press Play/Pause twice while the app is visible to switch Radio and TV. Next/Previous and Fast Forward/Rewind step through stations. Turn off this setting if your remote sends unwanted station changes.</small></span><label class="setting-switch"><input id="remote-track-enabled" type="checkbox" role="switch" aria-label="Remote channel buttons and double-press mode switch"><span class="switch-track" aria-hidden="true"></span></label></div><div class="setting-row"><span><b>Bluetooth remote test</b><small>Start a station first, then press a button on your remote. This shows the last command received from your browser.</small><small id="remote-test-result" role="status">Ready to test.</small></span><button type="button" id="remote-test-start">Start test</button></div><label class="setting-row"><span><b>Mechanical sounds</b><small>Detent clicks, switch clacks and tuning static</small></span><input type="checkbox" id="hardware-sound-enabled" checked></label><p class="settings-note">Visual edition 4.1.25 · Playback build 3.0.163 · waits 10 seconds before skipping an unavailable stream.</p><p class="settings-note">Your favorites and choices remain saved in this browser.</p></form></dialog>
+  <dialog class="settings-dialog" id="settings-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close settings">×</button><span class="eyebrow">PERSONALISE YOUR PLAYER</span><h2>Settings</h2><div class="setting-row"><span><b>Unavailable channels</b><small>Hide locally; restore whenever you want.</small></span><button type="button" id="hide-radio-channel">Hide current radio</button><button type="button" id="hide-tv-channel">Hide current TV</button><button type="button" id="restore-hidden-channels">Restore hidden</button></div><div class="setting-row"><span><b>Remote channel buttons & mode switch</b><small>Press Play/Pause twice while the app is visible to switch Radio and TV. Next/Previous and Fast Forward/Rewind step through stations. Turn off this setting if your remote sends unwanted station changes.</small></span><label class="setting-switch"><input id="remote-track-enabled" type="checkbox" role="switch" aria-label="Remote channel buttons and double-press mode switch"><span class="switch-track" aria-hidden="true"></span></label></div><div class="setting-row"><span><b>Bluetooth remote test</b><small>Start a station first, then press a button on your remote. This shows the last command received from your browser.</small><small id="remote-test-result" role="status">Ready to test.</small></span><button type="button" id="remote-test-start">Start test</button></div><label class="setting-row"><span><b>Mechanical sounds</b><small>Detent clicks, switch clacks and tuning static</small></span><input type="checkbox" id="hardware-sound-enabled" checked></label><p class="settings-note">Visual edition 4.1.25 · Playback build 3.0.163 · waits 10 seconds before skipping an unavailable stream.</p><p class="settings-note">Your favorites and choices remain saved in this browser.</p></form></dialog>
   <dialog class="settings-dialog cabinet-sleep-dialog" id="cabinet-sleep-dialog" aria-labelledby="cabinet-sleep-title">
     <form method="dialog">
       <button class="dialog-close" value="cancel" aria-label="Close sleep timer">&#215;</button>
@@ -3836,13 +3578,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const name of ['playing','pause','error'])audio.addEventListener(name,showPlaybackIssue);
 
   const number=index=>String(Math.max(0,index)+1).padStart(2,'0');
-  for(const dial of document.querySelectorAll('.volume-dial,.tone-dial')){
+  for(const dial of document.querySelectorAll('.volume-dial')){
     const arc=document.createElement('span');arc.className='dial-led-arc';arc.setAttribute('aria-hidden','true');
     for(let n=0;n<13;n++){const led=document.createElement('i');led.style.setProperty('--led-index',n);arc.append(led);}
     dial.append(arc);
-  }
-  function leds(dial,ratio){
-    dial?.querySelectorAll('.dial-led-arc i').forEach((led,n)=>led.classList.toggle('lit',n/12<=ratio));
   }
   let radioArtworkState=!audio.paused&&audio.readyState>=3?'playing':'paused';
   let lastArtworkTime=Number(audio.currentTime)||0;
@@ -3897,13 +3636,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       text(indicator,live?'LIVE':buffering?'BUFFERING':'STANDBY');
     }
 
-    const bass=$('radio-bass'),treble=$('radio-treble'),master=$('v4-master-tone');
-    master.disabled=bass.disabled&&treble.disabled;
-    const tone=(Number(bass.value)+Number(treble.value))/2;
-    if(document.activeElement!==master)master.value=String(tone);
-    $('v4-tone-dial').style.setProperty('--volume-knob-angle',tone*11.25+'deg');
-    leds($('v4-tone-dial'),(tone+12)/24);text($('v4-tone-value'),(tone>0?'+':'')+tone+' dB');
-    for(const input of [bass,treble])leds(input.closest('.tone-control').querySelector('.tone-dial'),(Number(input.value)+12)/24);
     tvVolume.value=String(Math.round(video.volume*100));
     $('v4-tv-volume-dial').style.setProperty('--volume-knob-angle',(-135+video.volume*270)+'deg');
     tvThumbwheel.setValue(Math.round(video.volume*100));
@@ -3915,13 +3647,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const id of ['radio-art','radio-status','radio-station-strip','radio-volume-knob-value','tv-title','remote-presets','tv-channel-number']){
     observer.observe($(id),{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
   }
-  for(const id of ['radio-bass','radio-treble']){
-    $(id).addEventListener('input',queue);observer.observe($(id),{attributes:true,attributeFilter:['disabled']});
-  }
-  $('v4-master-tone').addEventListener('input',event=>{
-    for(const id of ['radio-bass','radio-treble']){const input=$(id);if(input.disabled)continue;input.value=event.target.value;input.dispatchEvent(new Event('input',{bubbles:true}));}
-    sync();
-  });
   tvVolume.addEventListener('input',()=>{video.volume=Math.max(0,Math.min(1,Number(tvVolume.value)/100));video.muted=false;sync();});
   radioVolume.addEventListener('input',queue);
   const tvThumbwheel=window.createThumbwheelVolume({
@@ -4465,6 +4190,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     originalClick('[data-mode-screen="'+mode+'-screen"]');
     originalClick('[data-screen="'+mode+'-screen"]');
     showView('tuner',false);sync();
+    if(mode==='tv')window.retroPlayer?.openDesktopTVFullscreen();
   }
   function paintView(next){
     view=next;
@@ -4739,7 +4465,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  new MutationObserver(wake).observe(shell,{attributes:true,attributeFilter:['data-mode']});
  const app=shell.closest('main');if(app)new MutationObserver(wake).observe(app,{attributes:true,attributeFilter:['data-view']});
  new ResizeObserver(wake).observe(stage);document.addEventListener('visibilitychange',wake);
- const legacy=$('visualizer-choice');if(legacy){legacy.value='off';legacy.dispatchEvent(new Event('change',{bubbles:true}));}
 });
 
 
@@ -4942,77 +4667,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 document.addEventListener('DOMContentLoaded',()=>{
   const shell=document.getElementById('ux-receiver');
-  const inlineSearch=document.getElementById('ux-inline-search');
-  const cards=[...document.querySelectorAll('.ux-station-card')];
-  const filterButtons=[...document.querySelectorAll('[data-ux-search-kind]')];
-  let searchKind='radio',filterByKind=false;
-  const filterCards=()=>{
-    const query=inlineSearch.value.trim().toLowerCase();
-    for(const card of cards){
-      const matchesKind=!filterByKind||card.dataset.stationKind===searchKind;
-      const matchesQuery=!query||card.dataset.stationName.toLowerCase().includes(query);
-      card.hidden=!(matchesKind&&matchesQuery);
-    }
-  };
-  const openSearch=(name='',kind=searchKind)=>{
-    document.getElementById(kind==='tv'?'ux-tv':'ux-radio').click();
-    document.getElementById('ux-explore').click();
-    const exploreSearch=document.getElementById('explore-search');
-    if(exploreSearch){
-      exploreSearch.value=name;
-      exploreSearch.dispatchEvent(new Event('input',{bubbles:true}));
-      exploreSearch.focus({preventScroll:true});
-    }
-  };
-  filterButtons.forEach(button=>button.addEventListener('click',()=>{
-    filterByKind=true;
-    searchKind=button.dataset.uxSearchKind;
-    filterButtons.forEach(item=>{
-      const active=item===button;
-      item.classList.toggle('active',active);
-      item.setAttribute('aria-pressed',String(active));
-    });
-    filterCards();
-  }));
-  inlineSearch.addEventListener('input',filterCards);
-  inlineSearch.addEventListener('keydown',event=>{
-    if(event.key==='Enter'){
-      event.preventDefault();
-      openSearch(inlineSearch.value.trim());
-    }
-  });
-  cards.forEach(card=>{
-    card.addEventListener('click',event=>{
-      if(event.target.closest('.ux-station-heart'))return;
-      openSearch(card.dataset.stationName,card.dataset.stationKind);
-    });
-    card.addEventListener('keydown',event=>{
-      if(event.target!==card||!['Enter',' '].includes(event.key))return;
-      event.preventDefault();
-      openSearch(card.dataset.stationName,card.dataset.stationKind);
-    });
-    const heart=card.querySelector('.ux-station-heart');
-    function paintHeart(){const saved=window.retroPlayer?.isFavorite(card.dataset.stationKind,card.dataset.stationName)||false;heart.setAttribute('aria-pressed',String(saved));heart.textContent=saved?'?':'?';}
-    paintHeart();window.addEventListener('retro-favorites-changed',paintHeart);
-    const toggleFavorite=event=>{event.preventDefault();event.stopPropagation();if(!window.retroPlayer?.toggleFavorite(card.dataset.stationKind,card.dataset.stationName))openSearch(card.dataset.stationName,card.dataset.stationKind);paintHeart();};
-    heart.addEventListener('click',toggleFavorite);
-    heart.addEventListener('keydown',event=>{
-      if(event.key==='Enter'||event.key===' '){toggleFavorite(event);}
-    });
-  });
   document.getElementById('ux-mode-hardware').addEventListener('click',()=>{
     const current=shell.dataset.mode==='tv'?'radio':'tv';
     document.getElementById(current==='tv'?'ux-tv':'ux-radio').click();
     shell.classList.add('ux-show-player');
-    const matching=filterButtons.find(button=>button.dataset.uxSearchKind===current);
-    if(matching){
-      searchKind=current;
-      filterButtons.forEach(button=>{
-        const active=button===matching;
-        button.classList.toggle('active',active);
-        button.setAttribute('aria-pressed',String(active));
-      });
-    }
   });
   for(const [id,delta] of [['ux-volume-dpad-up',5],['ux-volume-dpad-down',-5]]){
     document.getElementById(id).addEventListener('click',()=>{
@@ -5021,14 +4679,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       slider.dispatchEvent(new Event('input',{bubbles:true}));
     });
   }
-  document.getElementById('ux-search-back').addEventListener('click',()=>{
-    shell.classList.add('ux-show-player');
-    document.getElementById('ux-tuner').click();
-  });
-  document.getElementById('ux-explore').addEventListener('click',()=>{
-    shell.classList.remove('ux-show-player');
-  });
-  filterCards();
 });
 
 </script>
